@@ -1,0 +1,122 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.regex.*;
+
+
+public class fileCrawler {
+	class worker implements Runnable{
+		private String pattern;
+		private ConcurrentSkipListSet<String> CSLS;
+
+		worker(String pattern, ConcurrentSkipListSet<String> CSLS) 
+		{
+			this.pattern  = new String (pattern);
+			this.CSLS = CSLS; 
+		}
+
+		public void run ( ) 
+		{
+			while (!CLQ.isEmpty()){
+				String name = CLQ.peek();
+				File file = new File(CLQ.poll());	// create a File object
+				String entries[] = file.list();
+				for (String entry : entries ) {
+
+					try {
+
+						File file = new File(name);	// create a File object
+						if (!file.isDirectory()) {	// a directory - could be symlink
+							String pattern = Regex.cvtPattern(pat);
+							Pattern p = Pattern.compile(pattern);
+							Matcher m = p.matcher(name);
+							if (m.matches()){
+
+								CSLS.add(name);
+							}
+						}
+
+					}
+					catch (Exception e) {
+						System.err.println("Error processing "+ name +": "+e);
+					}
+				}
+			}
+		}
+	}
+		
+
+
+		public void processDirectory(String name, ConcurrentLinkedQueue<String> CLQ) {
+			try {
+
+				File file = new File(name);	// create a File object
+
+				if (file.isDirectory()) {	// a directory - could be symlink
+					CLQ.add(name);
+					String entries[] = file.list();
+					if (entries != null) {	// not a symlink;
+					}
+					for (String entry : entries ) {
+						if (entry.compareTo(".") == 0)
+							continue;
+						if (entry.compareTo("..") == 0)
+							continue;
+
+						processDirectory(name+"/"+entry, CLQ);
+					}
+				}
+			}
+			catch (Exception e) {
+				System.err.println("Error processing "+ name +": "+e);
+			}
+		}
+
+		public void processFile(String name, String pat, ConcurrentSkipListSet<String> CSLS){
+			try {
+
+				File file = new File(name);	// create a File object
+				if (!file.isDirectory()) {	// a directory - could be symlink
+					String pattern = Regex.cvtPattern(pat);
+					Pattern p = Pattern.compile(pattern);
+					Matcher m = p.matcher(name);
+					if (m.matches()){
+
+						CSLS.add(name);
+					}
+				}
+
+			}
+			catch (Exception e) {
+				System.err.println("Error processing "+ name +": "+e);
+			}
+		}
+
+		public static void main( String Arg[] ) throws IOException{
+			String fileName = Arg[1];
+			fileCrawler FC = new fileCrawler();
+
+
+			ConcurrentSkipListSet<String> CSLS = new ConcurrentSkipListSet<String>();
+			ConcurrentLinkedQueue<String> CLQ = new ConcurrentLinkedQueue<String>();
+			FC.processDirectory(fileName, CLQ);
+			while (!CLQ.isEmpty()){
+				String name = CLQ.peek();
+				File file = new File(CLQ.poll());	// create a File object
+				String entries[] = file.list();
+				for (String entry : entries ) {
+					FC.processFile(name +"/"+ entry, Arg[0], CSLS);
+				}
+			}
+			while (!CSLS.isEmpty()){
+				System.out.println(CSLS.pollFirst());
+			}
+		}
+
+
+
+	}
+
+

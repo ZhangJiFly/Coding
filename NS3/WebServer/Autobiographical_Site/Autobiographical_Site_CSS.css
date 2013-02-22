@@ -1,0 +1,10 @@
+body {font-family: garamond, "times new roman", arial, sans-serif;
+font-size: 16px; line-height: 16px; background-color: rgb(78%,77.6%,78%); color: black;}
+#logo {border: none;;}
+a:hover {text-decoration: underline;}
+.quote {font-style: italic; text-indent: 10pt;}
+h2 {font-size: 20px; line-height: 24px;}
+a {text-decoration: none; font-weight: bold}
+a:link {color: black}
+a:visited {color: black}
+a:hover {text-decoration: underline}

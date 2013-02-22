@@ -1,0 +1,2 @@
+INDEX VERSION 1.126+/users/level3/1000275m/Coding/NS3/.metadata/.plugins/org.eclipse.jdt.core
+600743652.index

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move 3 elements to &apos;FileCrawler.java/src/(default package)&apos;&#x0A;- Original project: &apos;AE2&apos;&#x0A;- Destination element: &apos;FileCrawler.java/src/(default package)&apos;&#x0A;- Original elements:&#x0A;     Env.java&#x0A;     Regex.java&#x0A;     DirectoryTree.java&#x0A;- Update references to refactored element" description="Move compilation units" destination="=FileCrawler.java/src&lt;" element1="/&lt;{Env.java" element2="/&lt;{Regex.java" element3="/&lt;{DirectoryTree.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1353097277528" units="3" version="1.0"/>
+</session>

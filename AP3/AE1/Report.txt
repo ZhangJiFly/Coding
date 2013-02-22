@@ -1,0 +1,13 @@
+Joshua Marks 1000275
+
+AP3
+AE1
+
+I have created a fully working mentry.c, the only faults i have found were running valgrind error checks, which found some uninitialised values used for conditional jumps.
+
+I currently have semi-working versions of both static and dynamic hashtables. I have tested randomly generated data up to 1,000,000 entries on both. Both seem to work perfectly on 10,000, though the test input did have few duplicates to be found. Whereas both failed to find over half of the potential duplicates when tested on 1,000,000 entries, after much searching for why this might be happening I have failed to identify the issue. I originally had no memory leaks when using only a static hashtable but when converting to dynamic I cannot figure out how to free the data in the old table as any attempt made to do so caused a segmentation fault(core dump). I therefore opted to have at least mostly working code that leaked rather than code that did very little but did not leak. 
+
+
+
+
+There are many ways in which I could improve my code, greater cohesion for one would be beneficial. After making what seemed like innocent changes resulting in seemingly unresolvable issues I was loath to make changes to working code for readability/update-ablity's sake.   

@@ -1,0 +1,80 @@
+import java.io.File;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.regex.*;
+
+
+public class fileCrawler {
+
+
+
+	public void processDirectory(String name, ConcurrentLinkedQueue<String> CLQ) {
+		try {
+
+			File file = new File(name);	// create a File object
+
+			if (file.isDirectory()) {	// a directory - could be symlink
+				CLQ.add(name);
+				String entries[] = file.list();
+				if (entries != null) {	// not a symlink;
+				}
+				for (String entry : entries ) {
+					if (entry.compareTo(".") == 0)
+						continue;
+					if (entry.compareTo("..") == 0)
+						continue;
+
+					processDirectory(name+"/"+entry, CLQ);
+				}
+			}
+		}
+		catch (Exception e) {
+			System.err.println("Error processing "+ name +": "+e);
+		}
+	}
+
+	public void processFile(String name, String pat, PriorityBlockingQueue<String> PBQ){
+		try {
+
+			File file = new File(name);	// create a File object
+			if (!file.isDirectory()) {	// a directory - could be symlink
+				String pattern = Regex.cvtPattern(pat);
+				Pattern p = Pattern.compile(pattern);
+				Matcher m = p.matcher(name);
+				if (m.matches()){
+
+					PBQ.add(name);
+				}
+			}
+		
+	}
+	catch (Exception e) {
+		System.err.println("Error processing "+ name +": "+e);
+	}
+}
+
+public static void main( String Arg[] ){
+	String fileName = Arg[1];
+	fileCrawler FC = new fileCrawler();
+
+
+	PriorityBlockingQueue<String> PBQ = new PriorityBlockingQueue<String>();
+	ConcurrentLinkedQueue<String> CLQ = new ConcurrentLinkedQueue<String>();
+	FC.processDirectory(fileName, CLQ);
+	while (!CLQ.isEmpty()){
+		File file = new File(CLQ.poll());	// create a File object
+		String entries[] = file.list();
+		for (String entry : entries ) {
+			FC.processFile(entry, Arg[0], PBQ);
+		}
+	}
+	while (!PBQ.isEmpty()){
+		System.out.println(PBQ.poll());
+	}
+}
+
+
+
+}
+
+
