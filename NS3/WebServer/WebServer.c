@@ -134,11 +134,13 @@ int responsecheck(char file[], char address[]){//determins what kind of response
 	return 2;
 }
 
-void cylcicalsend(char filename[], int connfd){
-	FILE *fd;	
+void cyclicalsend(char filename[], int connfd){
+	FILE *fd;
+	printf("File Name Length: %ld\n", strlen(filename));
 	fd = fopen(filename, "r");
+	perror("File Name Too long check?");
 	char filebuf[BUFLEN];
-    	int end = -1;
+    int end = -1;
 	while (end != 0){
 		end = readcontent(filebuf, fd);
 		send(connfd, filebuf, sizeof(filebuf), 0);
@@ -182,7 +184,8 @@ void response(char prot[], char filename[], char address[], int connfd){
 	sprintf(sendstr, "%s %s%s%s%s\n",prot, responsetype, contentlong, connection, length);
 	printf("%s", sendstr);
 	write(connfd, sendstr, strlen(sendstr));
-    	cylcicalsend(filename, connfd);	
+
+    cyclicalsend(filename, connfd);	
 	write(connfd, "\r\n", strlen("\r\n"));
 }
 
@@ -214,42 +217,44 @@ void processrequest(char buf[], int connfd){
 	bb->connections = malloc(sizeof(void *)*BB);
 }*/
 
-//void start_threads(int connfd){
-	
-//}
+void start_threads(int* connfd){
+	char buf[BUFLEN] = "";
+	while (read(*connfd, buf, BUFLEN)>1){
+		processrequest(buf, *connfd);
+	}
+}
 
 int main(void){
 	extern int errno;
 	struct sockaddr_in addr;
 	struct sockaddr_in cliaddr;
-	int fd, connfd;// i;
+	int fd, i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
 	socklen_t cliaddrlen = sizeof(cliaddr);
-	char buf[BUFLEN] = "";
+	int* connfd;
 	int set = 1;
-
+	connfd = malloc(sizeof(int));
 	//bbuffer* boundedb;
-	//pthread_t *threads = malloc(sizeof(pthread_t)*THREADNUM);
+	pthread_t *threads = malloc(sizeof(pthread_t)*THREADNUM);
 	//boundedb = createBB();
 
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
-
 	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
 		perror("Port in use, failed to bind");
 		return 0;
 	}
 	listen(fd, 1);
 	while(1){
-		connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
-
-		while (read(connfd, buf, BUFLEN)>1){
-			processrequest(buf, connfd);
-		}
-	
+		*connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
+		for (i = 0; i< THREADNUM; i++){
+			pthread_create(&threads[i], NULL,(void*) start_threads,(void *) connfd);
+		}	
 	}
-	return connfd;
+	free(connfd);
+	free(threads);
+	return 0;
 }
 	
