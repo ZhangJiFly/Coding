@@ -11,10 +11,27 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <pthread.h>
-#define THREADNUM 1
-#define BB 20
+#include <semaphore.h>
 #define BUFLEN 8096
 #define SHORT 30
+	// CODE THAT MAY OR MAY NOT BE USED ONE DAY
+	//char *timestr;
+	//char temp[BUFLEN] = "";
+	//sscanf(c_time_string,"%s %s %s %s %s \n",www,mmm,dd,time,yyyy);
+	//sendstr = ("%s", www);
+	//strcpy(temp,www);
+	//strcat(strcat(strcat(temp, dd), mmm), yyyy); 
+	//sendstr = strcat(temp, "\r\n");
+	//sprintf(sendstr, "%s, %s %s %s \n", www, mmm, dd, yyyy);
+	//printf("%s", sendstr);
+	//sendstr = returnstring();
+	//write(connfd, sendstr, strlen(sendstr));
+	//free(connfd);
+	//char www[4];
+	//char dd[3];
+	//char mmm[4];
+	//char yyyy[4];
+	//char time[4];
 int readline(char line[], char buf[], int i){ //turns the read input from the browser into individual lines which is just easier to deal with.
 	int k;
 	for (k= 0; buf[i] != '\r'; i++, k++){
@@ -24,14 +41,6 @@ int readline(char line[], char buf[], int i){ //turns the read input from the br
 	line[k+1] = '\n';
 	line[k+2] = '\0';
 	return i+2;
-}
-
-long readcontent(char filebuf[], FILE *fd){ // puts up to BUFLEN characters in a file into a buffer
-	long end = -1;
-	if (fd != NULL){
-		end = fread(filebuf, BUFLEN, 1, fd);
-	}
-	return end;
 }
 
 void removeport(char host[], char address[]){ //helper function to remove the port from the recieved host address to check against gethostname()
@@ -48,6 +57,7 @@ void getExt (char file[], char ext[]) { //simple helper function to get the file
         ext = ""; 
 	}
 }
+
 long filesize(char filename[]){ //helper function to obtain filesize
 	long size;
 	struct stat st;
@@ -94,6 +104,40 @@ long getinputs(char buf[], char method[] ,char file[] ,char prot[] ,char host[])
 	return strlen(buf);
 }
 
+FILE* readcontent(char filename[],char filebuf[]){ // puts up to BUFLEN characters in a file into a buffer
+	FILE *fd;
+
+	sscanf(filename, "/%s", filename); //removes the slash from the file name
+
+   	fd = fopen(filename, "r");
+
+	if (fd != NULL){
+			fread(filebuf, BUFLEN, 1, fd);
+			fclose(fd);
+	}
+	
+	return fd;
+}
+
+
+int responsecheck(char file[], char address[]){//determins what kind of response is sent e.g. 200 OK, 404 Not Fount etc.
+	char filebuf[BUFLEN] = "";
+	FILE *fd;
+	int hostcheck;
+	hostcheck = hostnamecheck(address);
+
+	if (!hostcheck){
+		return 0;
+	}
+	fd = readcontent(file, filebuf);
+	printf("%s\n", file);	
+	if (fd == NULL){
+		return 1;
+	}
+	return 2;
+}
+
+
 void contenttype(char file[], char content[]){ // helper function to find the response message based on file type
 	char ext[SHORT] = "";
 	getExt(file, ext);
@@ -114,37 +158,6 @@ void contenttype(char file[], char content[]){ // helper function to find the re
     	strcpy (content, "text/css");
     } 
 }
-
-int responsecheck(char file[], char address[]){//determins what kind of response is sent e.g. 200 OK, 404 Not Fount etc.
-	FILE *fd;
-	int hostcheck;
-	hostcheck = hostnamecheck(address);
-	if (!hostcheck){
-		return 0;
-	}
-	fd = fopen(file, "r");
-	printf("%s\n", file);
-	
-	if (fd == NULL){
-		return 1;
-	}
-	fclose(fd);
-	return 2;
-}
-
-void cylcicalsend(char filename[], int connfd){
-	FILE *fd;	
-	fd = fopen(filename, "r");
-	char filebuf[BUFLEN];
-    	int end = -1;
-	while (end != 0){
-		end = readcontent(filebuf, fd);
-		send(connfd, filebuf, sizeof(filebuf), 0);
-		strcpy(filebuf,"");
-	}
-	fclose(fd);
-}
-
 void response(char prot[], char filename[], char address[], int connfd){
 	long size;
 	int res;
@@ -152,37 +165,45 @@ void response(char prot[], char filename[], char address[], int connfd){
 	char responsetype[SHORT] = "";
 	char connection[SHORT] = "Connection: open\n";
 	char length[SHORT] = "";
+	char filebuf[BUFLEN] ="";
 	char content[SHORT] = "html/index";
 	char contentlong[SHORT] = "";
-	
-	sscanf(filename, "/%s", filename); //removes the slash from the file name
 	res = responsecheck(filename, address);
 	size = filesize(filename);
 	
+    
+    
 	if (res == 0){
 		strcpy(responsetype,"400 Bad Request\n");
-		strcpy(filename, "404.html");
+		readcontent("400.html", filebuf);
 		size = filesize("400.html");
 	}
 	if (res == 1){
 		strcpy(responsetype,"404 Not Found\n");
-		strcpy(filename, "404.html");
+		readcontent("404.html", filebuf);
 		size = filesize("404.html");
 	}
 	if (res == 2){
 		strcpy(responsetype,"200 OK\n");
+		readcontent(filename, filebuf);
 		contenttype(filename, content);
 		size = filesize(filename);
 	}
     
 	sprintf(contentlong, "Content-Type: %s\n", content);
 	sprintf(length, "Content-Length: %ld\n", size);
+    
 	sprintf(sendstr, "%s %s%s%s%s\n",prot, responsetype, contentlong, connection, length);
+    
 	printf("%s", sendstr);
+    
 	write(connfd, sendstr, strlen(sendstr));
-    	cylcicalsend(filename, connfd);	
+	send(connfd, filebuf, sizeof(filebuf), 0);
 	write(connfd, "\r\n", strlen("\r\n"));
+	
 }
+
+
 
 void processrequest(char buf[], int connfd){
 	char method[BUFLEN] = "";
@@ -197,54 +218,59 @@ void processrequest(char buf[], int connfd){
 	}
 	getinputs(buf, method, file, prot, host);
 	removeport(host, address);
+    
 	response(prot, file, address, connfd);
+	
 }
 
-/*bbuffer* createBB(){
-	bbuffer* bb = malloc(sizeof(bbuffer));
-	pthread_mutex_init(&bb->bblock, NULL);
-	pthread_cond_init(&bb->non->non_full, NULL);
-	pthread_cond_init(&bb->non->non_empty, NULL);
-	bb->bbsize = BB;
-	bb->currentRead = 0;
-	bb->currentWrite = 0;
-	bb->isEmpty = 1;
-	bb->connections = malloc(sizeof(void *)*BB);
-}*/
-
-void start_threads(int connfd){
-	char buf[BUFLEN] = "";
-	while (read(connfd, buf, BUFLEN)>1){
-		processrequest(buf, connfd);
-	}
-}
-
-int main(void){
-	extern int errno;
+int readport(){
 	struct sockaddr_in addr;
 	struct sockaddr_in cliaddr;
-	int fd, connfd;// i;
+	int fd;
+	int connfd;
+	int valid;
+	char buf[BUFLEN] = "";
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
 	socklen_t cliaddrlen = sizeof(cliaddr);
 	int set = 1;
-	//bbuffer* boundedb;
-	//pthread_t *threads = malloc(sizeof(pthread_t)*THREADNUM);
-	//boundedb = createBB();
+
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
-
-	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
+	if((valid = bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
 		perror("Port in use, failed to bind");
-		return 0;
+		//while (valid == -1){
+			//(valid = bind(fd, (struct sockaddr *)&addr, sizeof(addr)));
+		//}
+		perror("Port now bound");
+		return -1;
 	}
+	
 	listen(fd, 1);
+
 	while(1){
 		connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
-		start_threads(connfd);
 	
+		while (read(connfd, buf, BUFLEN)>1){
+			processrequest(buf, connfd);
+		
+		}
 	}
 	return connfd;
 }
+
+
+
+
+
+int main(void){
+	extern int errno;
+
+	int connfd;
+
+	connfd = readport();
+	close(connfd);
 	
+	return 0;
+}
