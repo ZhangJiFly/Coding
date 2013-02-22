@@ -11,8 +11,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <pthread.h>
-
-#define THREADNUM 2
+#define THREADNUM 5
 #define BB 20
 #define BUFLEN 8096
 #define SHORT 30
