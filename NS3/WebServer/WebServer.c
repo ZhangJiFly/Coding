@@ -15,6 +15,7 @@
 #define BB 20
 #define BUFLEN 8096
 #define SHORT 30
+
 int readline(char line[], char buf[], int i){ //turns the read input from the browser into individual lines which is just easier to deal with.
 	int k;
 	for (k= 0; buf[i] != '\r'; i++, k++){
@@ -100,7 +101,7 @@ char* contenttype(char file[]){ // helper function to find the response message 
 
 	
 	if ((strcmp(ext, "html") == 0) || (strcmp(ext, "htm") == 0)){
-   		return "text/html";
+   	return "text/html";
     }
 	else if((strcmp(ext, "jpg") == 0) || (strcmp(ext, "jpeg") == 0)){
     	return "image/jpeg";
@@ -170,7 +171,7 @@ void response(char prot[], char filename[], char address[], int connfd){
 	
 	if (res == 0){
 		strcpy(responsetype,"400 Bad Request\n");
-        size = strlen(fourohoh);;
+        size = strlen(fourohoh);
 	}
 	if (res == 1){
 		strcpy(responsetype,"404 Not Found\n");
@@ -206,7 +207,6 @@ void processrequest(char buf[], int connfd){
 	char prot[BUFLEN] = "";
 	char address[BUFLEN] = "";
 	ssize_t rcount = 0;
-    
 	while (strstr(buf, "\r\n\r\n") == NULL){
 		rcount = read(connfd, buf, BUFLEN);
 	}
@@ -227,22 +227,28 @@ void processrequest(char buf[], int connfd){
 	bb->connections = malloc(sizeof(void *)*BB);
 }*/
 
-void start_threads(int connfd){
+void start_threads(int fd){
+	int connfd;
+	struct sockaddr_in cliaddr;
+	socklen_t cliaddrlen = sizeof(cliaddr);
 	char buf[BUFLEN] = "";
-	while (read(connfd, buf, BUFLEN)>1){
+	connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
+	while (read(connfd, buf, BUFLEN)>1){		
 		processrequest(buf, connfd);
+	
 	}
+	printf("DOES THIS EVER ACTUALLY HAPPEN IF SO MY CODE SHOULDNT WORK");
 }
 
 int main(void){
 	extern int errno;
 	struct sockaddr_in addr;
-	struct sockaddr_in cliaddr;
-	int fd, connfd, i;
+	//struct sockaddr_in cliaddr;
+	int fd, i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
-	socklen_t cliaddrlen = sizeof(cliaddr);
+	//socklen_t cliaddrlen = sizeof(cliaddr);
 	int set = 1;
 	//bbuffer* boundedb;
 	pthread_t *threads = malloc(sizeof(pthread_t)*THREADNUM);
@@ -256,12 +262,12 @@ int main(void){
 	}
 	listen(fd, 1);
 	while(1){
-		connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
         for (i = 0; i<THREADNUM; i++){
-            pthread_create(&threads[i], NULL,(void *)start_threads,(void *)connfd);
+            pthread_create(&threads[i], NULL,(void *)start_threads,(void *)fd);
+		
         }
-	
+		
 	}
-	return connfd;
+	return 0;
 }
 	
