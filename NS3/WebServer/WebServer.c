@@ -11,12 +11,10 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <pthread.h>
-
-#define THREADNUM 1
+#define THREADNUM 5
 #define BB 20
 #define BUFLEN 8096
 #define SHORT 30
-
 int readline(char line[], char buf[], int i){ //turns the read input from the browser into individual lines which is just easier to deal with.
 	int k;
 	for (k= 0; buf[i] != '\r'; i++, k++){
@@ -51,7 +49,7 @@ void getExt (char file[], char ext[]) { //simple helper function to get the file
 	}
 }
 long filesize(char filename[]){ //helper function to obtain filesize
-	long size;
+	long size = 0;
 	struct stat st;
 	stat(filename, &st);
 	size = st.st_size;
@@ -96,25 +94,30 @@ long getinputs(char buf[], char method[] ,char file[] ,char prot[] ,char host[])
 	return strlen(buf);
 }
 
-void contenttype(char file[], char content[]){ // helper function to find the response message based on file type
+char* contenttype(char file[]){ // helper function to find the response message based on file type
 	char ext[SHORT] = "";
 	getExt(file, ext);
 
-	if (strcmp(ext, "html") == 0){
-   		strcpy (content, "text/html");
+	
+	if ((strcmp(ext, "html") == 0) || (strcmp(ext, "htm") == 0)){
+   		return "text/html";
     }
-	if(strcmp(ext, "jpg") == 0){
-    	strcpy (content, "image/jpeg");
+	else if((strcmp(ext, "jpg") == 0) || (strcmp(ext, "jpeg") == 0)){
+    	return "image/jpeg";
     }
-	if(strcmp(ext, "gif") == 0){
-    	strcpy (content, "image/gif");
+	else if(strcmp(ext, "gif") == 0){
+    	return "image/gif";
     }
-	if(strcmp(ext, "ico") == 0){
-    	strcpy (content, "image/ico");
+	else if(strcmp(ext, "ico") == 0){
+    	return "image/ico";
     }
-	if(strcmp(ext, "css") == 0){
-    	strcpy (content, "text/css");
-    } 
+	else if(strcmp(ext, "css") == 0){
+    	return "text/css";
+    }
+	else{
+    	return "application/octet-stream";
+    }
+	 
 }
 
 int responsecheck(char file[], char address[]){//determins what kind of response is sent e.g. 200 OK, 404 Not Fount etc.
@@ -134,59 +137,66 @@ int responsecheck(char file[], char address[]){//determins what kind of response
 	return 2;
 }
 
-void cyclicalsend(char filename[], int connfd){
-	FILE *fd;
-	printf("File Name Length: %ld\n", strlen(filename));
+void cylcicalsend(char filename[], int connfd){
+	FILE *fd;	
 	fd = fopen(filename, "r");
-	perror("File Name Too long check?");
+    long sigpipe;
 	char filebuf[BUFLEN];
-    int end = -1;
+    long end = -1;
 	while (end != 0){
 		end = readcontent(filebuf, fd);
-		send(connfd, filebuf, sizeof(filebuf), 0);
+		if ((sigpipe = send(connfd, filebuf, sizeof(filebuf), 0)==-1)){
+            perror("SIGPIPE");
+            break;
+        }
 		strcpy(filebuf,"");
 	}
 	fclose(fd);
 }
 
 void response(char prot[], char filename[], char address[], int connfd){
-	long size;
-	int res;
+	long size = 0;
+	int res = 1;
 	char sendstr[BUFLEN];
 	char responsetype[SHORT] = "";
 	char connection[SHORT] = "Connection: open\n";
 	char length[SHORT] = "";
-	char content[SHORT] = "html/index";
+	char content[SHORT] = "text/html";
 	char contentlong[SHORT] = "";
-	
+	char fourohfour[BUFLEN] = "<!doctype html><html>404\nYou are clearly an idiot and no one will ever love you.</html>";
+    char fourohoh[BUFLEN] = "<!doctype html><html>400\nYour requests are the shittest requests ive ever seen! Get the fuck out of life! uninstall life lollllll!</html>";
 	sscanf(filename, "/%s", filename); //removes the slash from the file name
 	res = responsecheck(filename, address);
-	size = filesize(filename);
 	
 	if (res == 0){
 		strcpy(responsetype,"400 Bad Request\n");
-		strcpy(filename, "404.html");
-		size = filesize("400.html");
+        size = strlen(fourohoh);;
 	}
 	if (res == 1){
 		strcpy(responsetype,"404 Not Found\n");
-		strcpy(filename, "404.html");
-		size = filesize("404.html");
+		size = strlen(fourohfour);
 	}
 	if (res == 2){
 		strcpy(responsetype,"200 OK\n");
-		contenttype(filename, content);
+		strcpy(content, contenttype(filename));
 		size = filesize(filename);
+    }
+    sprintf(contentlong, "Content-Type: %s\n", content);
+    sprintf(length, "Content-Length: %ld\n", size);
+    sprintf(sendstr, "%s %s%s%s%s\n",prot, responsetype, contentlong, connection, length);
+    printf("%s", sendstr);
+    write(connfd, sendstr, strlen(sendstr));
+    if (res == 0){
+		write(connfd,fourohoh, strlen(fourohoh));
+	}
+	if (res == 1){
+		write(connfd,fourohfour, strlen(fourohfour));
 	}
     
-	sprintf(contentlong, "Content-Type: %s\n", content);
-	sprintf(length, "Content-Length: %ld\n", size);
-	sprintf(sendstr, "%s %s%s%s%s\n",prot, responsetype, contentlong, connection, length);
-	printf("%s", sendstr);
-	write(connfd, sendstr, strlen(sendstr));
-
-    cyclicalsend(filename, connfd);	
-	write(connfd, "\r\n", strlen("\r\n"));
+    if (res == 2){
+        cylcicalsend(filename, connfd);
+    }
+    write(connfd, "\r\n", strlen("\r\n"));
 }
 
 void processrequest(char buf[], int connfd){
@@ -217,10 +227,10 @@ void processrequest(char buf[], int connfd){
 	bb->connections = malloc(sizeof(void *)*BB);
 }*/
 
-void start_threads(int* connfd){
+void start_threads(int connfd){
 	char buf[BUFLEN] = "";
-	while (read(*connfd, buf, BUFLEN)>1){
-		processrequest(buf, *connfd);
+	while (read(connfd, buf, BUFLEN)>1){
+		processrequest(buf, connfd);
 	}
 }
 
@@ -228,33 +238,30 @@ int main(void){
 	extern int errno;
 	struct sockaddr_in addr;
 	struct sockaddr_in cliaddr;
-	int fd, i;
+	int fd, connfd, i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
 	socklen_t cliaddrlen = sizeof(cliaddr);
-	int* connfd;
 	int set = 1;
-	connfd = malloc(sizeof(int));
 	//bbuffer* boundedb;
 	pthread_t *threads = malloc(sizeof(pthread_t)*THREADNUM);
 	//boundedb = createBB();
-
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
+
 	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
 		perror("Port in use, failed to bind");
 		return 0;
 	}
 	listen(fd, 1);
 	while(1){
-		*connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
-		for (i = 0; i< THREADNUM; i++){
-			pthread_create(&threads[i], NULL,(void*) start_threads,(void *) connfd);
-		}	
+		connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
+        for (i = 0; i<THREADNUM; i++){
+            pthread_create(&threads[i], NULL,(void *)start_threads,(void *)connfd);
+        }
+	
 	}
-	free(connfd);
-	free(threads);
-	return 0;
+	return connfd;
 }
 	

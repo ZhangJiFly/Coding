@@ -1,5 +1,5 @@
 body {font-family: garamond, "times new roman", arial, sans-serif;
-font-size: 16px; line-height: 16px; background-color: rgb(78%,77.6%,78%); color: black;}
+font-size: 16px; line-height: 16px; background-color: #d1d1d1; color: black;}
 #logo {border: none;;}
 a:hover {text-decoration: underline;}
 .quote {font-style: italic; text-indent: 10pt;}

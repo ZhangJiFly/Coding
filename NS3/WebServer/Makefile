@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-W -Wall -Werror 
+CFLAGS=-W -Wall 
 
 web_server: WebServer.o
 	$(CC) -o $@ $^ -lpthread
