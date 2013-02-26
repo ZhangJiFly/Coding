@@ -177,7 +177,7 @@ void response(char prot[], char filename[], char address[], int connfd){
 	char connection[SHORT] = "Connection: open\n";
 	char length[SHORT] = "";
 	char content[SHORT] = "text/html";
-	char contentlong[SHORT] = "";
+	char contentlong[BUFLEN] = "";
 	char fourohfour[BUFLEN] = "<!doctype html><html>404\nYou are clearly an idiot and no one will ever love you.</html>";
     char fourohoh[BUFLEN] = "<!doctype html><html>400\nYour requests are the shittest requests ive ever seen! Get the fuck out of life! uninstall life lollllll!</html>";
 	sscanf(filename, "/%s", filename); //removes the slash from the file name
