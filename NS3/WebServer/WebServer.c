@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <pthread.h>
-#define THREADNUM 5
+#define THREADNUM 10
 #define BB 20
 #define BUFLEN 8096
 #define SHORT 30
@@ -22,13 +22,15 @@
 //} thread_pool;
 
 typedef struct thread_pool{
+	int id;
 	pthread_t *thread;
 	int connfd;
 } thread_pool;
 
 
-void initthreadpool(thread_pool* threadpool){
+void initthreadpool(thread_pool* threadpool, int i){
 	threadpool->connfd = -1;
+	threadpool->id = i;
 }
 
 int readline(char line[], char buf[], int i){ //turns the read input from the browser into individual lines which is just easier to deal with.
@@ -246,22 +248,22 @@ void processrequest(char buf[], int connfd){
 void start_threads(thread_pool* threadpool){
 	char buf[BUFLEN];
     while(threadpool->connfd == -1){
-        
     }
-          
+    printf("This is the thread ID%d\n",threadpool->id);  
 	while (read(threadpool->connfd, buf, BUFLEN)>1){
 		processrequest(buf, threadpool->connfd);
 	}
 	threadpool->connfd = -1;
-	printf("DOES THIS EVER ACTUALLY HAPPEN IF SO MY CODE SHOULDNT WORK");
+	//printf("DOES THIS EVER ACTUALLY HAPPEN IF SO MY CODE SHOULDNT WORK");
 }
 
 int main(void){
 	extern int errno;
 	struct sockaddr_in addr;
 	struct sockaddr_in cliaddr;
-	thread_pool threadpool[THREADNUM];
-	int fd,connfd, i;
+	thread_pool* threadpool;
+	
+	int fd, i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
@@ -271,9 +273,12 @@ int main(void){
 	//boundedb = createBB();
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
+	
+	threadpool = malloc(sizeof(thread_pool)*THREADNUM);
 	for (i = 0; i<THREADNUM; i++){
-		//perror("does this ever print?-1-1-1-1-1-1-1-1-1-1");
-		initthreadpool(&threadpool[i]);
+		(&threadpool[i])->thread = malloc(sizeof(pthread_t));
+		perror("does this ever print?-1-1-1-1-1-1-1-1-1-1");
+		initthreadpool(&threadpool[i], i);
 		
 	}
 	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
@@ -282,20 +287,15 @@ int main(void){
 	}
 	listen(fd, 1);
     for (i = 0; i<THREADNUM; i++){
+		printf("does this ever print? %d\n", i);
         pthread_create((&threadpool[i])->thread, NULL,(void *)start_threads,(void *)&threadpool[i]);
     }
 	while(1){
     
     for (i = 0; i<THREADNUM; i++){
-			if ((&threadpool[i])->connfd == -1){
-				//perror("does this ever print?222222222222222222");
-				connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
-				//perror("does this ever print?3333333333333333");
-				(&threadpool[i])->connfd = connfd;
-				//perror("does this ever print?44444444444");
-				printf("%d",(&threadpool[i])->connfd);
-            	
-				printf("%d", i);
+			if ((&threadpool[i])->connfd == -1){;
+				(&threadpool[i])->connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
+				printf("does this ever print?1111111\n");
 			}
         }
 		
