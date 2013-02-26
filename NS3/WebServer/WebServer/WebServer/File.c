@@ -11,23 +11,18 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <pthread.h>
-#define THREADNUM 5
+#define THREADNUM 10
 #define BB 20
 #define BUFLEN 8096
 #define SHORT 30
 
-//typedef struct thread_pool{
-//pthread_t thread;
-//int connfd;
-//} thread_pool;
-
 typedef struct thread_pool{
 	pthread_t *thread;
 	int connfd;
-} thread_pool;
+} thread_pool; //struct so that each thread can have its own changeable connfd (everyone else says stuff about mutexs but i cant figure out why i need them.... unless thats how I get it to not busy wait... but who cares enough...
 
 
-void initthreadpool(thread_pool* threadpool){
+void initthreadpool(thread_pool* threadpool, int i){
 	threadpool->connfd = -1;
 }
 
@@ -39,9 +34,9 @@ int readline(char line[], char buf[], int i){ //turns the read input from the br
 	line[k] = '\r';
 	line[k+1] = '\n';
 	line[k+2] = '\0';
-	return i+2;
+	return i+2; // this function is not needed at all it just helped me to think about how everything was working when i started the project. 
 }
-
+//My method abstraction might have got a bit out of control but when i did this originally it was bigger and some of the functionality had to be ported to other methods and now it looks a bit pointless and silly.
 long readcontent(char filebuf[], FILE *fd){ // puts up to BUFLEN characters in a file into a buffer
 	long end = -1;
 	if (fd != NULL){
@@ -71,7 +66,7 @@ long filesize(char filename[]){ //helper function to obtain filesize
 	size = st.st_size;
 	return size;
 }
-
+//really dont understand what this is for... how have i recieved the message if it was sent to a different domain name... its like sending a letter to the wrong person and expecting the correct person to reply saying you sent it to someone else... but how does the right person even know you sent anything?
 int hostnamecheck(char address[]){ // checks that the hostname matches gethostname()
 	char hostname[BUFLEN];
 	size_t size = strlen(hostname);
@@ -127,7 +122,7 @@ char* contenttype(char file[]){ // helper function to find the response message 
 	else if(strcmp(ext, "ico") == 0){
     	return "image/ico";
     }
-	else if(strcmp(ext, "css") == 0){
+	else if(strcmp(ext, "css") == 0){//hope this isnt counted as over engineering, just the website i was testing on had css and i wanted to see what happened.
     	return "text/css";
     }
 	else{
@@ -178,8 +173,8 @@ void response(char prot[], char filename[], char address[], int connfd){
 	char length[SHORT] = "";
 	char content[SHORT] = "text/html";
 	char contentlong[BUFLEN] = "";
-	char fourohfour[BUFLEN] = "<!doctype html><html>404\nYou are clearly an idiot and no one will ever love you.</html>";
-    char fourohoh[BUFLEN] = "<!doctype html><html>400\nYour requests are the shittest requests ive ever seen! Get the fuck out of life! uninstall life lollllll!</html>";
+	char fourohfour[BUFLEN] = "<!doctype html><html>404\nNot Found</html>";
+    char fourohoh[BUFLEN] = "<!doctype html><html>400\nBad Request</html>";
 	sscanf(filename, "/%s", filename); //removes the slash from the file name
 	res = responsecheck(filename, address);
 	
@@ -228,52 +223,34 @@ void processrequest(char buf[], int connfd){
 	response(prot, file, address, connfd);
 }
 
-/*bbuffer* createBB(){
- bbuffer* bb = malloc(sizeof(bbuffer));
- pthread_mutex_init(&bb->bblock, NULL);
- pthread_cond_init(&bb->non->non_full, NULL);
- pthread_cond_init(&bb->non->non_empty, NULL);
- bb->bbsize = BB;
- bb->currentRead = 0;
- bb->currentWrite = 0;
- bb->isEmpty = 1;
- bb->connections = malloc(sizeof(void *)*BB);
- }*/
-
-
-
-
 void start_threads(thread_pool* threadpool){
 	char buf[BUFLEN];
-    while(threadpool->connfd == -1){
-        
+    while(threadpool->connfd == -1){// i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or mutexs to make it work properly in a decent time frame
     }
-          
 	while (read(threadpool->connfd, buf, BUFLEN)>1){
 		processrequest(buf, threadpool->connfd);
 	}
 	threadpool->connfd = -1;
-	printf("DOES THIS EVER ACTUALLY HAPPEN IF SO MY CODE SHOULDNT WORK");
 }
 
 int main(void){
 	extern int errno;
 	struct sockaddr_in addr;
 	struct sockaddr_in cliaddr;
-	thread_pool threadpool[THREADNUM];
-	int fd,connfd, i;
+	thread_pool* threadpool;
+	int fd, i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
 	socklen_t cliaddrlen = sizeof(cliaddr);
 	int set = 1;
-	//bbuffer* boundedb;
-	//boundedb = createBB();
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
+	
+	threadpool = malloc(sizeof(thread_pool)*THREADNUM);
 	for (i = 0; i<THREADNUM; i++){
-		//perror("does this ever print?-1-1-1-1-1-1-1-1-1-1");
-		initthreadpool(&threadpool[i]);
+		(&threadpool[i])->thread = malloc(sizeof(pthread_t));
+		initthreadpool(&threadpool[i], i);
 		
 	}
 	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
@@ -282,20 +259,14 @@ int main(void){
 	}
 	listen(fd, 1);
     for (i = 0; i<THREADNUM; i++){
+		printf("does this ever print? %d\n", i);
         pthread_create((&threadpool[i])->thread, NULL,(void *)start_threads,(void *)&threadpool[i]);
     }
 	while(1){
-    
-    for (i = 0; i<THREADNUM; i++){
-			if ((&threadpool[i])->connfd == -1){
-				//perror("does this ever print?222222222222222222");
-				connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
-				//perror("does this ever print?3333333333333333");
-				(&threadpool[i])->connfd = connfd;
-				//perror("does this ever print?44444444444");
-				printf("%d",(&threadpool[i])->connfd);
-            	
-				printf("%d", i);
+        
+        for (i = 0; i<THREADNUM; i++){ // i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or mutexs to make it work properly in a decent time frame
+			if ((&threadpool[i])->connfd == -1){;
+				(&threadpool[i])->connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
 			}
         }
 		

@@ -1,0 +1,294 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		074D54B516DC246700D6DB15 /* File.c in Sources */ = {isa = PBXBuildFile; fileRef = 074D54B416DC246700D6DB15 /* File.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0721283E16D7DB0300554CA3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0721284016D7DB0300554CA3 /* WebServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WebServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		0721285016D7DB9600554CA3 /* Autobiographical_Site_CSS.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Autobiographical_Site_CSS.css; sourceTree = "<group>"; };
+		0721285116D7DB9600554CA3 /* DVDs.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = DVDs.html; sourceTree = "<group>"; };
+		0721285216D7DB9600554CA3 /* Family.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Family.html; sourceTree = "<group>"; };
+		0721285316D7DB9600554CA3 /* FAQ.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FAQ.html; sourceTree = "<group>"; };
+		0721285416D7DB9600554CA3 /* Friends.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Friends.html; sourceTree = "<group>"; };
+		0721285516D7DB9600554CA3 /* Happy Cripple Day Climb 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Happy Cripple Day Climb 1.jpg"; sourceTree = "<group>"; };
+		0721285616D7DB9600554CA3 /* Happy Cripple Day Fall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Happy Cripple Day Fall.jpg"; sourceTree = "<group>"; };
+		0721285716D7DB9600554CA3 /* Happy Cripple Day Finger.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Happy Cripple Day Finger.jpg"; sourceTree = "<group>"; };
+		0721285816D7DB9600554CA3 /* happycrippleday withgeoff.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "happycrippleday withgeoff.jpg"; sourceTree = "<group>"; };
+		0721285916D7DB9600554CA3 /* HappyCrippleDay.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = HappyCrippleDay.html; sourceTree = "<group>"; };
+		0721285A16D7DB9600554CA3 /* happycrippledaygreencircle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = happycrippledaygreencircle.jpg; sourceTree = "<group>"; };
+		0721285B16D7DB9600554CA3 /* happycrippledayimage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = happycrippledayimage.jpg; sourceTree = "<group>"; };
+		0721285C16D7DB9600554CA3 /* happycrippledayredcross.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = happycrippledayredcross.jpg; sourceTree = "<group>"; };
+		0721285D16D7DB9600554CA3 /* hot.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hot.gif; sourceTree = "<group>"; };
+		0721285E16D7DB9600554CA3 /* jennysketchpicture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = jennysketchpicture.jpg; sourceTree = "<group>"; };
+		0721285F16D7DB9600554CA3 /* mummie25_06_07.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mummie25_06_07.jpg; sourceTree = "<group>"; };
+		0721286016D7DB9600554CA3 /* MyHomePage.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = MyHomePage.html; sourceTree = "<group>"; };
+		0721286116D7DB9600554CA3 /* mylogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mylogo.png; sourceTree = "<group>"; };
+		0721286216D7DB9600554CA3 /* RNOH.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = RNOH.html; sourceTree = "<group>"; };
+		0721286316D7DB9600554CA3 /* SchoolLife.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = SchoolLife.html; sourceTree = "<group>"; };
+		0721286416D7DB9600554CA3 /* smartday2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = smartday2.jpg; sourceTree = "<group>"; };
+		0721286516D7DB9600554CA3 /* smartday3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smartday3.png; sourceTree = "<group>"; };
+		0721286616D7DB9600554CA3 /* thegangonwenlock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thegangonwenlock.jpg; sourceTree = "<group>"; };
+		0721286716D7DB9600554CA3 /* TheWalk.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TheWalk.html; sourceTree = "<group>"; };
+		0721286816D7DB9600554CA3 /* thewalklock51.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewalklock51.jpg; sourceTree = "<group>"; };
+		0721286916D7DB9600554CA3 /* thewalkmile55.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewalkmile55.jpg; sourceTree = "<group>"; };
+		0721286A16D7DB9600554CA3 /* thewalkshirtless.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewalkshirtless.jpg; sourceTree = "<group>"; };
+		0721286B16D7DB9600554CA3 /* thewalkskiing.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewalkskiing.jpg; sourceTree = "<group>"; };
+		0721286C16D7DB9600554CA3 /* thewalktheend.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewalktheend.jpg; sourceTree = "<group>"; };
+		0721286D16D7DB9600554CA3 /* thewalkthepoppy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewalkthepoppy.jpg; sourceTree = "<group>"; };
+		0721286E16D7DB9600554CA3 /* thewenlock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = thewenlock.jpg; sourceTree = "<group>"; };
+		0721286F16D7DB9600554CA3 /* wheelchairlogo_V1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wheelchairlogo_V1.jpg; sourceTree = "<group>"; };
+		0721287016D7DB9600554CA3 /* wheelchairlogo_V1i.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wheelchairlogo_V1i.png; sourceTree = "<group>"; };
+		074D54B416DC246700D6DB15 /* File.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = File.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0721283D16D7DB0300554CA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0721283716D7DB0300554CA3 = {
+			isa = PBXGroup;
+			children = (
+				0721284216D7DB0300554CA3 /* WebServer */,
+				0721284116D7DB0300554CA3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0721284116D7DB0300554CA3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0721284016D7DB0300554CA3 /* WebServer */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0721284216D7DB0300554CA3 /* WebServer */ = {
+			isa = PBXGroup;
+			children = (
+				0721284F16D7DB9600554CA3 /* Autobiographical_Site */,
+				074D54B416DC246700D6DB15 /* File.c */,
+			);
+			path = WebServer;
+			sourceTree = "<group>";
+		};
+		0721284F16D7DB9600554CA3 /* Autobiographical_Site */ = {
+			isa = PBXGroup;
+			children = (
+				0721285016D7DB9600554CA3 /* Autobiographical_Site_CSS.css */,
+				0721285116D7DB9600554CA3 /* DVDs.html */,
+				0721285216D7DB9600554CA3 /* Family.html */,
+				0721285316D7DB9600554CA3 /* FAQ.html */,
+				0721285416D7DB9600554CA3 /* Friends.html */,
+				0721285516D7DB9600554CA3 /* Happy Cripple Day Climb 1.jpg */,
+				0721285616D7DB9600554CA3 /* Happy Cripple Day Fall.jpg */,
+				0721285716D7DB9600554CA3 /* Happy Cripple Day Finger.jpg */,
+				0721285816D7DB9600554CA3 /* happycrippleday withgeoff.jpg */,
+				0721285916D7DB9600554CA3 /* HappyCrippleDay.html */,
+				0721285A16D7DB9600554CA3 /* happycrippledaygreencircle.jpg */,
+				0721285B16D7DB9600554CA3 /* happycrippledayimage.jpg */,
+				0721285C16D7DB9600554CA3 /* happycrippledayredcross.jpg */,
+				0721285D16D7DB9600554CA3 /* hot.gif */,
+				0721285E16D7DB9600554CA3 /* jennysketchpicture.jpg */,
+				0721285F16D7DB9600554CA3 /* mummie25_06_07.jpg */,
+				0721286016D7DB9600554CA3 /* MyHomePage.html */,
+				0721286116D7DB9600554CA3 /* mylogo.png */,
+				0721286216D7DB9600554CA3 /* RNOH.html */,
+				0721286316D7DB9600554CA3 /* SchoolLife.html */,
+				0721286416D7DB9600554CA3 /* smartday2.jpg */,
+				0721286516D7DB9600554CA3 /* smartday3.png */,
+				0721286616D7DB9600554CA3 /* thegangonwenlock.jpg */,
+				0721286716D7DB9600554CA3 /* TheWalk.html */,
+				0721286816D7DB9600554CA3 /* thewalklock51.jpg */,
+				0721286916D7DB9600554CA3 /* thewalkmile55.jpg */,
+				0721286A16D7DB9600554CA3 /* thewalkshirtless.jpg */,
+				0721286B16D7DB9600554CA3 /* thewalkskiing.jpg */,
+				0721286C16D7DB9600554CA3 /* thewalktheend.jpg */,
+				0721286D16D7DB9600554CA3 /* thewalkthepoppy.jpg */,
+				0721286E16D7DB9600554CA3 /* thewenlock.jpg */,
+				0721286F16D7DB9600554CA3 /* wheelchairlogo_V1.jpg */,
+				0721287016D7DB9600554CA3 /* wheelchairlogo_V1i.png */,
+			);
+			path = Autobiographical_Site;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0721283F16D7DB0300554CA3 /* WebServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0721284916D7DB0300554CA3 /* Build configuration list for PBXNativeTarget "WebServer" */;
+			buildPhases = (
+				0721283C16D7DB0300554CA3 /* Sources */,
+				0721283D16D7DB0300554CA3 /* Frameworks */,
+				0721283E16D7DB0300554CA3 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WebServer;
+			productName = WebServer;
+			productReference = 0721284016D7DB0300554CA3 /* WebServer */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0721283816D7DB0300554CA3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Josh Marks";
+			};
+			buildConfigurationList = 0721283B16D7DB0300554CA3 /* Build configuration list for PBXProject "WebServer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0721283716D7DB0300554CA3;
+			productRefGroup = 0721284116D7DB0300554CA3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0721283F16D7DB0300554CA3 /* WebServer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0721283C16D7DB0300554CA3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				074D54B516DC246700D6DB15 /* File.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0721284716D7DB0300554CA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0721284816D7DB0300554CA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0721284A16D7DB0300554CA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0721284B16D7DB0300554CA3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0721283B16D7DB0300554CA3 /* Build configuration list for PBXProject "WebServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0721284716D7DB0300554CA3 /* Debug */,
+				0721284816D7DB0300554CA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0721284916D7DB0300554CA3 /* Build configuration list for PBXNativeTarget "WebServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0721284A16D7DB0300554CA3 /* Debug */,
+				0721284B16D7DB0300554CA3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0721283816D7DB0300554CA3 /* Project object */;
+}
