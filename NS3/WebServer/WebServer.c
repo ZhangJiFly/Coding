@@ -16,6 +16,23 @@
 #define BUFLEN 8096
 #define SHORT 30
 
+//typedef struct thread_pool{
+	//pthread_t thread;
+	//int connfd;
+//} thread_pool;
+
+typedef struct thread_pool{
+	int fd;
+	pthread_t *thread;
+	int connfd;
+} thread_pool;
+
+
+void initthreadpool(thread_pool* threadpool, int fd){
+	threadpool->connfd = -1;
+	threadpool->fd = fd;
+}
+
 int readline(char line[], char buf[], int i){ //turns the read input from the browser into individual lines which is just easier to deal with.
 	int k;
 	for (k= 0; buf[i] != '\r'; i++, k++){
@@ -35,7 +52,7 @@ long readcontent(char filebuf[], FILE *fd){ // puts up to BUFLEN characters in a
 	return end;
 }
 
-void removeport(char host[], char address[]){ //helper function to remove the port from the recieved host address to check against gethostname()
+void removeport(char host[], char address[]){ //helper functhreadpool[i]tion to remove the port from the recieved host address to check against gethostname()
 	size_t subsize;
 	subsize = strcspn(host, ":");
 	strncpy(address, host, subsize);
@@ -101,7 +118,7 @@ char* contenttype(char file[]){ // helper function to find the response message 
 
 	
 	if ((strcmp(ext, "html") == 0) || (strcmp(ext, "htm") == 0)){
-   	return "text/html";
+   		return "text/html";
     }
 	else if((strcmp(ext, "jpg") == 0) || (strcmp(ext, "jpeg") == 0)){
     	return "image/jpeg";
@@ -120,7 +137,6 @@ char* contenttype(char file[]){ // helper function to find the response message 
     }
 	 
 }
-
 int responsecheck(char file[], char address[]){//determins what kind of response is sent e.g. 200 OK, 404 Not Fount etc.
 	FILE *fd;
 	int hostcheck;
@@ -193,7 +209,6 @@ void response(char prot[], char filename[], char address[], int connfd){
 	if (res == 1){
 		write(connfd,fourohfour, strlen(fourohfour));
 	}
-    
     if (res == 2){
         cylcicalsend(filename, connfd);
     }
@@ -227,16 +242,21 @@ void processrequest(char buf[], int connfd){
 	bb->connections = malloc(sizeof(void *)*BB);
 }*/
 
-void start_threads(int fd){
-	int connfd;
+
+
+
+void start_threads(thread_pool* threadpool){
+
 	struct sockaddr_in cliaddr;
 	socklen_t cliaddrlen = sizeof(cliaddr);
+
 	char buf[BUFLEN] = "";
-	connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
-	while (read(connfd, buf, BUFLEN)>1){		
-		processrequest(buf, connfd);
-	
+
+	threadpool->connfd = accept(threadpool->fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
+	while (read(threadpool->connfd, buf, BUFLEN)>1){		
+		processrequest(buf, threadpool->connfd);
 	}
+	threadpool->connfd = -1;
 	printf("DOES THIS EVER ACTUALLY HAPPEN IF SO MY CODE SHOULDNT WORK");
 }
 
@@ -244,6 +264,7 @@ int main(void){
 	extern int errno;
 	struct sockaddr_in addr;
 	//struct sockaddr_in cliaddr;
+	thread_pool threadpool[THREADNUM];
 	int fd, i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
@@ -251,11 +272,13 @@ int main(void){
 	//socklen_t cliaddrlen = sizeof(cliaddr);
 	int set = 1;
 	//bbuffer* boundedb;
-	pthread_t *threads = malloc(sizeof(pthread_t)*THREADNUM);
 	//boundedb = createBB();
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
-
+	for (i = 0; i<THREADNUM; i++){
+		initthreadpool(&threadpool[i], fd);	
+		
+	}
 	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
 		perror("Port in use, failed to bind");
 		return 0;
@@ -263,11 +286,14 @@ int main(void){
 	listen(fd, 1);
 	while(1){
         for (i = 0; i<THREADNUM; i++){
-            pthread_create(&threads[i], NULL,(void *)start_threads,(void *)fd);
-		
+			if (threadpool->connfd == -1){
+            	pthread_create((&threadpool[i])->thread, NULL,(void *)start_threads,&threadpool[i]);
+				printf("%d", i);
+			}
         }
 		
 	}
 	return 0;
+
 }
 	
