@@ -18,11 +18,11 @@
 
 typedef struct thread_pool{
 	pthread_t *thread;
-	int connfd;
+	ssize_t connfd;
 } thread_pool; //struct so that each thread can have its own changeable connfd (everyone else says stuff about mutexs but i cant figure out why i need them.... unless thats how I get it to not busy wait... but who cares enough...
 
 
-void initthreadpool(thread_pool* threadpool, int i){
+void initthreadpool(thread_pool* threadpool){
 	threadpool->connfd = -1;
 }
 
@@ -147,7 +147,7 @@ int responsecheck(char file[], char address[]){//determins what kind of response
 	return 2;
 }
 
-void cylcicalsend(char filename[], int connfd){
+void cylcicalsend(char filename[], ssize_t connfd){
 	FILE *fd;
 	fd = fopen(filename, "r");
     long sigpipe;
@@ -164,7 +164,7 @@ void cylcicalsend(char filename[], int connfd){
 	fclose(fd);
 }
 
-void response(char prot[], char filename[], char address[], int connfd){
+void response(char prot[], char filename[], char address[], ssize_t connfd){
 	long size = 0;
 	int res = 1;
 	char sendstr[BUFLEN];
@@ -175,6 +175,7 @@ void response(char prot[], char filename[], char address[], int connfd){
 	char contentlong[BUFLEN] = "";
 	char fourohfour[BUFLEN] = "<!doctype html><html>404\nNot Found</html>";
     char fourohoh[BUFLEN] = "<!doctype html><html>400\nBad Request</html>";
+	char fiveohoh[BUFLEN] = "<!doctype html><html>500\nInternal Server Error</html>";
 	sscanf(filename, "/%s", filename); //removes the slash from the file name
 	res = responsecheck(filename, address);
 	
@@ -182,15 +183,19 @@ void response(char prot[], char filename[], char address[], int connfd){
 		strcpy(responsetype,"400 Bad Request\n");
         size = strlen(fourohoh);
 	}
-	if (res == 1){
+	else if (res == 1){
 		strcpy(responsetype,"404 Not Found\n");
 		size = strlen(fourohfour);
 	}
-	if (res == 2){
+	else if (res == 2){
 		strcpy(responsetype,"200 OK\n");
 		strcpy(content, contenttype(filename));
 		size = filesize(filename);
     }
+	else{
+		strcpy(responsetype,"500 Internal Server Error\n");
+		size = strlen(fiveohoh);
+	}
     sprintf(contentlong, "Content-Type: %s\n", content);
     sprintf(length, "Content-Length: %ld\n", size);
     sprintf(sendstr, "%s %s%s%s%s\n",prot, responsetype, contentlong, connection, length);
@@ -199,36 +204,56 @@ void response(char prot[], char filename[], char address[], int connfd){
     if (res == 0){
 		write(connfd,fourohoh, strlen(fourohoh));
 	}
-	if (res == 1){
+	else if (res == 1){
 		write(connfd,fourohfour, strlen(fourohfour));
 	}
-    if (res == 2){
+    else if (res == 2){
         cylcicalsend(filename, connfd);
     }
+	else{
+		write(connfd,fiveohoh, strlen(fiveohoh));	
+	}
     write(connfd, "\r\n", strlen("\r\n"));
 }
 
-void processrequest(char buf[], int connfd){
+int processrequest(ssize_t connfd){
 	char method[BUFLEN] = "";
 	char file[BUFLEN] = "";
 	char host[BUFLEN] = "";
 	char prot[BUFLEN] = "";
 	char address[BUFLEN] = "";
+	char* buf = malloc(BUFLEN);
+	strcpy(buf, "");
 	ssize_t rcount = 0;
-	while (strstr(buf, "\r\n\r\n") == NULL){
-		rcount = read(connfd, buf, BUFLEN);
-	}
-	getinputs(buf, method, file, prot, host);
-	removeport(host, address);
-	response(prot, file, address, connfd);
+	ssize_t rcounttotal = 0;
+	int buflength = BUFLEN;
+	//while ((rcount = read(connfd, buf+rcounttotal, buflength-rcounttotal)) != 0){		
+		while (strstr(buf, "\r\n\r\n") == NULL){
+			read(connfd, buf+rcounttotal, buflength-rcounttotal);
+			//buflength = buflength * 2;
+			//buf = realloc(buf, buflength);
+			//rcounttotal += rcount;
+		}
+		//else{
+			getinputs(buf, method, file, prot, host);
+			removeport(host, address);
+			response(prot, file, address, connfd);
+		//}
+
+		
+		
+	//}
+	return rcount;
+
 }
 
 void start_threads(thread_pool* threadpool){
-	char buf[BUFLEN];
-    while(threadpool->connfd == -1){// i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or mutexs to make it work properly in a decent time frame
+	ssize_t rcount;
+    while(threadpool->connfd == -1){// i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or 		 		mutexs to make it work properly in a decent time frame
     }
-	while (read(threadpool->connfd, buf, BUFLEN)>1){
-		processrequest(buf, threadpool->connfd);
+
+	while (rcount!= 0){
+		rcount = processrequest(threadpool->connfd);
 	}
 	threadpool->connfd = -1;
 }
@@ -238,19 +263,23 @@ int main(void){
 	struct sockaddr_in addr;
 	struct sockaddr_in cliaddr;
 	thread_pool* threadpool;
-	int fd, i;
+	ssize_t fd;
+	int i;
 	addr.sin_addr.s_addr = INADDR_ANY;
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(8080);
 	socklen_t cliaddrlen = sizeof(cliaddr);
 	int set = 1;
-	fd = socket(AF_INET, SOCK_STREAM, 0);
+	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) ==-1){
+		perror("Failed to fd socket");
+	}
+	
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set, sizeof(set));
 	
 	threadpool = malloc(sizeof(thread_pool)*THREADNUM);
 	for (i = 0; i<THREADNUM; i++){
 		(&threadpool[i])->thread = malloc(sizeof(pthread_t));
-		initthreadpool(&threadpool[i], i);
+		initthreadpool(&threadpool[i]);
 		
 	}
 	if((bind(fd, (struct sockaddr *)&addr, sizeof(addr))) == -1){
@@ -259,14 +288,15 @@ int main(void){
 	}
 	listen(fd, 1);
     for (i = 0; i<THREADNUM; i++){
-		printf("does this ever print? %d\n", i);
         pthread_create((&threadpool[i])->thread, NULL,(void *)start_threads,(void *)&threadpool[i]);
     }
 	while(1){
         
-        for (i = 0; i<THREADNUM; i++){ // i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or mutexs to make it work properly in a decent time frame
+        for (i = 0; i<THREADNUM; i++){ // i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or 			mutexs to make it work properly in a decent time frame
 			if ((&threadpool[i])->connfd == -1){;
-				(&threadpool[i])->connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen);
+				if(((&threadpool[i])->connfd = accept(fd, (struct sockaddr *) &cliaddr, &cliaddrlen)) ==-1){
+					perror("Failed to accept request");				
+				}
 			}
         }
 		
