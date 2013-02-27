@@ -73,7 +73,7 @@ int hostnamecheck(char address[]){ // checks that the hostname matches gethostna
 	gethostname(hostname, size);
 	char local[] = "localhost";
 	char dcssuf[] = ".dcs.gla.ac.uk";
-    
+    // not sure if i am meant to check against local the sheet was unclear to me regardless it was very helpful to have as ok whilst testing so it's here either way/
 	if (strcmp(local, address) == 0){
 		return 1;
 	}
@@ -216,45 +216,35 @@ void response(char prot[], char filename[], char address[], ssize_t connfd){
     write(connfd, "\r\n", strlen("\r\n"));
 }
 
-int processrequest(ssize_t connfd){
+void processrequest(int connfd){
 	char method[BUFLEN] = "";
 	char file[BUFLEN] = "";
 	char host[BUFLEN] = "";
 	char prot[BUFLEN] = "";
 	char address[BUFLEN] = "";
 	char* buf = malloc(BUFLEN);
-	strcpy(buf, "");
 	ssize_t rcount = 0;
 	ssize_t rcounttotal = 0;
 	int buflength = BUFLEN;
-	//while ((rcount = read(connfd, buf+rcounttotal, buflength-rcounttotal)) != 0){		
+	while ((rcounttotal = read(connfd, buf, BUFLEN))>1){
 		while (strstr(buf, "\r\n\r\n") == NULL){
-			read(connfd, buf+rcounttotal, buflength-rcounttotal);
-			//buflength = buflength * 2;
-			//buf = realloc(buf, buflength);
-			//rcounttotal += rcount;
+			rcount = read(connfd, buf, buflength-rcounttotal);
+			buflength = buflength * 2;
+			buf = realloc(buf, buflength);
+			rcounttotal += rcount;
 		}
-		//else{
-			getinputs(buf, method, file, prot, host);
-			removeport(host, address);
-			response(prot, file, address, connfd);
-		//}
-
-		
-		
-	//}
-	return rcount;
-
+		getinputs(buf, method, file, prot, host);
+		removeport(host, address);
+		response(prot, file, address, connfd);
+	}
 }
-
+	
 void start_threads(thread_pool* threadpool){
-	ssize_t rcount;
     while(threadpool->connfd == -1){// i know that this is busy waiting, but i dont know enough about threads in C to do it using interupts or 		 		mutexs to make it work properly in a decent time frame
     }
-
-	while (rcount!= 0){
-		rcount = processrequest(threadpool->connfd);
-	}
+	
+	processrequest(threadpool->connfd);
+	close(threadpool->connfd);
 	threadpool->connfd = -1;
 }
 
