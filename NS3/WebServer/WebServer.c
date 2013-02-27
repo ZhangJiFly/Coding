@@ -162,6 +162,7 @@ void cylcicalsend(char filename[], ssize_t connfd){
 		strcpy(filebuf,"");
 	}
 	fclose(fd);
+ 
 }
 
 void response(char prot[], char filename[], char address[], ssize_t connfd){
@@ -194,6 +195,7 @@ void response(char prot[], char filename[], char address[], ssize_t connfd){
     }
 	else{
 		strcpy(responsetype,"500 Internal Server Error\n");
+		strcpy(connection,"Connection: close");
 		size = strlen(fiveohoh);
 	}
     sprintf(contentlong, "Content-Type: %s\n", content);
@@ -278,7 +280,9 @@ int main(void){
 	}
 	listen(fd, 1);
     for (i = 0; i<THREADNUM; i++){
-        pthread_create((&threadpool[i])->thread, NULL,(void *)start_threads,(void *)&threadpool[i]);
+        if ((pthread_create((&threadpool[i])->thread, NULL,(void *)start_threads,(void *)&threadpool[i])) !=0){
+			perror("Failed to create thread");		
+		}
     }
 	while(1){
         
@@ -291,6 +295,11 @@ int main(void){
         }
 		
 	}
+	for (i = 0; i<THREADNUM; i++){
+        free((&threadpool[i])->thread);
+		free(&threadpool[i]);
+	
+    }
 	return 0;
     
 }
