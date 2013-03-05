@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="15" version="2.0">
+<workbench progressCount="13" version="2.0">
 <workbenchAdvisor/>
-<window height="768" maximized="true" width="1024" x="0" y="25">
+<window height="769" maximized="true" width="1022" x="106" y="25">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -13,9 +13,11 @@
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="120" y="30"/>
 <coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="76" y="30"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="76" y="30"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="124" y="30"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="184" y="30"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.jdt.ui.CompilationUnitEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
@@ -24,14 +26,48 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+</presentation>
 </folder>
 </info>
 </editorArea>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ViewAdvertisementDetailCommand.java" partName="ViewAdvertisementDetailCommand.java" path="/users/level3/1000275m/PSD3/repos/trunk/psd3/implementation/system/src/uk/ac/glasgow/internman/ui/ViewAdvertisementDetailCommand.java" title="ViewAdvertisementDetailCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/ViewAdvertisementDetailCommand.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewAdvertisementDetailCommand.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="AcceptOfferCommand.java" partName="AcceptOfferCommand.java" path="/users/level3/1000275m/PSD3/repos/trunk/psd3/implementation/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java" title="AcceptOfferCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clui/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ApproveOfferCommand.java" partName="ApproveOfferCommand.java" path="/users/level3/1000275m/PSD3/repos/trunk/psd3/implementation/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java" title="ApproveOfferCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clui/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternManTest_5.java" partName="InternManTest_5.java" path="/users/level3/1000275m/PSD3/repos/trunk/psd3/implementation/system/src/uk/ac/glasgow/internman/tests/InternManTest_5.java" title="InternManTest_5.java" tooltip="clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_5.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_5.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="72" selectionOffset="1851" selectionTopPixel="1006"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternManTest_6.java" partName="InternManTest_6.java" path="/users/level3/1000275m/PSD3/repos/trunk/psd3/implementation/system/src/uk/ac/glasgow/internman/tests/InternManTest_6.java" title="InternManTest_6.java" tooltip="clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_6.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_6.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1498" selectionTopPixel="734"/>
+</editor>
 </editors>
 <views>
+<view id="org.eclipse.jdt.junit.ResultView" partName="JUnit">
+<viewState failuresOnly="false" layout="1" orientation="2" ratio="500" scroll="false" time="true"/>
+</view>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
+<expanded>
+<category IMemento.internal.id="Warnings (11 items)"/>
+<category IMemento.internal.id="Warnings"/>
+<category IMemento.internal.id="Errors"/>
+</expanded>
 <columnWidths org.eclipse.ui.ide.locationField="105" org.eclipse.ui.ide.markerType="311" org.eclipse.ui.ide.pathField="140" org.eclipse.ui.ide.resourceField="105" org.eclipse.ui.ide.severityAndDescriptionField="350"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
@@ -39,6 +75,9 @@
 <visible IMemento.internal.id="org.eclipse.ui.ide.locationField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.markerType"/>
 </viewState>
+</view>
+<view id="org.eclipse.ui.console.ConsoleView" partName="Console">
+<viewState/>
 </view>
 <view id="org.eclipse.jdt.ui.PackageExplorer" partName="Package Explorer">
 <viewState group_libraries="1" layout="2" linkWithEditor="0" rootMode="1" workingSetName="Aggregate for window 1361035715409">
@@ -75,7 +114,7 @@
 <view id="org.eclipse.jdt.ui.SourceView" partName="Declaration"/>
 <view id="org.eclipse.jdt.ui.JavadocView" partName="Javadoc"/>
 </views>
-<perspectives activePart="org.eclipse.jdt.ui.PackageExplorer" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
+<perspectives activePart="org.eclipse.jdt.ui.CompilationUnitEditor" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.jdt.internal.ui.JavaPerspectiveFactory" id="org.eclipse.jdt.ui.JavaPerspective" label="Java"/>
 <alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
@@ -126,22 +165,30 @@
 <hide_toolbar_item_id id="org.eclipse.jdt.ui.actions.OpenProjectWizard"/>
 <hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
 <view id="org.eclipse.jdt.ui.PackageExplorer"/>
+<view id="org.eclipse.jdt.junit.ResultView"/>
 <view id="org.eclipse.ui.views.ProblemView"/>
 <view id="org.eclipse.jdt.ui.JavadocView"/>
 <view id="org.eclipse.jdt.ui.SourceView"/>
-<view id="org.eclipse.ui.views.ContentOutline"/>
-<fastViewBars/>
+<view id="org.eclipse.ui.console.ConsoleView"/>
+<fastViewBars>
+<fastViewBar fastViewLocation="131072" id="right" orientation="512" selectedTabId="org.eclipse.ui.views.ContentOutline" style="0">
+<fastViews>
+<view id="org.eclipse.ui.views.ContentOutline" ratio="0.3"/>
+</fastViews>
+</fastViewBar>
+</fastViewBars>
 <layout>
 <mainWindow>
 <info folder="true" part="left">
-<folder activePageID="org.eclipse.jdt.ui.PackageExplorer" appearance="2" expanded="2">
+<folder activePageID="org.eclipse.jdt.junit.ResultView" appearance="2" expanded="2">
 <page content="org.eclipse.jdt.ui.PackageExplorer" label="Package Explorer"/>
+<page content="org.eclipse.jdt.junit.ResultView" label="JUnit"/>
 <page content="org.eclipse.jdt.ui.TypeHierarchy" label="LabelNotFound"/>
 <page content="org.eclipse.ui.views.ResourceNavigator" label="LabelNotFound"/>
 <page content="org.eclipse.ui.navigator.ProjectExplorer" label="LabelNotFound"/>
-<page content="org.eclipse.jdt.junit.ResultView" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
@@ -153,31 +200,30 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.24950495" ratioLeft="252" ratioRight="758" relationship="2" relative="left"/>
-<info folder="true" part="bottom" ratio="0.7488226" ratioLeft="477" ratioRight="160" relationship="4" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.views.ProblemView" appearance="2" expanded="2">
+<info part="org.eclipse.ui.editorss" ratio="0.4264463" ratioLeft="516" ratioRight="694" relationship="2" relative="left"/>
+<info folder="true" part="bottom" ratio="0.74733096" ratioLeft="630" ratioRight="213" relationship="4" relative="org.eclipse.ui.editorss">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.jdt.ui.JavadocView" label="Javadoc"/>
 <page content="org.eclipse.jdt.ui.SourceView" label="Declaration"/>
+<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.search.ui.views.SearchView" label="LabelNotFound"/>
-<page content="org.eclipse.ui.console.ConsoleView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.views.BookmarkView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.views.ProgressView" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 <part id="1"/>
 <part id="2"/>
+<part id="3"/>
 </presentation>
 </folder>
 </info>
 <info folder="true" part="right" ratio="0.74934036" ratioLeft="568" ratioRight="190" relationship="2" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
-<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
+<folder appearance="2" expanded="0">
+<page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
 <page content="org.eclipse.ui.texteditor.TemplatesView" label="LabelNotFound"/>
 <page content="org.eclipse.ant.ui.views.AntView" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-</presentation>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 </mainWindow>
@@ -185,12 +231,188 @@
 </perspective>
 </perspectives>
 <workingSets/>
-<navigationHistory/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/impl/InternManTeamN.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/Student.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_3.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_9.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/impl/users/StudentImpl.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewStudentDetailCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewStudentSummaryCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/impl/users/VisitorImpl.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/InternManCLUI.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/SubmitAdvertisementCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewAdvertisementDetailCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_5.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_6.java"/>
+</editors>
+<item historyLabel="InternManTeamN.java" index="0">
+<position info="not_deleted" x="6008" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="AcceptOfferCommand.java" index="6">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="981" y="0"/>
+</item>
+<item historyLabel="ViewStudentDetailCommand.java" index="7">
+<position info="not_deleted" x="1710" y="0"/>
+</item>
+<item historyLabel="StudentImpl.java" index="4">
+<position info="not_deleted" x="1046" y="0"/>
+</item>
+<item historyLabel="Student.java" index="1">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="ViewStudentDetailCommand.java" index="7">
+<position info="not_deleted" x="1710" y="0"/>
+</item>
+<item historyLabel="StudentImpl.java" index="4">
+<position info="not_deleted" x="924" y="0"/>
+</item>
+<item historyLabel="Student.java" index="1">
+<position info="not_deleted" x="366" y="0"/>
+</item>
+<item historyLabel="StudentImpl.java" index="4">
+<position info="not_deleted" x="924" y="0"/>
+</item>
+<item historyLabel="StudentImpl.java" index="4">
+<position info="not_deleted" x="1918" y="0"/>
+</item>
+<item historyLabel="Student.java" index="1">
+<position info="not_deleted" x="366" y="0"/>
+</item>
+<item historyLabel="StudentImpl.java" index="4">
+<position info="not_deleted" x="1918" y="0"/>
+</item>
+<item historyLabel="Student.java" index="1">
+<position info="not_deleted" x="191" y="0"/>
+</item>
+<item historyLabel="StudentImpl.java" index="4">
+<position info="not_deleted" x="1918" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="981" y="0"/>
+</item>
+<item historyLabel="InternManTeamN.java" index="0">
+<position info="not_deleted" x="6008" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="981" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="885" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="1128" y="0"/>
+</item>
+<item historyLabel="InternManTeamN.java" index="0">
+<position info="not_deleted" x="5543" y="0"/>
+</item>
+<item historyLabel="ViewStudentDetailCommand.java" index="7">
+<position info="not_deleted" x="1738" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="5">
+<position info="not_deleted" x="889" y="40"/>
+</item>
+<item historyLabel="ViewStudentDetailCommand.java" index="7">
+<position info="not_deleted" x="1369" y="0"/>
+</item>
+<item historyLabel="ViewStudentSummaryCommand.java" index="8">
+<position info="not_deleted" x="987" y="0"/>
+</item>
+<item historyLabel="VisitorImpl.java" index="9">
+<position info="not_deleted" x="431" y="0"/>
+</item>
+<item historyLabel="ViewStudentDetailCommand.java" index="7">
+<position info="not_deleted" x="127" y="0"/>
+</item>
+<item historyLabel="InternManTeamN.java" index="0">
+<position info="not_deleted" x="63" y="0"/>
+</item>
+<item historyLabel="Student.java" index="1">
+<position info="not_deleted" x="107" y="0"/>
+</item>
+<item historyLabel="AcceptOfferCommand.java" index="6">
+<position info="not_deleted" x="469" y="0"/>
+</item>
+<item historyLabel="InternManTest_3.java" index="2">
+<position info="not_deleted" x="695" y="0"/>
+</item>
+<item historyLabel="InternManCLUI.java" index="10">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="SubmitAdvertisementCommand.java" index="11">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="VisitorImpl.java" index="9">
+<position info="not_deleted" x="431" y="0"/>
+</item>
+<item historyLabel="InternManTest_9.java" index="3">
+<position info="not_deleted" x="123" y="0"/>
+</item>
+<item historyLabel="VisitorImpl.java" index="9">
+<position info="not_deleted" x="431" y="0"/>
+</item>
+<item historyLabel="SubmitAdvertisementCommand.java" index="11">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="ViewAdvertisementDetailCommand.java" index="12">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="AcceptOfferCommand.java" index="13">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="ApproveOfferCommand.java" index="14">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="InternManTest_5.java" index="15">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="InternManTest_5.java" index="15">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="InternManTest_5.java" index="15">
+<position info="not_deleted" x="1641" y="34"/>
+</item>
+<item historyLabel="InternManTest_6.java" index="16">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="InternManTest_5.java" index="15">
+<position info="not_deleted" x="1851" y="72"/>
+</item>
+<item historyLabel="InternManTest_6.java" index="16">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="InternManTest_6.java" index="16">
+<position info="not_deleted" x="405" y="0"/>
+</item>
+<item historyLabel="InternManTest_6.java" index="16">
+<position info="not_deleted" x="1211" y="26"/>
+</item>
+<item active="true" historyLabel="InternManTest_6.java" index="16">
+<position info="not_deleted" x="1487" y="3"/>
+</item>
+</navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
 <actionBarAdvisor/>
 <trimLayout>
+<trimArea IMemento.internal.id="16384">
+<trimItem IMemento.internal.id="left"/>
+</trimArea>
+<trimArea IMemento.internal.id="131072">
+<trimItem IMemento.internal.id="right"/>
+</trimArea>
 <trimArea IMemento.internal.id="128">
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
 </trimArea>
@@ -198,8 +420,55 @@
 <trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
 <trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
+<trimItem IMemento.internal.id="bottom"/>
 </trimArea>
 </trimLayout>
 </window>
-<mruList/>
+<mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternManTest_6.java" tooltip="clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_6.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_6.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternManTest_5.java" tooltip="clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_5.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/tests/InternManTest_5.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ApproveOfferCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/ApproveOfferCommand.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="AcceptOfferCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/AcceptOfferCommand.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ViewAdvertisementDetailCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/ViewAdvertisementDetailCommand.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewAdvertisementDetailCommand.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="SubmitAdvertisementCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/SubmitAdvertisementCommand.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/SubmitAdvertisementCommand.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternManCLUI.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/InternManCLUI.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/InternManCLUI.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="VisitorImpl.java" tooltip="clui/system/src/uk/ac/glasgow/internman/impl/users/VisitorImpl.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/impl/users/VisitorImpl.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ViewStudentSummaryCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/ViewStudentSummaryCommand.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewStudentSummaryCommand.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Student.java" tooltip="clui/system/src/uk/ac/glasgow/internman/Student.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/Student.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ViewStudentDetailCommand.java" tooltip="clui/system/src/uk/ac/glasgow/internman/ui/ViewStudentDetailCommand.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/ui/ViewStudentDetailCommand.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="StudentImpl.java" tooltip="clui/system/src/uk/ac/glasgow/internman/impl/users/StudentImpl.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/impl/users/StudentImpl.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="RoleStore.java" tooltip="clui/system/src/uk/ac/glasgow/internman/impl/roles/RoleStore.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/impl/roles/RoleStore.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternMan.java" tooltip="clui/system/src/uk/ac/glasgow/internman/InternMan.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/InternMan.java"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="InternshipImpl.java" tooltip="clui/system/src/uk/ac/glasgow/internman/impl/internships/InternshipImpl.java">
+<persistable path="/clui/system/src/uk/ac/glasgow/internman/impl/internships/InternshipImpl.java"/>
+</file>
+</mruList>
 </workbench>
