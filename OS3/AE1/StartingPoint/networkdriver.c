@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
+#include <math.h>
 
 /* These are the calls to be implemented by the students */
 
@@ -25,20 +27,21 @@ BoundedBuffer* incoming;
 BoundedBuffer outgoing;
 FreePacketDescriptorStore fpds;
 BoundedBuffer buffer;
-pthread_t sendthread;
-pthread_t getthread;
-pthread_t bufferthread;
+
 
 void *getting_thread();
 void *sending_thread();
 void *buffer_thread();
 
 void init_network_driver(NetworkDevice nd, void *mem_start, unsigned long mem_length, FreePacketDescriptorStore *fpds_ptr){
+	pthread_t sendthread;
+	pthread_t getthread;
+	pthread_t bufferthread;	
 	*fpds_ptr = create_fpds();
 	fpds = *fpds_ptr;
 	int i;
 
-	incoming = malloc(sizeof(BoundedBuffer)*(MAX_PID+1)); // mallocing the space for array of bounded buffers that represent the "cubby holes" in which packets from the network device will be stored for each process
+	incoming = malloc(sizeof(BoundedBuffer)*(MAX_PID+1)); // mallocing the space for array of bounded buffers that represent the "cubbyholes" in which packets from the network device will be stored for each process
 
 	for (i = 0; i<=MAX_PID;i++){
 		incoming[i] = createBB(3);	
@@ -46,7 +49,7 @@ void init_network_driver(NetworkDevice nd, void *mem_start, unsigned long mem_le
 	netdev = nd;
 
 	outgoing = createBB(6); // a bounded buffer that facilitates applications queing up the packets they wish to be sent out.
-	buffer = createBB(2);
+	buffer = createBB(6); // buffer that gives some wiggle room for recovery if a large flurry of packets arrive.
 
 	create_free_packet_descriptors(fpds, mem_start, mem_length);
 	pthread_create(&sendthread, NULL,sending_thread, NULL);
@@ -57,7 +60,6 @@ void init_network_driver(NetworkDevice nd, void *mem_start, unsigned long mem_le
 
 void blocking_send_packet(PacketDescriptor pd){//a way for applications to queue up their packets to be sent
 	blockingWriteBB(outgoing, pd);
-	printf("yay ive written to outgoing\n");
 	return;
 }
 
@@ -73,36 +75,41 @@ int  nonblocking_send_packet(PacketDescriptor pd){//a way for applications to at
 /* a delay while it waits for space in your buffers.                */
 /* Neither call should delay until the packet is actually sent      */
 
-void blocking_get_packet(PacketDescriptor* pd, PID pid){ // a way for applications to definitely get packets from their respective "cubby holes" 
+void blocking_get_packet(PacketDescriptor* pd, PID pid){ // a way for applications to definitely get packets from their respective "cubbyholes" 
 	*pd = blockingReadBB(incoming[pid]);
 	return;
 }
 
-int  nonblocking_get_packet(PacketDescriptor* pd, PID pid){ //a way for applications to attempt to get packets from their respective "cubby holes"
+int  nonblocking_get_packet(PacketDescriptor* pd, PID pid){ //a way for applications to attempt to get packets from their respective "cubbyholes"
 	return nonblockingReadBB(incoming[pid], pd);
+}
+
+
+int powers(int a, int b){
+	int i;	
+	for (i = 0; i <= b; i++){
+		a *=a; 
+	}
+	return a;
 }
 
 void *sending_thread(){
 	int i;
 	PacketDescriptor pd;
-	//struct timespec time1, time2;
-	//time1.tv_nsec = 1000;
-	//time1.tv_sec = 0;
-	printf("This thread has started horray!!\n");
+	int r; 
+	int sleep; 
 	while (1){
-		printf("I cant read from this stupid buffer!\n");
 		pd = blockingReadBB(outgoing);
-		printf("do i ever get seen again? \n");
-		for (i=0;i<5;i++){
+		for (i=0;i<10;i++){
 			if ((send_packet(netdev, pd)) == 1){
-				//break;			
+				break;			
 			}
-			//nanosleep(&time1, &time2); //I believe this code waits for 1 microsecond then if that doesnt work it waits 2 then 4 and so on until 5 tries upon which time it gives up. Hence exponential backoff or something like that.
-			//time1.tv_nsec = time1.tv_nsec * (2^i);		
+			r=random();
+			sleep = (unsigned int) r;
+			sleep = sleep % powers(2,i);
+			usleep(sleep); //I believe this code is waiting a random time in the range 0-2 to the power i 		
 		}
-		printf("packet descriptor put back into packet descriptor store1111111\n");
 		blocking_put_pd(fpds, pd);
-		printf("packet descriptor put back into packet descriptor store222222222\n");
 	}
 	return NULL;
 }
