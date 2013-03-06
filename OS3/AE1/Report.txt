@@ -1,0 +1,3 @@
+Report
+
+Upon testing my code using the given .o files it seems to run fairly well rarely failing to send and never dropping packets at the device level, any drops that do occur should happen at the software layer. I believe I have implemented an exponential backoff when trying to send packets starting with 1 microsecond and doubling on each attempt until 5 attempts have been tried upwhich which time it discards the packet.
