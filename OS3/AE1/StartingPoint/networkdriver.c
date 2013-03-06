@@ -20,7 +20,7 @@
 
 
 NetworkDevice netdev;
-	
+
 BoundedBuffer* incoming;
 BoundedBuffer outgoing;
 FreePacketDescriptorStore fpds;
@@ -44,19 +44,20 @@ void init_network_driver(NetworkDevice nd, void *mem_start, unsigned long mem_le
 		incoming[i] = createBB(3);	
 	}
 	netdev = nd;
-	
-	outgoing = createBB(6); // a bounded buffer that facilitates applications queing up the packets they wish to be sent out.
-	buffer = createBB(6);
 
-	create_free_packet_descriptors(*fpds_ptr, mem_start, mem_length);
-	pthread_create(&getthread, NULL,getting_thread, NULL);
+	outgoing = createBB(6); // a bounded buffer that facilitates applications queing up the packets they wish to be sent out.
+	buffer = createBB(2);
+
+	create_free_packet_descriptors(fpds, mem_start, mem_length);
 	pthread_create(&sendthread, NULL,sending_thread, NULL);
+	pthread_create(&getthread, NULL,getting_thread, NULL);
 	pthread_create(&bufferthread, NULL,buffer_thread, NULL);
 }
 
 
 void blocking_send_packet(PacketDescriptor pd){//a way for applications to queue up their packets to be sent
 	blockingWriteBB(outgoing, pd);
+	printf("yay ive written to outgoing\n");
 	return;
 }
 
@@ -76,7 +77,7 @@ void blocking_get_packet(PacketDescriptor* pd, PID pid){ // a way for applicatio
 	*pd = blockingReadBB(incoming[pid]);
 	return;
 }
-	
+
 int  nonblocking_get_packet(PacketDescriptor* pd, PID pid){ //a way for applications to attempt to get packets from their respective "cubby holes"
 	return nonblockingReadBB(incoming[pid], pd);
 }
@@ -84,46 +85,52 @@ int  nonblocking_get_packet(PacketDescriptor* pd, PID pid){ //a way for applicat
 void *sending_thread(){
 	int i;
 	PacketDescriptor pd;
-	struct timespec time1, time2;
+	//struct timespec time1, time2;
 	//time1.tv_nsec = 1000;
 	//time1.tv_sec = 0;
+	printf("This thread has started horray!!\n");
 	while (1){
+		printf("I cant read from this stupid buffer!\n");
 		pd = blockingReadBB(outgoing);
-		
+		printf("do i ever get seen again? \n");
 		for (i=0;i<5;i++){
 			if ((send_packet(netdev, pd)) == 1){
-				break;			
+				//break;			
 			}
 			//nanosleep(&time1, &time2); //I believe this code waits for 1 microsecond then if that doesnt work it waits 2 then 4 and so on until 5 tries upon which time it gives up. Hence exponential backoff or something like that.
 			//time1.tv_nsec = time1.tv_nsec * (2^i);		
 		}
+		printf("packet descriptor put back into packet descriptor store1111111\n");
 		blocking_put_pd(fpds, pd);
+		printf("packet descriptor put back into packet descriptor store222222222\n");
 	}
 	return NULL;
 }
 
 void *getting_thread(){
-	PacketDescriptor p1, p2;outgoing = createBB(6);
-	
+	PacketDescriptor p1, p2;
+
 	blocking_get_pd(fpds, &p1); 
 	blocking_get_pd(fpds, &p2); // although these last 2 lines are technically blocking in the receiving thread it is really only initialisation and should in theory never block and if it does is really blocking before everything has started
 	init_packet_descriptor(&p1);		
 	register_receiving_packetdescriptor(netdev, &p1);
 	await_incoming_packet(netdev);
 	while (1){
-		
-		
+
+
 		if (nonblockingWriteBB(buffer, p1)==1){
-			
+
 			if(nonblocking_get_pd(fpds, &p1)==0){
 				printf("No packet descriptors left packet dropped\n");
 				init_packet_descriptor(&p2);
 				register_receiving_packetdescriptor(netdev, &p2);
 				while(nonblocking_get_pd(fpds, &p1)==0){
 					await_incoming_packet(netdev);
+					init_packet_descriptor(&p2);
+					register_receiving_packetdescriptor(netdev, &p2);
 // I think this code means that if there are no packet discriptors left we can at least read from the device into a PacketDescriptor which is then overwritten until a new packet descriptor becomes available this is good because it means that the software is aware that a packet is dropped rather than just the hardware which means that the choice of handling the drop is available. 
 				}
-				
+
 			}
 			init_packet_descriptor(&p1);
 			register_receiving_packetdescriptor(netdev, &p1);
@@ -133,7 +140,7 @@ void *getting_thread(){
 			printf("Incoming buffer full, packet discarded\n");
 	// at this stage again the software is aware that a packet is dropped and could potentially handle this if one were so inclined.
 		}
-	
+
 	}
 	return NULL;
 }
@@ -146,6 +153,6 @@ void *buffer_thread(){
 		pid = packet_descriptor_get_pid(&p1);
 		blockingWriteBB(incoming[pid], p1);
 	}
-	
+
 	return NULL;
 }
