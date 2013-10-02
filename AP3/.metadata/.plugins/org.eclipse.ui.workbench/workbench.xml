@@ -35,13 +35,13 @@
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="DirectoryTree.java" partName="DirectoryTree.java" path="/users/level3/1000275m/AP3/AE2/DirectoryTree.java" title="DirectoryTree.java" tooltip="AE2/DirectoryTree.java" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="DirectoryTree.java" partName="DirectoryTree.java" path="/users/level3/1000275m/Coding/AP3/AE2/DirectoryTree.java" title="DirectoryTree.java" tooltip="AE2/DirectoryTree.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/AE2/DirectoryTree.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="443" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="407"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="fileCrawler.java" partName="fileCrawler.java" path="/users/level3/1000275m/AP3/FileCrawler.java/src/fileCrawler.java" title="fileCrawler.java" tooltip="FileCrawler.java/src/fileCrawler.java" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="fileCrawler.java" partName="fileCrawler.java" path="/users/level3/1000275m/Coding/AP3/FileCrawler.java/src/fileCrawler.java" title="fileCrawler.java" tooltip="FileCrawler.java/src/fileCrawler.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/FileCrawler.java/src/fileCrawler.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3488" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="835" selectionTopPixel="192"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="Regex.java" partName="Regex.java" path="/users/level3/1000275m/AP3/AE2/Regex.java" title="Regex.java" tooltip="AE2/Regex.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/AE2/Regex.java"/>
@@ -224,19 +224,8 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/FileCrawler.java/src/Regex.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/AE2/Regex.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/AE2/DirectoryTree.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/AE2/DirectoryTree.java"/>
 </editors>
-<item historyLabel="fileCrawler.java" index="0">
-<position info="not_deleted" x="1021" y="0"/>
-</item>
-<item historyLabel="DirectoryTree.java" index="2">
-<position info="not_deleted" x="916" y="0"/>
-</item>
-<item historyLabel="fileCrawler.java" index="0">
-<position info="not_deleted" x="1021" y="0"/>
-</item>
-<item historyLabel="fileCrawler.java" index="0">
-<position info="not_deleted" x="1029" y="38"/>
-</item>
 <item historyLabel="DirectoryTree.java" index="2">
 <position info="not_deleted" x="1148" y="40"/>
 </item>
@@ -372,8 +361,20 @@
 <item historyLabel="Regex.java" index="4">
 <position info="not_deleted" x="0" y="0"/>
 </item>
-<item active="true" historyLabel="fileCrawler.java" index="0">
+<item historyLabel="fileCrawler.java" index="0">
 <position info="not_deleted" x="3208" y="0"/>
+</item>
+<item historyLabel="fileCrawler.java" index="0">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="DirectoryTree.java" index="6">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="DirectoryTree.java" index="6">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item active="true" historyLabel="fileCrawler.java" index="0">
+<position info="not_deleted" x="1919" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

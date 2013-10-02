@@ -1,0 +1,40 @@
+Problem Description
+
+Student Records System
+
+Multi-level priviledge
+
+user:
+log on
+view courses by search (name/number/course)
+
+Student Use Cases:
+view courses by requirements
+Create choice list
+view advisor details
+Enrol
+view timetable
+
+Admin Use Cases
+view all records
+Add users
+delete users
+Change user details
+
+Year/department heads Use Cases?
+Assign advisers?
+view all advisee records?
+Change student choices?
+change student degree type?
+define credit requiremets for degree types (including those doing combined honours etc)
+
+Adviser Use Cases
+view all advisee records
+Change student choices
+
+Constraints on student module choices and timetable selection?
+
+Students have to take a certain number of credits in certain sections specified by department
+Students cannot enrol in clashing modules without adviser permission?
+
+
