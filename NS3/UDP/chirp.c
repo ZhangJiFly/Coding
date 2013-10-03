@@ -20,7 +20,7 @@ int main(int argc, char const *argv[]){
 
 	addr.sin_family = AF_INET;
    	addr.sin_port = htons(5010);
-    	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	username = getlogin();
 
 	if (argc < 2){
@@ -39,7 +39,7 @@ int main(int argc, char const *argv[]){
 	inet_pton(AF_INET, "224.0.0.22", &addr.sin_addr.s_addr);
 	
 	strcpy(buffer, argv[1]);
-	sprintf(finalmessage, "FROM 1005851j\n%s\n", buffer); 
+	sprintf(finalmessage, "FROM %s\n%s\n",username, buffer);
 	printf(finalmessage);
 	if (sendto(fd, finalmessage, sizeof(finalmessage), 0, (struct sockaddr *) &addr, sizeof(addr)) == -1){
 		perror("Failed to send");

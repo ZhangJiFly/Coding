@@ -17,7 +17,7 @@ int main(void)
 {
 	struct sockaddr_in addr, cliaddr;
 	struct ip_mreq imr;
-
+    int i;
 	int fd;
 	char buffer[BUFLEN];
 	int buflength = sizeof(buffer);
@@ -28,7 +28,7 @@ int main(void)
 	
 	char temp[BUFLEN];
 	socklen_t alen = sizeof(cliaddr);
-	int rlen;
+	size_t rlen;
 	char username[MESSAGE];
 	char message[MESSAGE];
 
@@ -39,7 +39,6 @@ int main(void)
 	char clock[TIME];
 
 	time_t rawtime;
-  	struct tm * timeinfo;
  	
 
 	if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1){
@@ -67,7 +66,7 @@ int main(void)
 			printf("Message doesnt fit format\n");
 			continue;
 		}
-		if (rlen < 0){
+		if (rlen == 0){
 			perror("Reciever Error");
 			continue;
 		}
@@ -75,11 +74,20 @@ int main(void)
 		time (&rawtime);
 		sscanf(asctime(localtime (&rawtime)),"%s %s %s %s %s",www,mmm,dd,clock,yyyy);
 		sprintf(temp, "%s-%s-%s %s - ", dd, mmm, yyyy, clock);
-
+       
 		sscanf(buffer, "FROM%s %[^\n]", username, message);
+        
+        for (i=0;i<strlen(message);i++){
+            if (isprint(message[i])){
+            }
+                else{
+                    message[i] = '?';
+                }
+        }
 		printf("%s%s - %s\n", temp, username, message);
 
 	}
+    
 	if (setsockopt(fd, IPPROTO_IP, IP_DROP_MEMBERSHIP,&imr, sizeof(imr)) < 0){
 		perror("Unable to leave group");
 		return -1;
