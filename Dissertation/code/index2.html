@@ -1,0 +1,48 @@
+<script src="js/libs/requirejs/require.js"></script>
+
+<!DOCTYPE HTML>
+<html>
+<head>
+</head>
+<body>
+	<div>
+    <div id="message">Message</div>
+</div>
+</body>
+
+
+<script>
+	require.config({
+		baseUrl: "./js",
+		waitSeconds: 10,
+		packages: [{
+			name: "jquery",
+			location: "./libs/jquery/tmp",
+			main: "jquery"
+		},
+		{
+			name: "json2",
+			location: "./libs/json2",
+			main: "json2"
+		},
+		{
+			name: "underscore",
+			location: "./libs/underscore",
+			main: "underscore"
+		},
+		{
+			name: "backbone",
+			location: "./libs/backbone",
+			main: "backbone"
+		},
+		{
+			name: "socket.io",
+			location: "./libs/socket.io",
+			main: "socket.io"
+		}]
+	});
+
+	require(["com/joshmarks/test/client/client"], function(client){
+	});
+</script>
+</html>

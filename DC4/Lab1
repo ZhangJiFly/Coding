@@ -1,0 +1,11 @@
+t = 0
+signal = []
+
+phase = 0
+
+
+for i in range (0,80):
+    t +=1
+    signal.append(np.sin(2*np.pi*0.1*t + phase)
+
+
