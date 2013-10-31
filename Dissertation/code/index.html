@@ -1,3 +1,4 @@
+<script src="/js/libs/requirejs/require.js"></script>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -6,14 +7,17 @@
 	<body>
 		<div>Horray</div>
 	</body>
-	<script src="/socket.io/socket.io.js"></script>
+	<script src="requireconfig.js"></script>
 
 	<script>
-		var socket = io.connect('http://localhost');
-		socket.on('news', function (data) {
-	    	console.log(data);
-	    	socket.emit('my other event', { my: 'data' });
-	  	});
+		require(['underscore', 'socket.io', 'jquery'], function(_, io, $){
+			var socket = io.connect('http://localhost');
+			socket.on('news', function (data) {
+				console.log(data);
+				socket.emit('my other event', { my: 'data' });
+			});
+		});
+		
 	</script>
 
 </html>
