@@ -1,0 +1,47 @@
+Dissertation Journal
+
+
+Intital Attempts at creating a Node Server
+
+Almost entire failure...
+
+node package manager (npm)
+have worked with npm before, so dived in quickly only to find that I must have been operating with several things done for me that i do not seem to understand.
+
+Making the server side things worked fairly easily following instructions got there in the end. After much failing to understand even the fundementals of what i was working with (again working at GE i had nearly all the setup done for me) I eventually managed to get the node server to send me a page on connection.
+
+Cannot get the client side to run any code but the code in the file i send.. cannot make require work, cannot run code using <script src = blah blah/>. Read many unhelpful guides change things about a lot but making no progress for many hours.
+
+Find many videos none of which seem to address my problems (almost certainly because they are deemed too stupid to need solving). I find one video that lets me make require work when running just by running the index.html in the browser but that doesnt connect to any server or the like. This tutorial does use a very similar file structure to that used at GE hence grabbing my attention.
+
+Find a second tutorial which points me further in the correct direction but skips the bit about making require work on the client. Eventually I delete everything I have npm installed and reinstall using NPM install this time without a package but instead relying on a list of dependencies i made in the package.json file. Amazingly this actually works.
+
+I copy the express 3.x compatible code from the socket.io website and through some dark magic it works.
+Despite its reference to /socket.io/socket.io.js which as far as I am aware doesnt exist i cannot locate it for love nor money. Further adding to my confusion it still works even if i change it to ./socket.io/socket.io.js or remove the '/' entirely. Where is it finding this file? 
+
+Because the only reason i got that to work was by stealing it, i have no idea how to run a different script... 'require' for instance which would make my life easier (potentially). 
+
+I believe the issue is because now I am getting index.html from the framework "express" in node it now makes the request for the second document via this framework that i don't yet understand. so I can't simply put in the full path and file name and run it because the browser simply cannot find it.
+
+This was indeed the problem the issue was fixed when I discovered you could create multiple app.get specifications meaning i could a larger range of potential file paths for it to find.
+
+----- later that day ---- 
+
+After a few hours breaking from bashing my head against the wall that is my node system I finally found the video that solved my issues. I was in fact correct that the issue was the second http request for my "require" file, which i did not have "express" set up to do correctly, which is fair because i had no idea how express was working. This video although not explicitly going over the issue I though i needed explained how you could have mutliple app.get()'s set up so that you could deal with a multitude of requests and deal with them appropriately. All i needed to do was make a seperate app.get() that accepted localhost:8080/js/libs/:lib/:filename and almost all issues were fixed. Of course I hadnt realised that require clashes with a script call of socket.io so i needed to get rid of my script call and make a require call which is what i wanted in the first place. I believe i may have come across this issue earlier and misdiagnosed it, meaning i may have previously found an alternative solution (as i said ive tried every single thing i can think of). Finally success... ive achieved what should probably take an hour in just 2 days! Now i understand where i am at though and how to proceed and have all in all drastically improved my knowledge and understanding of the tools im working with during this epic search for well documented APIs (to no avail i might add).
+
+—————————————————————————————————————————————————————————————————————————————————————————
+November 1st-6th
+
+Making databases with very little idea what I’m doing. Kind of understand EER diagrams so have created on to see how it looks, using MySQL workbench to make and then convert into SQL to make databases etc. Gone through many iterations already discovering that my foreign keys had not been created properly in some cases. Then realised my naming convention was all over the place edited each table to give consistent naming. 
+
+now using http://tools.perceptus.ca/text-wiz.php to convert my excel mock data into Sql. 
+
+Policy creation any changes to database should be made in EER diagram.
+
+Creating excel auto table conversion to SQL insert Commands.
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+Nov 8th
+
+Starting to get to grips with user management. Store hash of (password + salt) with the salt separately in the database. Pull that information from SQL the normal way then authenticate with express. No need for “passportjs” 

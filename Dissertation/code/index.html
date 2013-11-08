@@ -1,16 +1,31 @@
 <script src="/js/libs/requirejs/require.js"></script>
 <!DOCTYPE HTML>
 <html>
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.css">
 	<head>
-
+		<div class = "span12 container">
+			<ul class="nav nav-tabs">
+  				<li class="active"><a href="#">Home</a></li>
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Messages</a></li>
+			</ul>
+		</div>
 	</head>
 	<body>
-		<div>Horray</div>
+		<div class = "span12">
+			<div class = "container">
+				<div>Horray</div>
+			</div>
+		</div>
 	</body>
 	<script src="requireconfig.js"></script>
 
 	<script>
-		require(['underscore', 'socket.io', 'jquery'], function(_, io, $){
+		require(['underscore', 'socket.io', 'jquery'], function(_,io,$){
+			require(['bootstrap'], function (bb){
+
+			});
 			var socket = io.connect('http://localhost');
 			socket.on('news', function (data) {
 				console.log(data);

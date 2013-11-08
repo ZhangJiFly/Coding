@@ -5,23 +5,27 @@ import pylab as pl
 import matplotlib.pyplot as plt
 import scipy as sp
 
+image = [[1, 1, 1, 0, 0, 1, 1, 1],
+        [1, 1, 0, 0, 0, 0, 1, 1],
+        [1, 0, 0, 0, 1, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 0, 0, 0, 0, 1, 1],
+        [1, 1, 1, 0, 0, 1, 1, 1]]
+fs = 8000
+f= 0.1
+nDummyS = 10
+tsymbol = 80*5
+N = len(image) * len(image[0])
+ttotal = (N + 1 + nDummyS) * tsymbol
 signal = []
 bitSt = []
 carrier = []
 mixed = []
 phase = np.pi
 newIm = []
-image = [
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-[0,1,1,1,1,1,1,0,1,1,0,0,1,1,0,1,1,0,0,1,1,0,1,1,1,1,1,1,0],
-[0,1,1,1,1,1,1,0,1,1,0,0,1,1,0,1,1,1,0,1,1,0,1,1,1,1,1,1,0],
-[0,1,1,0,0,0,0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,0,0,0,1,1,0,0,0],
-[0,1,1,0,0,0,0,0,1,1,0,0,1,1,0,1,1,1,1,1,1,0,0,0,1,1,0,0,0],
-[0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,0,1,1,1,0,0,0,1,1,0,0,0],
-[0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,0,0,1,1,0,0,0,1,1,0,0,0],
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 
-N = len(image) * len(image[0])
 
 def dechunk(array):
     bitstream = []
@@ -30,38 +34,107 @@ def dechunk(array):
             bitstream.append(array[i][j])
     return bitstream
 
-bitSt = dechunk(image)
 def signalbit(array, phase):
     t = 0
-    for i in range (0,80):
+    global tsymbol
+    for i in range (0, tsymbol):
         t += 1
         array.append(np.sin(2*np.pi*0.1*t + phase))
 
 def chunks(l, n):
     return [l[i:i+n] for i in range(0, len(l), n)]
 
+syncSym = [[1]]
+bitSt = dechunk(image)
+syncSym.append(bitSt)
+dechunk(syncSym)
+
+for i in range(0,nDummyS):
+    signalbit(signal, 0) ### Creates DummySignals in signal with 0 phase shift
+
 for j in bitSt:
     phase = j*pi
-    signalbit(signal, phase)
+    signalbit(signal, phase) ### Creates PSK signal with phase shift
 
-for j in range (0, len(bitSt)):
-    signalbit(carrier, 0)
-
-
-mixed = np.multiply(signal, carrier)
-#b = np.fir1(100,0.05)
-b, a = sp.signal.butter(10, 0.05, 'low')
-lpdemod = sp.signal.lfilter(b, 1, mixed)
 
 x1 = np.linspace(0, len(signal), len(signal))
 
-for i in range (0, len(lpdemod)/80):
-    count = 0
-    bit = np.mean(lpdemod[(i*80):(i+1)*80])<0
-    newIm.append(bit)
-    
-newIm = chunks(newIm,len(image[0]))      
 
+##DEMODULATION##
+
+x = 0
+y = 0
+t = 0
+
+#b = np.fir1(100,0.05)
+b,a = sp.signal.butter(100, 0.1, 'low')
+
+c = 1
+cDelay = 0
+s = 0
+sDelay = 0
+bPLL = sp.signal.butter(40, 0.1, 'low')
+sampleMo = (3/2) * tsymbol
+nPLLSet = (nDummyS/2) * tsymbol
+ignoreData = 1
+VCOgain = 0.005
+v = [0]
+sin = []
+cos = []
+VCO = []
+carrierInph = []
+mixerInph = []
+stateLowInph = []
+demodThrInph = []
+zfPLL = zeros(len(bPLL)-1)
+lpDemodInph = zeros(ttotal)
+
+for j in range (0, ttotal):
+    sample = signal[j] ### Creates phase change free carrier wave
+
+    w0 = 2*pi*(f+v[0]*VCOgain)
+    cDelay = c
+    sDelay = s
+    c = cDelay * np.cos(w0) - sDelay * np.sin(w0)
+    s = sDelay * np.cos(w0) - cDelay * np.sin(w0)
+    sin.append(s)
+    cos.append(c)
+    VCO.append(v[0])
+
+    carrierInph.append(-s)
+
+    if (nPLLSet > 0):
+        nPLLSet -= 1
+        p = sample * c
+
+        v, zfPLL = sp.signal.lfilter(bPLL, 1, p, zfPLL)
+    else:
+         mixerInph.append(sample*carrierInph[j])
+         [lpDemodInph[j], stateLowInph] = sp.signal.lfilter(b, 1, mixerInph[j], stateLowInph)
+         demodThrInph[j] = lpDemodInph[j]
+
+         if (ignoreData):
+             if (lpDemodInph[j] > 0.25):
+                 ignoreData = 0
+         else:
+            sampleMo -= 1
+            if (sampleMo == 0):
+                sampleMo = tsymbol
+                if (demodThrInph[j] > 0):
+                    lsb = 1
+                else:
+                    lsb = 0
+                lpDemodInph[j] = lpDemodInph[j] + 0.1
+
+                if ((x<9 and y<9) and (ignoreData == 0)):
+                    newIm.append(lsb)
+                    x += 1
+                    if (x>8):
+                        x = 1
+                        y += 1            
+    t += 1
+    
+newIm = chunks(newIm,len(image[0]))     
 
 plt.figure(1)
 plt.subplot(321)
