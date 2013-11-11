@@ -36,12 +36,21 @@ Making databases with very little idea what I’m doing. Kind of understand EER 
 
 now using http://tools.perceptus.ca/text-wiz.php to convert my excel mock data into Sql. 
 
-Policy creation any changes to database should be made in EER diagram.
-
 Creating excel auto table conversion to SQL insert Commands.
 
 —————————————————————————————————————————————————————————————————————————————————————————
 
 Nov 8th
 
-Starting to get to grips with user management. Store hash of (password + salt) with the salt separately in the database. Pull that information from SQL the normal way then authenticate with express. No need for “passportjs” 
+Starting to get to grips with user management. Store hash of (password + salt) with the salt separately in the database. Pull that information from SQL the normal way then authenticate with express. No need for “passportjs”. 
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+Nov 9th
+
+Successfully made a user management system that allows signing in and out by any of the students in the database. Once signed in access is granted to files in the restricted folder and on attemp to view the standard homepage are redirected to the restricted page. Worried that I may have to scale back expectations of functionality and website professionalism, with my very limited knowledge of real life website creation and response queries.
+
+Currently debating the best way to get user info back to the client SocketIO seems like overkill from comments found in Stack overflow. 
+
+
+
