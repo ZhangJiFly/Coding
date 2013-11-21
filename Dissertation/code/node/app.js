@@ -1,4 +1,4 @@
-var express = require('express'),
+  var express = require('express'),
   app = express(),
   server = require('http').createServer(app),
   io = require('socket.io').listen(server),
@@ -85,6 +85,7 @@ app.get('/:folder/:file', function (req, res) {
 
 function authenticate(name, password, fn) {
   if (!module.parent) console.log('authenticating %s:%s', name, password);
+  //look up prepared statements to sanetize statements. 
   connection.query("SELECT * FROM Student\n WHERE Username='" + name + "';", function(error, rows, file){
     var user = rows[0];
     // query the db for the given username

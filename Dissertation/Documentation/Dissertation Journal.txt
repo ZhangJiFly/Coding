@@ -52,5 +52,7 @@ Successfully made a user management system that allows signing in and out by any
 
 Currently debating the best way to get user info back to the client SocketIO seems like overkill from comments found in Stack overflow. 
 
+ jQuery Week Calendar - potential calendar use found.
 
+ http://stackoverflow.com/questions/14600472/securing-socket-io look at further for secure data communication.
 

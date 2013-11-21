@@ -1,6 +1,5 @@
 from numpy import *
 import numpy as np
-import pylab as pl
 import matplotlib.pyplot as plt
 
 DataIn = loadtxt("/Users/Crippled.Josh/Desktop/laboratory.dat");

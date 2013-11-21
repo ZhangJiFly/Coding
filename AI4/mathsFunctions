@@ -1,0 +1,20 @@
+
+
+def convolve(array1, array2):
+
+
+def divide(array1, x):
+    array2 = []
+
+    for i in range (0, len(array1)):
+        array2.append(array1[i]/x)
+
+    return array2
+
+def multiply(array1, x):
+    array2 = []
+
+    for i in range (0, len(array1)):
+        array2.append(array1[i]*x)
+
+    return array2

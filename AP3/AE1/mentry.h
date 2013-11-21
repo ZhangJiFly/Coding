@@ -3,12 +3,10 @@
 
 #include <stdio.h>
 
-typedef struct mentry {
-	char *surname;
-	int house_number;
-	char *postcode;
-	char *full_address;
-} MEntry;
+typedef struct order {
+	int orderId;
+	int *pizzas;
+} Order;
 
 /* me_get returns the next file entry, or NULL if end of file*/
 MEntry *me_get(FILE *fd);

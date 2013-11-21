@@ -1,0 +1,28 @@
+Interview Karen
+
+
+General Questions
+What would you say was the biggest flaw with MyCampus?
+	•	Which feature would you most like to see on any future student records 
+system that is not supported by MyCampus?
+
+	interface is not intuative too many clicks to get things done. too difficult to find out how to o things. 
+	changing student plan deletes previous data, for instance advisor deleted on plan change. 
+HCI research. Need more intuitive consistant. Interface.  
+
+Poor overview facilities. 
+Poor default settings such as a tick box 
+poor names for classifications such as 
+terrible error messages.
+
+	•	What do you like about MyCampus (if anything)?
+course taking constraints -  if it worked. 
+	•	What is the most important feature of a student records system for your purposes?
+checking results of any students, making sure students are doing the correct curriculum.  
+	•	Besides these use cases (show use cases), are there any additional facilities that you would need to have implemented to use a new system?
+
+Storing attendance of level 4 students. 
+Might be a cool feature to implement 
+
+Read attendance from click button, or file, flag lack of attendance after certain time parameters. 
+

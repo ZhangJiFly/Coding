@@ -6,14 +6,14 @@ public class EchoClient {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		try {
-			echoSocket = new Socket("BO620-27u", 7);
+			echoSocket = new Socket("localhost", 8765);
 			out = new PrintWriter(echoSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host: BO620-27u.");
+			System.err.println("Don't know about host: localhost.");
 			System.exit(1);
 		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for the connection to: BO620-27u.");
+			System.err.println("Couldn't get I/O for the connection to: localhost.");
 			System.exit(1);
 		}
 		BufferedReader stdIn = new BufferedReader(
