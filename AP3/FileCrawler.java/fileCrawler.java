@@ -20,8 +20,7 @@ public class fileCrawler {
 		private ConcurrentSkipListSet<String> fileList;
 		private LinkedBlockingQueue<String> dirList;
 
-		worker(Pattern pat, ConcurrentSkipListSet<String> fileList, LinkedBlockingQueue<String> dirList) 
-		{
+		worker(Pattern pat, ConcurrentSkipListSet<String> fileList, LinkedBlockingQueue<String> dirList) {
 			this.p  = pat;
 			this.fileList = fileList;
 			this.dirList = dirList;
@@ -37,9 +36,8 @@ public class fileCrawler {
 					}
 				}
 			}
-
 		}
-
+		
 		public void run(){
 			File file = null; //have to define it before because the LBQ.take is in a try statement
 			while (true){ // run forever
@@ -51,15 +49,11 @@ public class fileCrawler {
 					while (!dirList.isEmpty()){ // once interrupted keep taking things of the work queue until it is empty
 						file = new File(dirList.poll());
 						CslsAdd(file);
-
-
 					}
 					return; // leave the infinite loop once the work queue is empty
 				}
 			}
-
 		}
-
 	}
 
 	/*totally copied*/
@@ -92,9 +86,7 @@ public class fileCrawler {
 	/*all copied except changed print statement to LBQ.add(name)*/
 	public void processDirectory(String name, LinkedBlockingQueue<String> dirList) {
 		try {
-
 			File file = new File(name);	// create a File object
-
 			if (file.isDirectory()) {	//if file is directory
 				dirList.add(name); // then add to work queue
 				String entries[] = file.list(); // create a list of all files and folders in the directory given
@@ -119,7 +111,8 @@ public class fileCrawler {
 	public static void main( String Arg[] ) throws IOException{
 		fileCrawler FC = new fileCrawler();
 		int noThreads = 853;
-
+        String string = new String();
+        string.end
 		ConcurrentSkipListSet<String> fileList = new ConcurrentSkipListSet<String>();
 		LinkedBlockingQueue<String> dirList = new LinkedBlockingQueue<String>();
 
@@ -168,5 +161,4 @@ public class fileCrawler {
 			System.out.println(fileList.pollFirst());
 		}
 	}
-
 }

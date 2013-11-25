@@ -20,8 +20,10 @@ import Client.AuctionClientIntf;
 
 public interface AuctionServerIntf extends Remote {
    
-	public long registerObject(AuctionClientIntf clientRef, String name, int minVal, Date end, String thread) throws java.rmi.RemoteException;
-	public String list(AuctionClientIntf clientRef) throws java.rmi.RemoteException;
-	public boolean bid(AuctionClientIntf clientRef, long id, double bid, String thread) throws java.rmi.RemoteException;
+	public int registerItem(AuctionClientIntf clientRef, String name, int minVal, Date end) throws java.rmi.RemoteException;
+	public String list() throws java.rmi.RemoteException;
+	public boolean bid(AuctionClientIntf clientRef, int itemId, double bid) throws java.rmi.RemoteException;
+	public int newClientNum(AuctionClientIntf client) throws java.rmi.RemoteException;
+	public boolean login(int id, AuctionClientIntf client) throws java.rmi.RemoteException;
 }
 

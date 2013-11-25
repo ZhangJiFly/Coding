@@ -1,38 +1,51 @@
 package Server;
 
+import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import Client.AuctionClientIntf;
 
-public class AuctionItem implements AuctionItemIntf{
+public class AuctionItem implements Serializable{
+
+	private static final long serialVersionUID = -2747410476299566452L;
 	private String name;
-	private Integer minVal;
+	private double minVal;
 	private Date end;
-	private long id;
-	private double bid;
-	private static long idCount = 1;
+	private int id;
+	private Bid bid;
+	private static int idCount = 0;
 	private ConcurrentSkipListSet<Bid> bids;
 	
-	public AuctionItem(String name, Integer minVal, Date end) {
+	public AuctionItem(String name, double minVal, Date end) {
 		this.name = name;
 		this.minVal = minVal;
 		this.end = end;
 		this.bids = new ConcurrentSkipListSet<Bid>();
 		synchronized(AuctionItem.class){
-			this.id = idCount;
-			idCount++;
+			this.id = ++idCount;
 		}
 	}
 	
+	public boolean active(){
+		Calendar cal=Calendar.getInstance(); // get today
+
+	    return cal.getTime().compareTo(this.end) < 0;
+	}
+	
+	public static void setIdCount(int id){
+		idCount = id;
+	}
 	public String getName(){
 		return this.name;
 	}
 	
-	public Integer getMinVal() {
+	public double getMinVal() {
 		return this.minVal;
 	}
 
@@ -40,11 +53,11 @@ public class AuctionItem implements AuctionItemIntf{
 		return this.end;
 	}
 
-	public long getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public synchronized double getBid() {
+	public synchronized Bid getBid() {
 		return this.bid;
 	}
 	
@@ -52,23 +65,28 @@ public class AuctionItem implements AuctionItemIntf{
 		return this.bids;
 	}
 
-	public synchronized boolean bid(AuctionClientIntf client, double value, String thread){
-		Bid bid = new Bid(client, value, thread);
-		System.out.println(bid.getValue());
-//		Bid temp;
-//		Iterator<Bid> it = bids.iterator();
-//		while (it.hasNext()){
-//			temp = it.next();
-//		}
-		boolean temp = bids.add(bid);
-		
-		return temp;
+	public synchronized boolean bid(AuctionClientIntf client, double value) throws RemoteException{
+		Bid temp;
+		int clientId = client.getClientId();
+		Iterator<Bid> it = bids.iterator();
+		while (it.hasNext()){
+			temp = it.next();
+			if (temp.getClient().getClientId() == clientId){
+				temp.setBid(value);
+				return true;
+			}
+		}
+		Bid newBid = new Bid(client, value);
+		if (bids.isEmpty() || value>bid.getValue()){
+			this.bid = newBid;
+		}
+		return bids.add(bid);
 	}
 	
 	public String toString(){
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String dateString = formatter.format(this.end);
-		return "Name: " + this.name + " id: " + this.id + " End date: " + dateString +"\n"; 
+		return "Name: " + this.name + " id: " + this.id + " End date: " + dateString + " Minimum required value: " + this.minVal + "\n"; 
 	}
 
 }
