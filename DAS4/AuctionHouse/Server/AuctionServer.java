@@ -1,5 +1,6 @@
 package Server;
 import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.*;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -102,8 +103,8 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		
 	}
 	
-	public String list(){
-		return list.toString();
+	public CopyOnWriteArrayList<AuctionItem> list(){
+		return this.getList();
 	}
 
 	public boolean bid(AuctionClientIntf client, int itemId, double bid) throws RemoteException {
@@ -176,6 +177,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 	public static void main(String args[]) throws IOException, ClassNotFoundException {
 		String host = "localhost";
 		int port = 1099;
+		LocateRegistry.createRegistry(port);
 
 		if (args.length > 0) {
 			host = args[0];
@@ -203,6 +205,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 			Naming.rebind("//"+host+":"+port+"/AuctionServer", aucServer);
 			System.out.println("AuctionServer is ready");
 		} catch(UTFDataFormatException e){
+			System.out.println("Data Format Exception: creating new auction server.");
 			AuctionServer aucServer = new AuctionServer();
 			Naming.rebind("//"+host+":"+port+"/AuctionServer", aucServer);
 			System.out.println("AuctionServer is ready");

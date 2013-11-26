@@ -1,0 +1,64 @@
+register
+add
+Item1 487 3
+add
+Item2 8573 3
+add
+Item3 9926 3
+add
+Item4 269 3
+bid
+1 22340
+add
+Item5 7938 3
+bid
+6 40458
+add
+Item6 5788 3
+bid
+5 60160
+bid
+6 26587
+bid
+5 62651
+add
+Item7 4882 3
+add
+Item8 2392 3
+bid
+7 63382
+bid
+7 28944
+add
+Item9 3969 3
+bid
+6 90654
+bid
+1 43323
+bid
+4 13012
+bid
+8 15193
+add
+Item10 566 3
+bid
+2 57535
+bid
+1 83663
+add
+Item11 969 3
+bid
+8 72220
+bid
+2 18680
+add
+Item12 2502 3
+bid
+1 82543
+add
+Item13 9817 3
+add
+Item14 1876 3
+bid
+13 53953
+end

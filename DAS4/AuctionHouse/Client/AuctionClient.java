@@ -1,10 +1,13 @@
 package Client;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import Server.AuctionServerIntf;
@@ -15,16 +18,21 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 	private String host = "localhost";
 	private int port = 1099;
 	private int clientId;
-
+	private int file;
+	private int test;
+	
 	public AuctionClient() throws RemoteException {
 		super();
 	}
 
 
-	public AuctionClient(String h, int p) throws RemoteException {
+	public AuctionClient(String h, int p, int i, int test) throws RemoteException {
 		super();
 		host = h;
 		port = p;
+		this.file = i;
+		this.test = test;
+		
 	}
 
 
@@ -38,13 +46,17 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 
 	public void run() {
 		try {
-			Scanner sc = new Scanner(System.in);
+			FileInputStream fos = new FileInputStream("./tests/test" + this.file);
+			Scanner sc;
+			if (test == 1){
+				sc = new Scanner(System.in);
+			}
+			else{
+				sc = new Scanner(fos);
+			}
 			AuctionServerIntf rmiServer = (AuctionServerIntf) Naming.lookup("rmi://"+host+":"+port+"/AuctionServer");
-			
-			String inst;
-			
-			while(true){
-				inst = sc.next().toLowerCase().trim();
+			String inst = "";
+			while(!(inst = sc.next().toLowerCase().trim()).equals("end")){
 				String name;
 				int minVal;
 				Date end;
@@ -53,9 +65,18 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 				double bid;
 				if (inst.equals("add")){
 					System.out.println("Please input the name, minimum value and number of minutes until end.");
-					name = sc.next();
-					minVal = sc.nextInt();
-					long minutes = sc.nextLong();
+					name = "item";
+					minVal = 0;
+					long minutes = 1;
+					try{
+						name = sc.next();
+						minVal = sc.nextInt();
+						minutes = sc.nextLong();
+					}
+					catch(NoSuchElementException e){
+						System.out.println("No such element exception on add element scan:" + e);
+					}
+					
 					System.out.println("name: " + name + ", minVal: " + minVal + ", minutes: " + minutes + ".");
 					long milli = minutes*60*1000;
 					Date date = new Date();
@@ -108,23 +129,32 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 			System.out.println("AuctionClient unable to bind to server " + e);
 		} catch (java.net.MalformedURLException e) {
 			System.out.println("Malformed URL for server " + e);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	public static void main(String args[]) throws Exception {
 		String host = "localhost";
 		int port = 1099;
-
+		int test = 1;
+		int threads = 1;
+		
 		if (args.length>0) {
 			host = args[0];
-			if (args.length == 2)
+			if (args.length >= 2)
 				port = Integer.parseInt(args[1]);
+			if (args.length >=3){
+				test = Integer.parseInt(args[2]);
+			}
+			if (args.length >=4){
+				threads = Integer.parseInt(args[3]);
+			}
 		}
-
-		for (int i=0; i<5; i++) {
-			// Thread t = new Thread(new RMIClient());
-
-			Thread t = new Thread(new AuctionClient(host,port));
+		System.out.println("host: " + host + " test: " + test + " threads: " + threads);
+		for (int i=0; i<threads; i++) {
+			Thread t = new Thread(new AuctionClient(host,port, i, test));
 			t.start();
 		}
 	}

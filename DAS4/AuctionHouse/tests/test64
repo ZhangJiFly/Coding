@@ -1,0 +1,64 @@
+register
+add
+Item1000 4130 3
+add
+Item1001 197 3
+bid
+210 57196
+bid
+237 21433
+bid
+277 14130
+bid
+918 65620
+bid
+929 14023
+add
+Item1002 7697 3
+add
+Item1003 6990 3
+bid
+333 67000
+add
+Item1004 6922 3
+bid
+496 86136
+add
+Item1005 9688 3
+bid
+82 70760
+bid
+298 92653
+add
+Item1006 7882 3
+add
+Item1007 2612 3
+bid
+13 13864
+bid
+908 18763
+add
+Item1008 7556 3
+bid
+577 96844
+add
+Item1009 7190 3
+bid
+609 24747
+add
+Item1010 9294 3
+bid
+968 38144
+bid
+213 58398
+bid
+640 51996
+bid
+540 46325
+bid
+332 98855
+add
+Item1011 6276 3
+add
+Item1012 6664 3
+end

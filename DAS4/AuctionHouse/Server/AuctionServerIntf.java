@@ -15,13 +15,14 @@ package Server;
 
 import java.rmi.*;
 import java.util.Date;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import Client.AuctionClientIntf;
 
 public interface AuctionServerIntf extends Remote {
    
 	public int registerItem(AuctionClientIntf clientRef, String name, int minVal, Date end) throws java.rmi.RemoteException;
-	public String list() throws java.rmi.RemoteException;
+	public CopyOnWriteArrayList<AuctionItem> list() throws java.rmi.RemoteException;
 	public boolean bid(AuctionClientIntf clientRef, int itemId, double bid) throws java.rmi.RemoteException;
 	public int newClientNum(AuctionClientIntf client) throws java.rmi.RemoteException;
 	public boolean login(int id, AuctionClientIntf client) throws java.rmi.RemoteException;
