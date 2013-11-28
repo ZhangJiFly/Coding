@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UTFDataFormatException;
 import java.net.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import Client.AuctionClientIntf;
 
@@ -25,13 +25,19 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 	 */
 	private static final long serialVersionUID = 1L;
 	private AuctionClientIntf rmicif;
-	private CopyOnWriteArrayList<AuctionItem> list;
+	private ConcurrentSkipListSet<AuctionItem> list;
 	private int clientNum = 0;
     transient private MyTimer timer;
 
-	public AuctionServer() throws RemoteException, IOException, ClassNotFoundException {
+	public AuctionServer() throws RemoteException{
 		super();
-		list = new CopyOnWriteArrayList<AuctionItem>();
+		list = new ConcurrentSkipListSet<AuctionItem>();
+		this.timer = new MyTimer(this);
+	}
+	
+	public AuctionServer(ConcurrentSkipListSet<AuctionItem> list) throws RemoteException{
+		super();
+		this.list = list;
 		this.timer = new MyTimer(this);
 	}
 	
@@ -39,7 +45,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		this.clientNum = clientNum;
 	}
 	
-	public CopyOnWriteArrayList<AuctionItem> getList(){
+	public ConcurrentSkipListSet<AuctionItem> getList(){
 		return list;
 	}
 
@@ -76,8 +82,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		return successFlag;
 	}
 	
-	public synchronized int registerItem(AuctionClientIntf client, String name, int minVal, Date end) {
-		rmicif = client;
+	public synchronized int registerItem(String name, int minVal, Date end) {
 		int itemId;
 		AuctionItem item = new AuctionItem(name, minVal, end);
 		itemId = item.getId();
@@ -93,7 +98,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		try {
 			fos = new FileOutputStream("state");
 			oos = new ObjectOutputStream(fos);
-			oos.writeObject(this);
+			oos.writeObject(this.list);
 			oos.close();
 			fos.close();
 		} catch (IOException e1) {
@@ -103,7 +108,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		
 	}
 	
-	public CopyOnWriteArrayList<AuctionItem> list(){
+	public ConcurrentSkipListSet<AuctionItem> list(){
 		return this.getList();
 	}
 
@@ -178,7 +183,6 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		String host = "localhost";
 		int port = 1099;
 		LocateRegistry.createRegistry(port);
-
 		if (args.length > 0) {
 			host = args[0];
 			if (args.length == 2)
@@ -192,7 +196,9 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		try {
 			FileInputStream fis = new FileInputStream("state");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			AuctionServer aucServer = (AuctionServer) ois.readObject();
+			@SuppressWarnings("unchecked")
+			ConcurrentSkipListSet<AuctionItem> list = (ConcurrentSkipListSet<AuctionItem>) ois.readObject();
+			AuctionServer aucServer = new AuctionServer(list);
 			aucServer.init();
 			ois.close();
 			fis.close();

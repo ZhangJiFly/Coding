@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import Client.AuctionClientIntf;
 
@@ -42,7 +41,7 @@ public class MyTimer implements Serializable{
 			this.itemId = itemId;
 		}
 		public void run() {
-			CopyOnWriteArrayList<AuctionItem> auctions = server.getList();
+			ConcurrentSkipListSet<AuctionItem> auctions = server.getList();
 			Iterator<AuctionItem> it = auctions.iterator();
 			Iterator<Bid> bit;
 			AuctionItem item;
@@ -66,7 +65,7 @@ public class MyTimer implements Serializable{
 								client.callBack("Congratulations you were successful in your bid to get item " + itemId);
 							}
 							else{
-								client.callBack("The bid you placed on item " + itemId + " was unsuccessful as you were outbit by another bidder");
+								client.callBack("The bid you placed on item " + itemId + " was unsuccessful as you were outbid by client with id: " + item.getBid().getClientId() + " with a bid of " + item.getBid().getValue() + ".");
 							}
 						} catch (RemoteException e) {
 							// TODO Auto-generated catch block
@@ -86,7 +85,7 @@ public class MyTimer implements Serializable{
 			this.id = id;
 		}
 		public void run() {
-			CopyOnWriteArrayList<AuctionItem> auctions = server.getList();
+			ConcurrentSkipListSet<AuctionItem> auctions = server.getList();
 			Iterator<AuctionItem> it = auctions.iterator();
 			AuctionItem item;
 			while (it.hasNext()){

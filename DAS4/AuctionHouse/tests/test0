@@ -1,64 +1,64 @@
 register
 add
-Item1 487 3
+Item1 8777 3
 add
-Item2 8573 3
+Item2 438 3
+bid
+2 49657
+bid
+1 72481
+bid
+2 55381
+bid
+1 51920
+bid
+2 85064
+bid
+3 9448
 add
-Item3 9926 3
+Item3 5469 3
+bid
+2 46905
+bid
+1 12942
+bid
+2 68539
+bid
+4 65991
+bid
+3 39549
+bid
+4 10557
+bid
+4 34414
+bid
+4 27583
+bid
+3 93584
+bid
+4 9012
+bid
+4 20676
 add
-Item4 269 3
-bid
-1 22340
+Item4 3256 3
 add
-Item5 7938 3
+Item5 5335 3
 bid
-6 40458
+1 54129
+bid
+5 3187
 add
-Item6 5788 3
+Item6 763 3
 bid
-5 60160
+5 33330
 bid
-6 26587
+5 19283
 bid
-5 62651
+2 75699
+bid
+5 56231
+bid
+7 15918
 add
-Item7 4882 3
-add
-Item8 2392 3
-bid
-7 63382
-bid
-7 28944
-add
-Item9 3969 3
-bid
-6 90654
-bid
-1 43323
-bid
-4 13012
-bid
-8 15193
-add
-Item10 566 3
-bid
-2 57535
-bid
-1 83663
-add
-Item11 969 3
-bid
-8 72220
-bid
-2 18680
-add
-Item12 2502 3
-bid
-1 82543
-add
-Item13 9817 3
-add
-Item14 1876 3
-bid
-13 53953
+Item7 503 3
 end

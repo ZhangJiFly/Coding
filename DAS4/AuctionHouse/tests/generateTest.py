@@ -25,7 +25,7 @@ totalString += add(randint(1,10000))
 
 for j in range(0,1000):
     for i in range(0, 30):
-        if (randint(0,1)):
+        if not (randint(0,6)):
             totalString += add(randint(1,10000))
         else:
             totalString += bid(randint(1,100000))

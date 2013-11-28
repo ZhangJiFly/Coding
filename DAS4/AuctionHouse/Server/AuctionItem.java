@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import Client.AuctionClientIntf;
 
-public class AuctionItem implements Serializable{
+public class AuctionItem implements Comparable<AuctionItem>, Serializable{
 
 	private static final long serialVersionUID = -2747410476299566452L;
 	private String name;
@@ -21,6 +21,12 @@ public class AuctionItem implements Serializable{
 	private Bid bid;
 	private static int idCount = 0;
 	private ConcurrentSkipListSet<Bid> bids;
+	
+	
+	@Override
+	public int compareTo(AuctionItem item) {
+		return this.end.compareTo(item.getEnd());
+	}
 	
 	public AuctionItem(String name, double minVal, Date end) {
 		this.name = name;

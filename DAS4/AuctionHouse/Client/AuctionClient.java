@@ -20,19 +20,20 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 	private int clientId;
 	private int file;
 	private int test;
+	AuctionServerIntf rmiServer;
 	
 	public AuctionClient() throws RemoteException {
 		super();
 	}
 
 
-	public AuctionClient(String h, int p, int i, int test) throws RemoteException {
+	public AuctionClient(String h, int p, int i, int test, AuctionServerIntf rmiServer) throws RemoteException {
 		super();
 		host = h;
 		port = p;
 		this.file = i;
 		this.test = test;
-		
+		this.rmiServer = rmiServer;
 	}
 
 
@@ -54,7 +55,7 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 			else{
 				sc = new Scanner(fos);
 			}
-			AuctionServerIntf rmiServer = (AuctionServerIntf) Naming.lookup("rmi://"+host+":"+port+"/AuctionServer");
+			
 			String inst = "";
 			while(!(inst = sc.next().toLowerCase().trim()).equals("end")){
 				String name;
@@ -81,7 +82,7 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 					long milli = minutes*60*1000;
 					Date date = new Date();
 					end = new Date(date.getTime() + milli);
-					itemId = rmiServer.registerItem(this, name, minVal, end);
+					itemId = rmiServer.registerItem(name, minVal, end);
 					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String dateString = formatter.format(date);
 				    System.out.println("Auction item name: " + name + " with itemId: " + itemId + " added at time: " + dateString + ".");
@@ -125,10 +126,6 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 			}
 		} catch (RemoteException e) {
 			System.out.println("Exception in AuctionClient.testServer " + e);
-		} catch (java.rmi.NotBoundException e) {
-			System.out.println("AuctionClient unable to bind to server " + e);
-		} catch (java.net.MalformedURLException e) {
-			System.out.println("Malformed URL for server " + e);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -148,15 +145,26 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 			if (args.length >=3){
 				test = Integer.parseInt(args[2]);
 			}
-			if (args.length >=4){
+			if ((test != 1) && (args.length >= 4)){
 				threads = Integer.parseInt(args[3]);
 			}
+			
 		}
-		System.out.println("host: " + host + " test: " + test + " threads: " + threads);
-		for (int i=0; i<threads; i++) {
-			Thread t = new Thread(new AuctionClient(host,port, i, test));
-			t.start();
+		try{
+			AuctionServerIntf rmiServer = (AuctionServerIntf) Naming.lookup("rmi://"+host+":"+port+"/AuctionServer");
+			for (int i=0; i<threads; i++) {
+				Thread t = new Thread(new AuctionClient(host,port, i, test, rmiServer));
+				t.start();
+			}
+			System.out.println("host: " + host + " test: " + test + " threads: " + threads);
 		}
+		catch (java.rmi.NotBoundException e) {
+			System.out.println("AuctionClient unable to bind to server " + e);
+		} catch (java.net.MalformedURLException e) {
+			System.out.println("Malformed URL for server " + e);
+		} 
+		
+		
 	}
 }
 
