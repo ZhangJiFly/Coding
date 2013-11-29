@@ -45,7 +45,7 @@ public class Bid implements Comparable<Bid>, Serializable {
 	public int compareTo(Bid bid) {
 		if (this.value > bid.getValue()){
 			return 1;
-		}else if(this.value == bid.getValue()){
+		}else if((this.value == bid.getValue()) && (this.clientId == bid.getClientId())){
 			return 0;
 		}
 		else{

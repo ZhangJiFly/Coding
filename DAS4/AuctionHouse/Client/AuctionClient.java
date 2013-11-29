@@ -15,8 +15,6 @@ import Server.AuctionServerIntf;
 public class AuctionClient extends UnicastRemoteObject implements AuctionClientIntf, Runnable, Serializable {
 
 	private static final long serialVersionUID = -3846450470333966271L;
-	private String host = "localhost";
-	private int port = 1099;
 	private int clientId;
 	private int file;
 	private int test;
@@ -27,10 +25,8 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 	}
 
 
-	public AuctionClient(String h, int p, int i, int test, AuctionServerIntf rmiServer) throws RemoteException {
+	public AuctionClient(int i, int test, AuctionServerIntf rmiServer) throws RemoteException {
 		super();
-		host = h;
-		port = p;
 		this.file = i;
 		this.test = test;
 		this.rmiServer = rmiServer;
@@ -49,7 +45,7 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 		try {
 			FileInputStream fos = new FileInputStream("./tests/test" + this.file);
 			Scanner sc;
-			if (test == 1){
+			if (test == 0){
 				sc = new Scanner(System.in);
 			}
 			else{
@@ -135,7 +131,7 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 	public static void main(String args[]) throws Exception {
 		String host = "localhost";
 		int port = 1099;
-		int test = 1;
+		int test = 0;
 		int threads = 1;
 		
 		if (args.length>0) {
@@ -152,10 +148,22 @@ public class AuctionClient extends UnicastRemoteObject implements AuctionClientI
 		}
 		try{
 			AuctionServerIntf rmiServer = (AuctionServerIntf) Naming.lookup("rmi://"+host+":"+port+"/AuctionServer");
-			for (int i=0; i<threads; i++) {
-				Thread t = new Thread(new AuctionClient(host,port, i, test, rmiServer));
-				t.start();
+			long time = System.currentTimeMillis();
+			System.out.println("Start Time: "+ time);
+			Thread workers[] = new Thread[threads];
+			for (int i = 0;i<workers.length;i++) {
+				workers[i] = new Thread(new AuctionClient(i, test, rmiServer));
+				workers[i].start();
 			}
+			for (Thread k : workers){
+				try {
+					k.join();
+				}
+				catch(Exception e){
+				}
+			}
+			System.out.println("End Time: " + System.currentTimeMillis());
+			System.out.println("Delay Time: " + (System.currentTimeMillis() - time));
 			System.out.println("host: " + host + " test: " + test + " threads: " + threads);
 		}
 		catch (java.rmi.NotBoundException e) {

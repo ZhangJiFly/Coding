@@ -28,6 +28,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 	private ConcurrentSkipListSet<AuctionItem> list;
 	private int clientNum = 0;
     transient private MyTimer timer;
+	long methodCount = 0;
 
 	public AuctionServer() throws RemoteException{
 		super();
@@ -83,6 +84,8 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 	}
 	
 	public synchronized int registerItem(String name, int minVal, Date end) {
+
+		System.out.println(methodCount++);
 		int itemId;
 		AuctionItem item = new AuctionItem(name, minVal, end);
 		itemId = item.getId();
@@ -112,7 +115,8 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		return this.getList();
 	}
 
-	public boolean bid(AuctionClientIntf client, int itemId, double bid) throws RemoteException {
+	public synchronized boolean bid(AuctionClientIntf client, int itemId, double bid) throws RemoteException {
+		System.out.println(methodCount++);
 		rmicif = client;
 		Iterator<AuctionItem> it = list.iterator();
 		while(it.hasNext()){

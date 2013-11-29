@@ -23,9 +23,10 @@ def bid(value):
 
 totalString += add(randint(1,10000))
 
-for j in range(0,1000):
-    for i in range(0, 30):
-        if not (randint(0,6)):
+for j in range(0, 1000):
+    for i in range(0, 99):
+        randint(0,3)
+        if not (0):
             totalString += add(randint(1,10000))
         else:
             totalString += bid(randint(1,100000))

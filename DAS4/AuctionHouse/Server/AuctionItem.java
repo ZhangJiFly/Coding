@@ -25,7 +25,16 @@ public class AuctionItem implements Comparable<AuctionItem>, Serializable{
 	
 	@Override
 	public int compareTo(AuctionItem item) {
-		return this.end.compareTo(item.getEnd());
+		if (this.id > item.getId()){
+			return 1;
+		}
+		if (this.id == item.getId()){
+			return 0;
+		}
+		else{
+			return -1;
+		}
+		
 	}
 	
 	public AuctionItem(String name, double minVal, Date end) {
@@ -40,7 +49,6 @@ public class AuctionItem implements Comparable<AuctionItem>, Serializable{
 	
 	public boolean active(){
 		Calendar cal=Calendar.getInstance(); // get today
-
 	    return cal.getTime().compareTo(this.end) < 0;
 	}
 	
