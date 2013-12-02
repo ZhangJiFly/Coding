@@ -1,5 +1,5 @@
 import mathsFunctions as mf
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import math as math
 import random as random
 
@@ -143,16 +143,26 @@ print correctCount
 print errorCount
 
 
-##plt.figure(1)
-##plt.subplot(311)
-##plt.scatter(ESil, MSil, color = 'red')
-###plt.scatter(ESpe, MSpe, color = 'blue')
-##plt.subplot(312)
-##plt.scatter(ESil, ZSil, color = 'red')
-###plt.scatter(ESpe, ZSpe, color = 'blue')
-##plt.subplot(313)
-##plt.scatter(MSil, ZSil, color = 'red')
-###plt.scatter(MSpe, ZSpe, color = 'blue')
-##
-##plt.show()
-##    
+fig1 = plt.figure(1)
+EM1 = plt.scatter(ESil, MSil, color = 'red')
+EM2 = plt.scatter(ESpe, MSpe, color = 'blue')
+fig1.suptitle("Engery vs Magnitude", fontsize=20)
+plt.xlabel('Log Average Energy', fontsize=18)
+plt.ylabel('Log Average Magnitude', fontsize=16)
+plt.legend(( EM1, EM2), ("Silence", "Speech"),loc='lower right', ncol=3, fontsize=8)
+fig2 = plt.figure(2)
+EZ1 = plt.scatter(ESil, ZSil, color = 'red')
+EZ2 = plt.scatter(ESpe, ZSpe, color = 'blue')
+fig2.suptitle("Engery vs Non-Zero Crossing Rate", fontsize=20)
+plt.xlabel('Log Average Energy', fontsize=18)
+plt.ylabel('Average Non-Zero Crossing', fontsize=16)
+plt.legend((EZ1, EZ2), ("Silence", "Speech"),loc='lower right', ncol=3, fontsize=8)
+fig3 = plt.figure(3)
+MZ1 = plt.scatter(MSil, ZSil, color = 'red')
+MZ2 = plt.scatter(MSpe, ZSpe, color = 'blue')
+fig3.suptitle("Magnitude vs Non-Zero Crossing Rate", fontsize=20)
+plt.xlabel('Log Average Magnitude', fontsize=18)
+plt.ylabel('Average Non-Zero Crossin', fontsize=16)
+plt.legend((MZ1, MZ2),( "Silence", "Speech"), loc='lower right', ncol=3, fontsize=8)
+plt.show()
+    
