@@ -1,12 +1,13 @@
 import mathsFunctions as mf
-import matplotlib.pyplot as plt
-from math import *
+#import matplotlib.pyplot as plt
+import math as math
 import random as random
 
 def readFile(fileName):
-    f = open(fileName)
+    f = open(fileName,'r')
     array = f.readlines()
     array = [int(numStr) for numStr in array]
+    f.close()
     return array
 
 def values(name, i):
@@ -29,18 +30,15 @@ def values(name, i):
         Datasign.append(mf.sign(DataIn[j]) - mf.sign(DataIn[j-1]))
 
     Datafft = mf.square(DataIn)
-    Datafft = mf.divide(Datafft, pow(10,6))
     Datapos = mf.absolute(DataIn)
-    Datapos = mf.divide(Datapos, pow(10,2))
     Datasign = mf.absolute(Datasign)
-    Datasign = mf.multiply(Datasign, pow(12,2))
 
-    Energy = mf.convolve(Datafft, Rect) #convolve takes an upsetting amount of time compared to the numpy implementation, might try optimising at some 
+    Energy = mf.convolve(Datafft, Rect)
     Magn = mf.convolve(Datapos, Rect)
     ZCR = mf.convolve(Datasign, Rect)
     
-    E = mf.logBase(mf.mean(Energy), exp(1))
-    M = mf.logBase(mf.mean(Magn), exp(1))
+    E = mf.logBase(mf.mean(Energy), math.exp(1))
+    M = mf.logBase(mf.mean(Magn), math.exp(1))
     Z = mf.mean(ZCR)
     return E, M, Z
 
@@ -55,12 +53,12 @@ def setEMZ(array):
     return E, M, Z
 
 def postSil(sample):
-    global ESil, MSil, ZSil
-    return 0.5 * mf.probDens(ESil,sample[0]) * mf.probDens(MSil, sample[1]) * mf.probDens(ZSil, sample[2])
+    global trainESil, trainMSil, trainZSil
+    return 0.5 * mf.probDens(trainESil,sample[0]) * mf.probDens(trainMSil, sample[1]) * mf.probDens(trainZSil, sample[2])
 
 def postSpe(sample):
-    global ESpe, MSpe, ZSpe
-    return  0.5 * mf.probDens(ESpe,sample[0]) * mf.probDens(MSpe, sample[1]) * mf.probDens(ZSpe, sample[2])
+    global trainESpe, trainMSpe, trainZSpe
+    return  0.5 * mf.probDens(trainESpe,sample[0]) * mf.probDens(trainMSpe, sample[1]) * mf.probDens(trainZSpe, sample[2])
 
 def genKSet(Sil, Spe):
     KSets = []
@@ -74,8 +72,8 @@ def reform(Kset):
     Sil = []
     Spe = []
     for i in range (0, len(Kset)):
-        Sil.append(KSet[i][0])
-        Spe.append(KSet[i][1])
+        Sil.append(Kset[i][0])
+        Spe.append(Kset[i][1])
     Sil = dechunk(Sil)
     Spe = dechunk(Spe)
     return Sil, Spe
@@ -86,6 +84,20 @@ def dechunk(array):
        for j in range (0, len(array[i])):
             dechunked.append(array[i][j])
     return dechunked
+
+def testSample(sample):
+    result = postSil(sample) < postSpe(sample)
+    return result
+
+
+def writeFile(fileName, array1, array2):
+    array = []
+    array3 = array1.ca
+    f = open(fileName, 'w')
+    f.write(array1)
+    
+    f.close()
+    return array
 
 Sil = []
 Spe = []
@@ -106,23 +118,23 @@ for i in range(0,10):
             trainingSet.append(KSet[j])
     testSet = [KSet[i]]
     trainSil, trainSpe = reform(trainingSet)
-    print "trainingSet: " + str(len(trainingSet))
-    print "trainSil: " + str(len(trainSil))
-    ESil, MSil, ZSil = setEMZ(trainSil)
-    ESpe, MSpe, ZSpe = setEMZ(trainSpe)
+    
+    trainESil, trainMSil, trainZSil = setEMZ(trainSil)
+    trainESpe, trainMSpe, trainZSpe = setEMZ(trainSpe)
+    
     testSil, testSpe = reform(testSet)
-    for i in range (0, len(testSil)):
-        if (postSil(testSil[i]) > postSpe(testSil[i])):
+ 
+    for k in range (0, len(testSil)):
+        if not (testSample(testSil[k])):
             correctCount += 1
         else:
             errorCount += 1
-    for i in range (0, len(testSpe)):
-        if (postSpe(testSpe[i]) > postSil(testSpe[i])):
+    for k in range (0, len(testSpe)):
+        if (testSample(testSpe[k])):
             correctCount += 1
         else:
             errorCount += 1
 
-print mf.variance([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17])
 
 ESil, MSil, ZSil = setEMZ(Sil)
 ESpe, MSpe, ZSpe = setEMZ(Spe)
@@ -130,16 +142,17 @@ ESpe, MSpe, ZSpe = setEMZ(Spe)
 print correctCount
 print errorCount
 
-plt.figure(1)
-plt.subplot(311)
-plt.scatter(ESil, MSil, color = 'red')
-plt.scatter(ESpe, MSpe, color = 'blue')
-plt.subplot(312)
-plt.scatter(ESil, ZSil, color = 'red')
-plt.scatter(ESpe, ZSpe, color = 'blue')
-plt.subplot(313)
-plt.scatter(MSil, ZSil, color = 'red')
-plt.scatter(MSpe, ZSpe, color = 'blue')
 
-plt.show()
-    
+##plt.figure(1)
+##plt.subplot(311)
+##plt.scatter(ESil, MSil, color = 'red')
+###plt.scatter(ESpe, MSpe, color = 'blue')
+##plt.subplot(312)
+##plt.scatter(ESil, ZSil, color = 'red')
+###plt.scatter(ESpe, ZSpe, color = 'blue')
+##plt.subplot(313)
+##plt.scatter(MSil, ZSil, color = 'red')
+###plt.scatter(MSpe, ZSpe, color = 'blue')
+##
+##plt.show()
+##    
