@@ -36,7 +36,8 @@ def values(name, i):
     Energy = mf.convolve(Datafft, Rect)
     Magn = mf.convolve(Datapos, Rect)
     ZCR = mf.convolve(Datasign, Rect)
-    
+    ZCR = mf.divide(ZCR, 480)    
+
     E = mf.logBase(mf.mean(Energy), math.exp(1))
     M = mf.logBase(mf.mean(Magn), math.exp(1))
     Z = mf.mean(ZCR)
@@ -150,6 +151,7 @@ fig1.suptitle("Engery vs Magnitude", fontsize=20)
 plt.xlabel('Log Average Energy', fontsize=18)
 plt.ylabel('Log Average Magnitude', fontsize=16)
 plt.legend(( EM1, EM2), ("Silence", "Speech"),loc='lower right', ncol=3, fontsize=8)
+
 fig2 = plt.figure(2)
 EZ1 = plt.scatter(ESil, ZSil, color = 'red')
 EZ2 = plt.scatter(ESpe, ZSpe, color = 'blue')
@@ -157,6 +159,7 @@ fig2.suptitle("Engery vs Non-Zero Crossing Rate", fontsize=20)
 plt.xlabel('Log Average Energy', fontsize=18)
 plt.ylabel('Average Non-Zero Crossing', fontsize=16)
 plt.legend((EZ1, EZ2), ("Silence", "Speech"),loc='lower right', ncol=3, fontsize=8)
+
 fig3 = plt.figure(3)
 MZ1 = plt.scatter(MSil, ZSil, color = 'red')
 MZ2 = plt.scatter(MSpe, ZSpe, color = 'blue')

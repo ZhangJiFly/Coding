@@ -6,11 +6,7 @@ import matplotlib.pyplot as plt
 
 DataIn = loadtxt("/Users/Crippled.Josh/Desktop/laboratory.dat");
 
-accousticImp = 413.3
 Rect = []
-sampleRate = len(DataIn)/0.3
-Datafft = []
-DataPos = []
 Datasign = []
 
 for i in range (0,240):
@@ -18,8 +14,6 @@ for i in range (0,240):
 
 for i in range (1,len(DataIn)): 
     Datasign.append(np.sign(DataIn[i]) - np.sign(DataIn[i-1]))
-
-
 
 Datafft = mf.square(DataIn)
 Datafft = mf.divide(Datafft, pow(10,6))
