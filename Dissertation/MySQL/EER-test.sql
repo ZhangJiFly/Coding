@@ -2,6 +2,7 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+DROP SCHEMA IF EXISTS `mydb` ;
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `mydb` ;
 
@@ -10,8 +11,9 @@ USE `mydb` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Staff` (
   `StaffId` VARCHAR(10) NOT NULL,
-  `Forename` VARCHAR(45) NULL,
-  `Surname` VARCHAR(45) NULL,
+  `Forename` VARCHAR(45) NOT NULL,
+  `Surname` VARCHAR(45) NOT NULL,
+  `Email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`StaffId`))
 ENGINE = InnoDB;
 
@@ -78,13 +80,13 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`Student` (
   `Matric` VARCHAR(8) NOT NULL,
   `Email` VARCHAR(255) NULL,
-  `Password` VARCHAR(32) NOT NULL,
+  `Password` VARCHAR(500) NOT NULL,
   `Forename` VARCHAR(45) NULL,
   `Surname` VARCHAR(45) NULL,
   `Year` INT NULL,
   `StaffId` VARCHAR(10) NOT NULL,
   `DegreeName` VARCHAR(45) NOT NULL,
-  `Salt` VARCHAR(45) NULL,
+  `Salt` VARCHAR(250) NULL,
   `Username` VARCHAR(45) NULL,
   PRIMARY KEY (`Matric`),
   INDEX `fk_Student_Advisor1_idx` (`StaffId` ASC),

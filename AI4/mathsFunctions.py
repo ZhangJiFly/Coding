@@ -1,5 +1,4 @@
 from math import *
-import numpy as np
 
 def convolve(array1, window):
     array2 = []

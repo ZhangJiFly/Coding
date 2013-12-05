@@ -33,9 +33,9 @@ def values(name, i):
     Datapos = mf.absolute(DataIn)
     Datasign = mf.absolute(Datasign)
 
-    Energy = mf.convolve(Datafft, Rect)
-    Magn = mf.convolve(Datapos, Rect)
-    ZCR = mf.convolve(Datasign, Rect)
+    Energy = mf.convolve(Datafft, Rect, mf.square)# could be done more efficiently by convolving once and performing functions on data as convolution happens 
+    Magn = mf.convolve(Datapos, Rect, mf.absolute)# but makes for sloppier code, might implement if time constraints were an important factor.
+    ZCR = mf.convolve(Datasign, Rect, mf.absolute)
     ZCR = mf.divide(ZCR, 480)    
 
     E = mf.logBase(mf.mean(Energy), math.exp(1))
@@ -61,7 +61,7 @@ def postSpe(sample):
     global trainESpe, trainMSpe, trainZSpe
     return  0.5 * mf.probDens(trainESpe,sample[0]) * mf.probDens(trainMSpe, sample[1]) * mf.probDens(trainZSpe, sample[2])
 
-def genKSet(Sil, Spe):
+def genKSet(Sil, Spe): # shuffles the arrays of silence and speech then assigns them into sets
     KSets = []
     random.shuffle(Sil)
     random.shuffle(Spe)
@@ -69,7 +69,7 @@ def genKSet(Sil, Spe):
         KSets.append([Sil[i*5:(i+1)*5], Spe[i*5:(i+1)*5]])
     return KSets
 
-def reform(Kset):
+def reform(Kset): # puts the sets into 2 arrays one being silence and one being speech as opposed to len(set) * 2 (one Sil on Spe) 
     Sil = []
     Spe = []
     for i in range (0, len(Kset)):
@@ -79,16 +79,17 @@ def reform(Kset):
     Spe = dechunk(Spe)
     return Sil, Spe
 
-def dechunk(array):
+def dechunk(array): #reduced multidimensional array by one dimension (outter most dimension is removed)
     dechunked = []
     for i in range (0,len(array)):      
        for j in range (0, len(array[i])):
             dechunked.append(array[i][j])
     return dechunked
 
-def testSample(sample):
+def testSample(sample): # produces a test to classify as either speech or silence (false for silence)
     result = postSil(sample) < postSpe(sample)
     return result
+
 
 
 def writeFile(fileName, array1, array2):
@@ -99,7 +100,6 @@ def writeFile(fileName, array1, array2):
     
     f.close()
     return array
-
 Sil = []
 Spe = []
 
