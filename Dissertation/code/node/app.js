@@ -8,41 +8,109 @@ pass = require('pwd');
 
 app.set('view engine', 'jade');
 
-// var updatePassword = function(user){
-//   //console.log(user);
-
-//   connection.query("UPDATE Student\n SET Salt= ?, Password = ? \n WHERE Matric= ? ",{Salt:user.Salt, Password:user.Password, Matric:user.Matric}, function(error, rows, file){
-//     if (error) throw error;
-//   });
-// }
-
-var updatePassword = function(user){
-  var query = connection.query("UPDATE Student\n SET Salt='" + user.Salt + "', Password = '" + user.Password + "'\n WHERE Matric='" + user.Matric + "';", function(error, rows, file){
-  if (error) throw error;
-  });
-  console.log(query);
+var updatePassword = function(user, type){
+  if (type){
+    var query = connection.query("UPDATE STAFF\n SET Salt='" + user.Salt + "', Password = '" + user.Password + "'\n WHERE StaffId='" + user.StaffId + "';", function(error, rows, file){
+    if (error) throw error;
+    });
+  }
+  else{
+    var query = connection.query("UPDATE Student\n SET Salt='" + user.Salt + "', Password = '" + user.Password + "'\n WHERE Matric='" + user.Matric + "';", function(error, rows, file){
+    if (error) throw error;
+    });
+  }
 }
 
-var hash = function(user){
+var hash = function(user, type){
   pass.hash("password", function(err, salt, hash){
     if (err) throw err;
-    // store the salt & hash in the "db"
+        // store the salt & hash in the "db"
     user.Salt = salt;
     user.Password = JSON.stringify(hash);
-    updatePassword(user);
+    updatePassword(user, type);
   })
 }
 
 var updateStart = function(){
   connection.query("SELECT * FROM STUDENT;", function(error, rows, file){
     for (row in rows){
-      user = rows[row]
-      hash(user); 
+      userX = rows[row]
+      hash(userX, 0); 
+    }
+  });
+  connection.query("SELECT * FROM STAFF;", function(error, rows, file){
+    for (row in rows){
+      userY = rows[row]
+      hash(userY, 1); 
     }
   });
 }
 
+var courses = function(matric, callback){
+  query = connection.query("SELECT Course.CourseID, Course.Name, Course.Credit, StudentHasCourse.Grade, StudentHasCourse.Status FROM Course INNER JOIN StudentHasCourse ON Course.CourseId = StudentHasCourse.CourseId WHERE StudentHasCourse.StudentMatric = ?", matric, function(error, rows, file){
+    callback(rows);
+  });
+}   
 
+var advisees = function(StaffId, callback){
+  query = connection.query("SELECT Student.Forename, Student.Matric, Student.DegreeName, Student.Year FROM Student WHERE Student.StaffId = ?", StaffId, function(error, rows, file){
+    callback(rows);
+  });
+}   
+
+function authenticate(name, password, type, fn) {
+  if (!module.parent) console.log('authenticating %s:%s', name, password);
+  //look up prepared statements to sanetize statements. 
+
+  connection.query("SELECT * FROM " + type + "\n WHERE Username= ?", name, function(error, rows, file){
+    var user = rows[0];
+    // query the db for the given username
+    if (!user) return fn(new Error('cannot find user'));
+    // apply the same algorithm to the POSTed password, applying
+    // the hash against the pass / salt, if there is a match we
+    // found the user
+    pass.hash(password, user.Salt, function(err, hash){
+      if (err) return fn(err);
+      if (JSON.stringify(hash) == user.Password) return fn(null, user);
+      fn(new Error('invalid password'));
+    });
+  });
+}
+
+function restrictStaff(req, res, next) {
+  if (req.session.user && req.session.level) {
+    next();
+  } 
+  else if(!req.session.level){
+    res.redirect('/NoAcess.html');
+  }
+  else {
+    req.session.error = 'Access denied!';
+    res.redirect('/login.html');
+  }
+}
+
+function restrictStudent(req, res, next) {
+  if (req.session.user && !req.session.level) {
+    next();
+  }
+  else if(req.session.level){
+    res.redirect('/NoAcess.html');
+  }
+  else {
+    req.session.error = 'Access denied!';
+    res.redirect('/login.html');
+  }
+}
+
+function loggedin(req, res, next){
+  if (req.session.user){
+    res.redirect('/Student/home.html');
+  }
+  else{
+    next();
+  }
+}
 
 app.use(express.bodyParser());
 app.use(express.cookieParser('shhhh, very secret'));
@@ -67,26 +135,72 @@ var connection = mysql.createConnection({
 
 updateStart();
 
-var detfn = jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/restricted/" + "details" + ".jade");
+jadeTemp = {'details':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/details.jade"), 'courses':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/courses.jade"),
+'advisor':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/advisor.jade"), 'StaffHome':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/home.jade")};
 
-app.get('/restricted/:details', restrict, function(req, res){
+app.get('/Student/:file', restrictStudent, function(req, res){
   var file = req.params.file;
-  var name = req.session.user.Forename + " " + req.session.user.Surname;
   var matric = req.session.user.Matric;
-  var email = req.session.user.Email;
-  var advisorName = req.session.user.Advisor.Forename + " " + req.session.user.Advisor.Surname;
-  var advisorEmail = req.session.user.Advisor.Email
-  console.log(req.session.user);
-  var html = detfn(user = {name: name, matric: matric, email: email, advisorName:advisorName, advisorEmail:advisorEmail});
-  res.render(html);
-  
+  if (file == "details"){
 
+    var html
+    var name = req.session.user.Forename + " " + req.session.user.Surname;
+
+    var email = req.session.user.Email;
+    var advisorName = req.session.user.Advisor.Forename + " " + req.session.user.Advisor.Surname;
+    var advisorEmail = req.session.user.Advisor.Email
+    html = jadeTemp[file](user = {name: name, matric: matric, email: email, advisorName:advisorName, advisorEmail:advisorEmail});
+    res.render(html);
+  }
+  else if (file == "courses"){
+    courses(matric, function(rows){
+      html = jadeTemp[file](aaData = JSON.stringify(rows));
+      res.render(html);
+    });
+  }
+  else{
+    res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/" + file);
+    
+  }
+});
+
+app.get('/Staff/:file', restrictStaff, function(req, res){
+  var file = req.params.file;
+  var StaffId = req.session.user.StaffId;
+  if (file == "home"){
+    var name = req.session.user.Forename + " " + req.session.user.Surname;
+    var email = req.session.user.Email;
+    var staffId = req.session.user.StaffId;
+    userX = {name: name, staffId: staffId, email: email}
+    var html = jadeTemp['StaffHome'](userX);
+    res.render(html);
+  }
+  if (file == "advisor"){
+    advisees(StaffId, function(rows){
+      console.log(rows)
+      html = jadeTemp[file](aaData = JSON.stringify(rows));
+      res.render(html);
+    });
+  }
+  else{
+    res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/" + file);
+    
+  }
+});
+
+
+app.get('/login', function(req, res){
+  res.render('/login.html');
+});
+
+app.get('/', function(req, res){
+  res.redirect('/login.html');
 });
 
 app.get('/logout', function(req, res){
   // destroy the user's session to log them out
   req.session.destroy(function(){
-    res.redirect('/index.html');
+    res.redirect('/login.html');
   });
 });
 
@@ -102,82 +216,59 @@ app.get('/js/libs/:lib/:file', function (req, res) {
  res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/js/libs/" + lib + '/' + file);
 });
 
+app.get('/js/libs/:lib/media/js/:file', function (req, res) {
+  var file = req.params.file,
+  lib = req.params.lib,
+  sub1 = req.params.sub1,
+  sub2 = req.params.sub2;
+ res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/js/libs/" + lib + '/media/js/' + file);
+});
+
 app.get('/:folder/:file', function (req, res) {
   var file = req.params.file,
     folder = req.params.folder;
     res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/" + folder + '/' + file);
 });
 
-function authenticate(name, password, fn) {
-  if (!module.parent) console.log('authenticating %s:%s', name, password);
-  //look up prepared statements to sanetize statements. 
-  var query = connection.query("SELECT * FROM Student\n WHERE Username= ?", name, function(error, rows, file){
-    var user = rows[0];
-    // query the db for the given username
-    console.log(rows[0]);
-    if (!user) return fn(new Error('cannot find user'));
-    // apply the same algorithm to the POSTed password, applying
-    // the hash against the pass / salt, if there is a match we
-    // found the user
-    pass.hash(password, user.Salt, function(err, hash){
-      console.log(JSON.stringify(hash));
-      if (err) return fn(err);
-      if (JSON.stringify(hash) == user.Password) return fn(null, user);
-      fn(new Error('invalid password'));
-    });
-  });
-}
+app.post('/loginStudent', function(req, res){
 
-function restrict(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    req.session.error = 'Access denied!';
-    res.redirect('/login.html');
-  }
-}
-
-function loggedin(req, res, next){
-  if (req.session.user){
-    res.redirect('/restricted/details.html');
-  }
-  else{
-    next();
-  }
-}
-
-app.get('/login', function(req, res){
-  res.render('login.html');
-});
-
-app.post('/login', function(req, res){
-
-  authenticate(req.body.username, req.body.password, function(err, user){
+  authenticate(req.body.username, req.body.password, "Student", function(err, user){
     if (user) {
-      // Regenerate session when signing in
-      // to prevent fixation 
       req.session.regenerate(function(){
-        // Store the user's primary key 
-        // in the session store to be retrieved,
-        // or in this case the entire user object
-        //console.log(res);
-        //users[] = user;
-        console.log(user);
         req.session.user = user;
+        req.session.level = 0;
         var StaffId = user.StaffId;
-        query = connection.query("SELECT * FROM Staff\n WHERE StaffId= ?", StaffId, function(error, rows, file){
+        query = connection.query("SELECT * FROM Staff WHERE StaffId= ?", StaffId, function(error, rows, file){
           var Advisor = rows[0]
-          console.log(Advisor);
           req.session.user.Advisor = Advisor;
           req.session.success = 'Authenticated as ' + user.name
             + ' click to <a href="/logout">logout</a>. '
-           + ' You may now access <a href="/restricted">/restricted</a>.';
-          res.redirect('/restricted/details.html');
+           + ' You may now access <a href="/Student">/Student</a>.';
+          res.redirect('/Student/home.html');
         });
       });
     } else {
       req.session.error = 'Authentication failed, please check your username and password.';
-      res.redirect('/index.html');
+      res.redirect('/login.html');
+    }
+  });
+});
+
+app.post('/loginStaff', function(req, res){
+
+  authenticate(req.body.username, req.body.password, "Staff", function(err, user){
+    if (user) {
+      req.session.regenerate(function(){
+        req.session.user = user;
+        req.session.level = 1;
+          req.session.success = 'Authenticated as ' + user.name
+            + ' click to <a href="/logout">logout</a>. '
+            + ' You may now access <a href="/Student">/Student</a>.';
+          res.redirect('/Staff/home');
+      });
+    } else {
+      req.session.error = 'Authentication failed, please check your username and password.';
+      res.redirect('/login.html');
     }
   });
 });

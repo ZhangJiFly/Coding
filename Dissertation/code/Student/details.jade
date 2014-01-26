@@ -1,0 +1,64 @@
+!!! 5
+html
+  head
+    script(type='text/javascript', src='../js/libs/requirejs/require.js')
+    script(type='text/javascript', src='../requireconfig.js')
+         
+    script
+      require.config({
+      baseUrl: "../js"
+      });
+      //console.log(Request.cookies("connect.sid"));
+      var name="#{user.name}";
+      var matric="#{user.matric}";
+      var email="#{user.email}";
+      var advisorName="#{user.advisorName}";
+      var advisorEmail="#{user.advisorEmail}";
+      require(['jquery', 'socket.io'], function($, io){
+      $("#Name").text("Name: " + name);
+      $("#Email").text("Email: " + email);
+      $("#Matric").text("Matric: " + matric);
+      $("#AdvisorName").text("Advisor Name: " + advisorName);
+      $("#AdvisorEmail").text("Advisor Email: " + advisorEmail);
+      });
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    link(href='../css/starterTemp.css', rel='stylesheet')
+    .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a(href='./home.html') Home
+            li.active
+              a(href='./details.html') Details
+            li
+              a(href='./register.html') Register
+            li
+              a(href='./enrol.html') Enrol
+            li
+              a(href='./courses') Courses
+            li
+              a(href='./FAQ.html') FAQ
+            li
+              a(href='./help.html') Help
+          ul.nav.navbar-nav.pull-right
+            li
+              a(href='/logout') Logout
+        //
+          /.nav-collapse 
+  body
+    .container
+      .row
+        .col-md-4
+          .panel.panel-default
+            .panel-heading Student Info
+            ul.list-group
+              li#Name.list-group-item
+              li#Matric.list-group-item
+              li#Email.list-group-item
+              li#AdvisorName.list-group-item
+              li#AdvisorEmail.list-group-item

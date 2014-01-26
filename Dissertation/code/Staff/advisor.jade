@@ -1,0 +1,63 @@
+!!! 5
+html
+  head
+    script(type='text/javascript', src='../js/libs/requirejs/require.js')
+    script(type='text/javascript', src='../requireconfig.js')
+    script(type='text/javascript', src='../js/libs/media/js/jquery.dataTables.js')
+         
+    script
+      require.config({
+      baseUrl: "../js"
+      });
+
+      require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+      var advisees= "#{aaData}";
+      console.log(advisees);
+      advisees = JSON.parse(advisees.replace(/&quot;/ig,'"'));
+      $('#example').dataTable({
+      "aaData": advisees,
+      "aoColumns": [
+      { "mData": "Matric", "sTitle":"Matric" },
+      { "mData": "Forename", "sTitle": "Name"  },
+      { "mData": "DegreeName", "sTitle": "Degree"},
+      { "mData": "Year", "sTitle": "Year"  },
+      ],
+      "bPaginate": false,
+      "bLengthChange": false,
+      "bInfo": false,
+      "bFilter": false,
+      });
+      });
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    link(href='../css/starterTemp.css', rel='stylesheet')
+    .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a(href='./home') Home
+            li.active
+              a(href='./advisor') Advisor
+            li
+              a(href='./lecturer.html') Lecturer
+            li
+              a(href='./TC.html') Teaching Committee
+            li
+              a(href='./DHY.html') Dept Head of Year
+            li
+              a(href='./help.html') Help
+          ul.nav.navbar-nav.pull-right
+            li
+              a(href='/logout') Logout
+        //
+  body
+    .container
+      .row
+        .col-md-6
+          .panel.panel-default
+            .panel-heading Advisees
+            table#example.display(cellpadding='10', cellspacing='10', border='1')

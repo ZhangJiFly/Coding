@@ -30,5 +30,13 @@ require.config({
 			name: "bootstrap",
 			location: "./libs/bootstrap",
 			main: "bootstrap"
-		}]
+		},
+		{
+			name: "datatables",
+			location: "./libs/datatables/media/js",
+			main: "jquery.dataTables"
+		}
+
+
+		]
 	});
