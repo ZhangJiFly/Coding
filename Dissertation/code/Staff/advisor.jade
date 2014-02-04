@@ -14,12 +14,12 @@ html
       var advisees= "#{aaData}";
       console.log(advisees);
       advisees = JSON.parse(advisees.replace(/&quot;/ig,'"'));
-      $('#example').dataTable({
+      $('#advisees').dataTable({
       "aaData": advisees,
       "aoColumns": [
       { "mData": "Matric", "sTitle":"Matric" },
       { "mData": "Forename", "sTitle": "Name"  },
-      { "mData": "DegreeName", "sTitle": "Degree"},
+      { "mData": "Degree", "sTitle": "Degree"},
       { "mData": "Year", "sTitle": "Year"  },
       ],
       "bPaginate": false,
@@ -60,4 +60,4 @@ html
         .col-md-6
           .panel.panel-default
             .panel-heading Advisees
-            table#example.display(cellpadding='10', cellspacing='10', border='1')
+            table#advisees.display(cellpadding='10', cellspacing='10', border='1')

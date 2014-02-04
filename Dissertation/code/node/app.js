@@ -21,6 +21,15 @@ var updatePassword = function(user, type){
   }
 }
 
+var getSchoolCourses = function(school, callback){
+  var query = connection.query("Select * FROM Course WHERE Course.School = ?;", school, function(error, rows, file){
+    if (error) throw error;
+    callback(rows);
+    });
+}
+
+
+
 var hash = function(user, type){
   pass.hash("password", function(err, salt, hash){
     if (err) throw err;
@@ -53,7 +62,8 @@ var courses = function(matric, callback){
 }   
 
 var advisees = function(StaffId, callback){
-  query = connection.query("SELECT Student.Forename, Student.Matric, Student.DegreeName, Student.Year FROM Student WHERE Student.StaffId = ?", StaffId, function(error, rows, file){
+  query = connection.query("SELECT Student.Forename, Student.Matric, Student.Degree, Student.Year FROM Student WHERE Student.StaffId = ?", StaffId, function(error, rows, file){
+    console.log(rows);
     callback(rows);
   });
 }   
@@ -167,6 +177,7 @@ app.get('/Student/:file', restrictStudent, function(req, res){
 app.get('/Staff/:file', restrictStaff, function(req, res){
   var file = req.params.file;
   var StaffId = req.session.user.StaffId;
+  
   if (file == "home"){
     var name = req.session.user.Forename + " " + req.session.user.Surname;
     var email = req.session.user.Email;
@@ -181,6 +192,10 @@ app.get('/Staff/:file', restrictStaff, function(req, res){
       html = jadeTemp[file](aaData = JSON.stringify(rows));
       res.render(html);
     });
+  }
+  else if (file == "TC.html"){
+
+    res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/" + file);
   }
   else{
     res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/" + file);
@@ -274,10 +289,13 @@ app.post('/loginStaff', function(req, res){
 });
 
 io.sockets.on('connection', function (socket) {
-  // socket.emit('news', { user: "news" });
-  // socket.on('details', function (data) {
-  //   socket.emit('user', userX );
-  // });
+  socket.on('coursesPlease', function (data) {
+    getSchoolCourses(data, function(courses){
+      socket.emit('courses', courses);
+      console.log(courses);
+    }); 
+  });
 });
+
 
 server.listen(8080);

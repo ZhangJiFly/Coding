@@ -1,7 +1,74 @@
 <!DOCTYPE HTML>
+
+
 <html>
   <script src="/js/libs/requirejs/require.js"></script>
   <script src="/requireconfig.js"></script>
+  <script> src='../js/libs/media/js/jquery.dataTables.js'</script>
+  <script>
+    require.config({
+    baseUrl: "../js"
+    });
+
+    require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+      var groupCounter = 0;
+      var courses; 
+      var createGroup = function(){
+        var choices = [];
+        groupCounter++;
+        $('#main').append("<div class='row'><div class='col-md-4'><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='choices" + groupCounter + "'></table></div><div class='col-md-4'><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='courses" + groupCounter + "'></table></div></div>");
+        $('#choices'+groupCounter).dataTable( {
+          "bFilter": false,
+          "bInfo": false,
+          "bPaginate": false,
+          "aaData": choices,
+          "aoColumns": [
+              { "sTitle": "CourseId" },
+              { "sTitle": "Course Name" },
+              { "sTitle": "Credits" },
+          ]
+        } );
+        $('#courses'+groupCounter).dataTable( {
+          "aaData": courses,
+          "aoColumns": [
+            {
+              "mRender": function (data, type, full ) {
+                return "<button type='button' class='btn btn-default' id='select'>Select</button>"
+              },
+              "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
+                // console.log(Td);
+                // console.log(sData);
+                // console.log(oData);
+                var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for the demo.
+                var button = $(btn);
+
+                button.click(function(){
+                  choices.push({iRow:courses[iRow]});
+                  console.log(choices);
+                });
+              },
+              "sTitle": "Select",
+            },
+            { "mData": "Name", "sTitle": "Course Name" },
+            { "mData": "Credit", "sTitle": "Credits" },
+          ]
+        } );
+      }
+      var socket = io.connect('http://localhost');
+      socket.emit('coursesPlease', "Engineering");
+      socket.on('courses', function (data) {
+        courses = data;
+        createGroup();
+      });
+        
+      console.log($('#addGroup'));
+      $('#addGroup').click(function(){
+
+        createGroup();
+      });
+
+    });
+  </script>
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.css">
   <link href="/css/starterTemp.css" rel="stylesheet">
@@ -31,20 +98,10 @@
     </div>
   </head>
   <body>
-  <div class="container" >
-    <div class="starter-template">
-      <h1>Feature Coming Soon</h1>
-      <p class="lead">This product is a prototype, bare with us whilst we continue to implement features.</p>
-    </div>
+  <div class="container" id="main" >
+    <button type="button" class="btn btn-default" id="addGroup">Add Group</button>
+   
   </div>
   </body>
-  <script>
-    // require(['underscore', 'socket.io', 'jquery'], function(_,io,$){
-    //  var socket = io.connect('http://localhost');
-    //  socket.on('news', function (data) {
-    //    console.log(data);
-    //  });
-    // });
-  </script>
 
 </html>
