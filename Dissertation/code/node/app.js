@@ -55,6 +55,38 @@ var updateStart = function(){
   });
 }
 
+var updateCourseList = function(data){
+  var values = [];
+  values.push(data.listName);
+  values.push(data.school);
+  values.push(data.level);
+  var query = connection.query("INSERT INTO Courselist (CourseListId, School, Level) VALUES (?,?,?);",values, function(error, rows, file){
+    if (error) throw error;
+  });
+
+}
+
+var updateGroup = function(data){
+  var groupValues = [];
+  var groupCourseValues = []
+  var groups = data.groups;
+  for (var i=0; i<groups.length;i++){
+    groupValues.push([groups[i].credits, data.listName, i])
+    for (var j = 0; j<groups[i].courses.length;j++){
+      groupCourseValues.push([i, data.listName, groups[i].courses[j].CourseId])
+    }
+  }
+
+  var query = connection.query("INSERT INTO Groups (Credits, CourseListId, GroupId) VALUES (?);",groupValues, function(error, rows, file){
+    if (error) throw error;
+  });
+
+  var query = connection.query("INSERT INTO GroupHasCourse (GroupId, CourseListId, CourseId) VALUES (?);",groupCourseValues, function(error, rows, file){
+    if (error) throw error;
+  });
+  
+}
+
 var courses = function(matric, callback){
   query = connection.query("SELECT Course.CourseID, Course.Name, Course.Credit, StudentHasCourse.Grade, StudentHasCourse.Status FROM Course INNER JOIN StudentHasCourse ON Course.CourseId = StudentHasCourse.CourseId WHERE StudentHasCourse.StudentMatric = ?", matric, function(error, rows, file){
     callback(rows);
@@ -288,12 +320,19 @@ app.post('/loginStaff', function(req, res){
   });
 });
 
+
 io.sockets.on('connection', function (socket) {
   socket.on('coursesPlease', function (data) {
     getSchoolCourses(data, function(courses){
       socket.emit('courses', courses);
       console.log(courses);
     }); 
+  });
+  socket.on('courseList', function (data) {
+    console.log("\n\n\n\n");
+    console.log(data);
+    updateCourseList(data);
+    updateGroup(data);
   });
 });
 
