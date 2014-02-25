@@ -21,15 +21,6 @@ var updatePassword = function(user, type){
   }
 }
 
-var getSchoolCourses = function(school, callback){
-  var query = connection.query("Select * FROM Course WHERE Course.School = ?;", school, function(error, rows, file){
-    if (error) throw error;
-    callback(rows);
-    });
-}
-
-
-
 var hash = function(user, type){
   pass.hash("password", function(err, salt, hash){
     if (err) throw err;
@@ -63,7 +54,6 @@ var updateCourseList = function(data){
   var query = connection.query("INSERT INTO Courselist (CourseListId, School, Level) VALUES (?,?,?);",values, function(error, rows, file){
     if (error) throw error;
   });
-
 }
 
 var updateGroup = function(data){
@@ -83,8 +73,7 @@ var updateGroup = function(data){
 
   var query = connection.query("INSERT INTO GroupHasCourse (GroupId, CourseListId, CourseId) VALUES (?);",groupCourseValues, function(error, rows, file){
     if (error) throw error;
-  });
-  
+  }); 
 }
 
 var courses = function(matric, callback){
@@ -95,15 +84,41 @@ var courses = function(matric, callback){
 
 var advisees = function(StaffId, callback){
   query = connection.query("SELECT Student.Forename, Student.Matric, Student.Degree, Student.Year FROM Student WHERE Student.StaffId = ?", StaffId, function(error, rows, file){
-    console.log(rows);
+    callback(rows);
+  });
+} 
+
+var degrees = function(school, callback){
+  query = connection.query("SELECT Degree.Name FROM Degree WHERE Degree.School = ?", school, function(error, rows, file){
+    callback(rows);
+  });
+}  
+
+var courseLists = function(school, callback){
+  query = connection.query("SELECT * FROM CourseList WHERE School = ?", school, function(error, rows, file){
+    if (error) throw error;
     callback(rows);
   });
 }   
 
+var degreeCourseLists = function(degree, callback){
+  query = connection.query("SELECT * FROM DegreeHasCourseList WHERE Degree = ?", degree, function(error, rows, file){
+     if (error) throw error;
+    callback(rows);
+  });
+} 
+
+var getSchoolCourses = function(school, callback){
+  var query = connection.query("Select * FROM Course WHERE Course.School = ?;", school, function(error, rows, file){
+    if (error) throw error;
+    callback(rows);
+    });
+} 
+
+
 function authenticate(name, password, type, fn) {
   if (!module.parent) console.log('authenticating %s:%s', name, password);
   //look up prepared statements to sanetize statements. 
-
   connection.query("SELECT * FROM " + type + "\n WHERE Username= ?", name, function(error, rows, file){
     var user = rows[0];
     // query the db for the given username
@@ -177,8 +192,13 @@ var connection = mysql.createConnection({
 
 updateStart();
 
-jadeTemp = {'details':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/details.jade"), 'courses':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/courses.jade"),
-'advisor':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/advisor.jade"), 'StaffHome':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/home.jade")};
+jadeTemp = {'details':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/details.jade"),
+'courses':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Student/courses.jade"),
+'advisor':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/advisor.jade"),
+'StaffHome':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/home.jade"),
+'school':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/school.jade"),
+'degree':jade.compile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/degree.jade")
+};
 
 app.get('/Student/:file', restrictStudent, function(req, res){
   var file = req.params.file;
@@ -209,7 +229,8 @@ app.get('/Student/:file', restrictStudent, function(req, res){
 app.get('/Staff/:file', restrictStaff, function(req, res){
   var file = req.params.file;
   var StaffId = req.session.user.StaffId;
-  
+  var school = req.session.user.School;
+  var degree = req.query.degree;
   if (file == "home"){
     var name = req.session.user.Forename + " " + req.session.user.Surname;
     var email = req.session.user.Email;
@@ -218,23 +239,32 @@ app.get('/Staff/:file', restrictStaff, function(req, res){
     var html = jadeTemp['StaffHome'](userX);
     res.render(html);
   }
-  if (file == "advisor"){
+  else if (file == "advisor"){
     advisees(StaffId, function(rows){
-      console.log(rows)
+      var Data = JSON.stringify(rows);
       html = jadeTemp[file](aaData = JSON.stringify(rows));
       res.render(html);
     });
   }
-  else if (file == "TC.html"){
+  else if (file == "degree"){
 
-    res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/" + file);
+    degreeCourseLists(degree, function(rows){
+      html = jadeTemp[file](Degree = degree, School = school);
+      res.render(html);
+    });
+  }
+  else if (file == "school"){
+    degrees(school, function(degreeRows){
+      courseLists(school,function(courseRows){
+        html = jadeTemp[file](Degrees = JSON.stringify(degreeRows), CL = JSON.stringify(courseRows), School = school);
+        res.render(html);
+      });
+    });
   }
   else{
-    res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/" + file);
-    
+    res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/Staff/" + file);   
   }
 });
-
 
 app.get('/login', function(req, res){
   res.render('/login.html');
@@ -323,14 +353,15 @@ app.post('/loginStaff', function(req, res){
 
 io.sockets.on('connection', function (socket) {
   socket.on('coursesPlease', function (data) {
+    console.log(socket);
     getSchoolCourses(data, function(courses){
       socket.emit('courses', courses);
-      console.log(courses);
+      // console.log(courses);
     }); 
   });
   socket.on('courseList', function (data) {
-    console.log("\n\n\n\n");
-    console.log(data);
+    // console.log("\n\n\n\n");
+    // console.log(data);
     updateCourseList(data);
     updateGroup(data);
   });

@@ -1,0 +1,101 @@
+!!! 5
+html
+  head
+    script(type='text/javascript', src='../js/libs/requirejs/require.js')
+    script(type='text/javascript', src='../requireconfig.js')
+    script(type='text/javascript', src='../js/libs/media/js/jquery.dataTables.js')
+         
+    script
+      require.config({
+      baseUrl: "../js"
+      });
+
+      require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+        var degrees= "#{Degrees}";
+        var courseLists= "#{CL}";
+        degrees = JSON.parse(degrees.replace(/&quot;/ig,'"'));
+        courseLists = JSON.parse(courseLists.replace(/&quot;/ig,'"'));
+        console.log(degrees);
+        console.log(courseLists);
+        $('#degrees').dataTable({
+        "aaData": degrees,
+        "aoColumns": [
+        { "mData": function(data, type, val){
+            var string = "<a href='./degree?degree="+data.Name+"'>" + data.Name + "</a>";
+            return string;
+        }, "sTitle":"Degree" },
+        ],
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bInfo": false,
+        "bFilter": false,
+        });
+        $('#courseLists').dataTable({
+        "aaData": courseLists,
+        "aoColumns": [
+        { "mData": "CourseListId", "sTitle":"CourseList" },
+        ],
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bInfo": false,
+        "bFilter": false,
+        });
+      });
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    link(href='../css/starterTemp.css', rel='stylesheet')
+    .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      .container
+        .row
+          .navbar-header
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+              span.sr-only Toggle navigation
+          .collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li
+                a(href='./home') Home
+              li
+                a(href='./advisor') Advisor
+              li
+                a(href='./lecturer.html') Lecturer
+              li.active
+                a(href='./school') School
+              li
+                a(href='./DHY.html') Dept Head of Year
+              li
+                a(href='./help.html') Help
+            ul.nav.navbar-nav.pull-right
+              li
+                a(href='/logout') Logout
+    .container
+      .row
+        ol.breadcrumb
+          li.active
+            a(href="#">school) #{School}
+
+
+  body
+    .container
+      .row
+        .col-md-4
+          
+          .panel.panel-primary
+            .panel-heading School of Engineering Degrees
+            .panel-body 
+              table#degrees.display(cellpadding='10', cellspacing='10', border='1')
+        .col-md-4
+          
+          .panel.panel-primary
+            .panel-heading School of Engineering Course Lists
+            .panel-body 
+              .container
+                .row
+                  table#courseLists.display(cellpadding='10', cellspacing='10', border='1')
+                .row
+                  form(action='./CCL.html')
+                      button#CCL.btn.btn-default(type='submit') Create New Course List
+
+
+
+
+

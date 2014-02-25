@@ -1,0 +1,49 @@
+doctype html
+html
+  script(src='/js/libs/requirejs/require.js')
+  script(src='/requireconfig.js')
+  script
+    src='../js/libs/media/js/jquery.dataTables.js'
+  script
+    require.config({
+      baseUrl: "../js"
+    });
+    require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+      var degrees= "#{Degrees}";
+    });
+  link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
+  link(rel='stylesheet', type='text/css', href='/css/bootstrap-theme.css')
+  link(href='/css/starterTemp.css', rel='stylesheet')
+  head
+    .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a(href='./home') Home
+            li
+              a(href='./advisor') Advisor
+            li
+              a(href='./lecturer.html') Lecturer
+            li.active
+              a(href='./school') School
+            li
+              a(href='./DHY.html') Dept Head of Year
+            li
+              a(href='./help.html') Help
+          ul.nav.navbar-nav.pull-right
+            li
+              a(href='/logout') Logout
+        // /.nav-collapse
+  body
+    .container
+      .row
+        ol.breadcrumb#breadcrumb
+          li
+            a(href='./school') #{School}
+          li
+            a(href='./this') #{Degree}
+          

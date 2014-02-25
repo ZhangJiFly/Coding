@@ -20,9 +20,9 @@ public class DecryptAllBlocks
 			// get file names
 		con.print("Enter input  file name: ");
 		
-		String	name_in = "/Users/Crippled.Josh/Coding/CyberSec/TMTCipher.txt";
+		String	name_in = "/Users/Crippled.Josh/Coding/CS/BruteForceCipher.txt";
 		con.print("Enter output file name: ");
-		String	name_out = con.readWord();
+		String	name_out = "/Users/Crippled.Josh/Coding/CS/BruteForceCipher_t.txt";
 		
 			// get key
 		con.print("Enter key as hexadecimal number: ");
