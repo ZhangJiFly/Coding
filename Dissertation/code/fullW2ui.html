@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<head>
+	<title>HTML5 Input Types Alternative Example</title>
+	<meta name="description" content="">
+	<!--[if lt IE 9]>
+	<script src="/wp-content/themes/jack/js/lib/html5shiv/src/html5shiv.js?{{ themeVersion }}"></script>
+<![endif]-->
+<link rel="stylesheet" href="/wp-content/themes/jack/css/all.css" type="text/css">
+<style>
+	
+	nav .search {
+		display: none;
+	}
+
+	.demoFrame header,
+	.demoFrame .footer,
+	.demoFrame h1,
+	.demoFrame .p {
+		display: none !important;
+	}
+
+	h1 {
+		font-size: 2.6em;
+	}
+
+	h2, h3 {
+		font-size: 1.7em;
+	}
+
+	.left {
+		width: 920px !important;
+		padding-bottom: 40px;
+		min-height: auto !important;
+		padding-right: 0;
+		float: left;
+	}
+
+	div.p {
+		font-size: .8em;
+		font-family: arial;
+		margin-top: -20px;
+		font-style: italic;
+		padding: 10px 0;
+	}
+
+	.footer {
+		padding: 20px;
+		margin: 20px 0 0 0;
+		background: #f8f8f8;
+		font-weight: bold;
+		font-family: arial;
+		border-top: 1px solid #ccc;
+	}
+
+	.left > p:first-of-type { 
+		background: #ffd987; 
+		font-style: italic; 
+		padding: 5px 10px; 
+		margin-bottom: 40px;
+	}
+
+	.demoAds {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 270px;
+		padding: 10px 0 0 10px;
+		background: #f8f8f8;
+	}
+	.demoAds a {
+		margin: 0 10px 10px 0 !important;
+		display: inline-block !important;
+	}
+
+	#promoNode { 
+		margin: 20px 0; 
+	}
+
+	@media only screen and (max-width : 1024px) {
+		.left {
+			float: none;
+		}
+
+		body .one .bsa_it_ad {
+			position: relative !important;
+		}
+	}
+</style>
+
+  
+  <link rel="stylesheet" href="http://w2ui.com/web/js/CodeMirror/lib/codemirror.css">
+  <script src="http://w2ui.com/web/js/CodeMirror/lib/codemirror.js"></script>
+  <script src="http://w2ui.com/web/js/CodeMirror/mode/javascript.js"></script>
+  <script src="http://w2ui.com/web/js/CodeMirror/mode/htmlmixed.js"></script>
+  <script src="http://w2ui.com/web/js/CodeMirror/mode/css.js"></script>
+  <script src="http://w2ui.com/web/js/CodeMirror/mode/xml.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-fields-1.0.min.css">
+  <script type="text/javascript" src="http://w2ui.com/src/w2ui-fields-1.0.min.js"></script>
+  <script src="http://w2ui.com/web/pages/code-mirror.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+ <style>
+.w2ui-label {
+  float: left;
+  margin-top: 6px;
+  margin-bottom: 3px;
+  width: 100px;
+  padding: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  min-height: 20px;
+}
+.w2ui-field {
+  margin-bottom: 3px;
+  margin-left: 108px;
+  padding: 3px;
+  min-height: 20px;
+}
+span.legend {
+	padding-left: 20px;
+	color: #888;
+}
+</style>
+</head>
+
+
+
+<!-- Add the HTML header -->
+<div class="container">
+<div class="row">
+<h2>Dropdown Lists</h2>
+<div class="w2ui-label"> List: </div>
+<div class="w2ui-field"> <input type="list" style="width: 200px; box-sizing: border-box; padding-right: 14px;" placeholder="" class="w2field"><div class="w2ui-field-helper" style="color: rgb(0, 0, 0); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;"><div class="arrow-down" style="margin-top: 6px;"></div></div> <span class="legend">Cannot type any text, but only items from the list</span> </div>
+<div class="w2ui-label"> Combo: </div>
+<div class="w2ui-field"> <input type="combo" style="width: 200px; box-sizing: border-box; padding-right: 14px;" placeholder="" class="w2field"><div class="w2ui-field-helper" style="color: rgb(0, 0, 0); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;"><div class="arrow-down" style="margin-top: 6px;"></div></div> <span class="legend">You can type any text</span> </div>
+</div>
+</div>
+<div style="height: 30px;"></div>
+
+<script>
+	var people = ['George Washington', 'John Adams', 'Thomas Jefferson', 'James Buchanan', 'James Madison', 'Abraham Lincoln', 'James Monroe', 'Andrew Johnson', 'John Adams', 'Ulysses Grant', 'Andrew Jackson', 'Rutherford Hayes', 'Martin VanBuren', 'James Garfield', 'William Harrison', 'Chester Arthur', 'John Tyler', 'Grover Cleveland', 'James Polk', 'Benjamin Harrison', 'Zachary Taylor', 'Grover Cleveland', 'Millard Fillmore', 'William McKinley', 'Franklin Pierce', 'Theodore Roosevelt', 'John Kennedy', 'William Howard', 'Lyndon Johnson', 'Woodrow Wilson', 'Richard Nixon', 'Warren Harding', 'Gerald Ford', 'Calvin Coolidge', 'James Carter', 'Herbert Hoover', 'Ronald Reagan', 'Franklin Roosevelt', 'George Bush', 'Harry Truman', 'William Clinton', 'Dwight Eisenhower', 'George W. Bush', 'Barack Obama'];
+	$('input[type=list]').w2field('list', { items: people });
+	$('input[type=combo]').w2field('combo', { items: people });
+</script>

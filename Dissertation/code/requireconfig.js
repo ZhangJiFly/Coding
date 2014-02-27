@@ -35,6 +35,12 @@ require.config({
 			name: "datatables",
 			location: "./libs/datatables/media/js",
 			main: "jquery.dataTables"
+		},
+		{
+
+			name: "w2ui",
+			location: "./libs/w2ui",
+			main: "w2ui"
 		}
 
 

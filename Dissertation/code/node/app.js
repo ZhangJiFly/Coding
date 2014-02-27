@@ -231,6 +231,7 @@ app.get('/Staff/:file', restrictStaff, function(req, res){
   var StaffId = req.session.user.StaffId;
   var school = req.session.user.School;
   var degree = req.query.degree;
+  console.log(degree);
   if (file == "home"){
     var name = req.session.user.Forename + " " + req.session.user.Surname;
     var email = req.session.user.Email;
@@ -247,15 +248,22 @@ app.get('/Staff/:file', restrictStaff, function(req, res){
     });
   }
   else if (file == "degree"){
+    console.log(degree);
+    console.log(school);
 
-    degreeCourseLists(degree, function(rows){
-      html = jadeTemp[file](Degree = degree, School = school);
-      res.render(html);
+    degreeCourseLists(degree, function(dCourseLists){
+      courseLists(school, function(allCourseLists){
+        console.log(allCourseLists);
+        html = jadeTemp[file](Degree = degree, School = school, dCourseLists = JSON.stringify(dCourseLists), AllCourseLists = JSON.stringify(allCourseLists));
+        res.render(html);
+
+      });
     });
   }
   else if (file == "school"){
     degrees(school, function(degreeRows){
       courseLists(school,function(courseRows){
+        console.log(courseRows);
         html = jadeTemp[file](Degrees = JSON.stringify(degreeRows), CL = JSON.stringify(courseRows), School = school);
         res.render(html);
       });
@@ -299,6 +307,13 @@ app.get('/js/libs/:lib/media/js/:file', function (req, res) {
   sub1 = req.params.sub1,
   sub2 = req.params.sub2;
  res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/js/libs/" + lib + '/media/js/' + file);
+});
+
+app.get('/js/libs/:lib/:sub/:file', function (req, res) {
+  var file = req.params.file,
+  lib = req.params.lib,
+  sub = req.params.sub;
+ res.sendfile("/Users/Crippled.Josh/Coding/Dissertation/code/js/libs/" + lib + '/'+sub+'/' + file);
 });
 
 app.get('/:folder/:file', function (req, res) {
@@ -356,12 +371,9 @@ io.sockets.on('connection', function (socket) {
     console.log(socket);
     getSchoolCourses(data, function(courses){
       socket.emit('courses', courses);
-      // console.log(courses);
     }); 
   });
   socket.on('courseList', function (data) {
-    // console.log("\n\n\n\n");
-    // console.log(data);
     updateCourseList(data);
     updateGroup(data);
   });

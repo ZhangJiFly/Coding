@@ -1,136 +1,8 @@
 <html>
   <script src="/js/libs/requirejs/require.js"></script>
   <script src="/requireconfig.js"></script>
-  <script> src='../js/libs/media/js/jquery.dataTables.js'</script>
-  <script>
-    require.config({
-    baseUrl: "../js"
-    });
+  <script src="/js/CCL.js"></script>
 
-    require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
-      var groupCounter = 0;
-      var coursesTotal;
-      var courses = []; 
-      var choices = [];
-      var createGroup = function(){
-
-        var group = groupCounter
-        groupCounter++;
-        courses.push(coursesTotal);
-        choices.push([]);
-
-
-
-        $('#main').append("<div class='row' group='"+ group + "'><div class='panel panel-primary'><div class='panel-heading'>Group: " + (group + 1) + "</div><div class='panel-body'><div class='col-md-6'><div class='form-group'>Minimum Credits: <input type='number' name='Credits' min='0' max='0' required id='credits" + group+ "''></div><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='choices" + group + "' group='"+ group + "'></table></div><div class='col-md-6'><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' group='"+ group + "' id='courses" + group + "'></table></div></div></div>");
-        $('#choices'+group).dataTable( {
-          "bFilter": false,
-          "bInfo": false,
-          "bPaginate": false,
-          "aaData": choices[group],
-          "sStripeOdd":true,
-          "aoColumns": [
-            {
-            "mData": function (data, type, val) {
-              return "<button type='button' group=" + group + " class='btn btn-default' id='remove'>Remove</button>"
-            },
-            "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
-              var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
-              var button = $(btn);
-              var tr = $('#courses'+group);//[0]['tBodies'][0]['childNodes'][oData.id];
-              console.log(tr);
-              button.click(function(){
-                var table = $('#choices' + group);
-                var aPos = table.dataTable().fnGetPosition(Td);
-                var row = choices[group][aPos[0]];
-                var credits = row.Credit;
-                $('#courses' + group).dataTable().fnAddData([row]);
-                var max = $('#credits' + group)[0]['attributes']['max'].value
-                $('#credits' + group)[0]['attributes']['max'].value = parseInt(max) - parseInt(credits); 
-                choices[group].splice(aPos[0],1);
-                table.dataTable().fnDeleteRow(aPos[0]);
-              });
-              }, "sTitle": "Remove",
-            },
-            {"mData":"CourseId", "sTitle": "Course ID" },
-            {"mData": "Name", "sTitle": "Course Name" },
-            {"mData": "Credit", "sTitle": "Credits" },
-            ]
-        } );
-        $('#courses'+group).dataTable( {
-          "aaData": courses[group],
-          "bInfo": false,
-          "bPaginate": false,
-          "yScroll": true,
-          "sStripeOdd":true,
-          "aoColumns": [
-            {
-              "mData": function (data, type, val) {
-                return "<button type='button' group=" + group + " class='btn btn-default' id='select'>Select</button>"
-              },
-              "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
-                var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
-                var button = $(btn);
-                var table = $('#courses' + group);
-                button.click(function(){
-                  //var aPos = table.dataTable().fnGetPosition(Td);
-                  var row = courses[group][iRow];
-                  var tr = table[0]['tBodies'][0]['childNodes'][iRow];
-                  table.dataTable().fnDeleteRow(iRow);
-                  var credits = row.Credit;
-                  var max = $('#credits' + group)[0]['attributes']['max'].value
-                  $('#credits' + group)[0]['attributes']['max'].value = parseInt(max) + parseInt(credits); 
-                  console.log(row);
-                  choices[group].push(row);
-                  $('#choices' + group).dataTable().fnAddData([row]);
-                });
-              },
-              "sTitle": "Select",
-            },
-            {"mData":"CourseId", "sTitle": "Course ID" },
-            { "mData": "Name", "sTitle": "Course Name" },
-            { "mData": "Credit", "sTitle": "Credits" },
-            {"mData": "Level", "sTitle": "Level" },  
-          ]
-        } );
-      }
-      var socket = io.connect('http://localhost');
-      socket.emit('coursesPlease', "Engineering");
-      socket.on('courses', function (data) {
-        coursesTotal = data;
-        createGroup();
-      });
-        
-      $('#addGroup').click(function(){
-
-        createGroup();
-        getSubmitValues();
-      });
-
-
-      var getSubmitValues = function(){
-        var details = {
-          "groups": [],
-          "listName": $('#CourseListName')[0].value,
-          "school": "Engineering",
-          "level":3,
-        }
-        var data = [];
-        for (var i = 0; i<groupCounter; i++){
-          var group = {};
-          var credits = $('#credits' + i)[0].valueAsNumber;
-
-          group.credits = credits;
-          group.courses = choices[i];
-          details.groups.push(group);
-         }
-        return details;
-      }
-      //$('#submit').click(getSubmitValues);
-      $('#courselist').submit(function () {
-        socket.emit('courseList', getSubmitValues());
-        return true;
-      });
-    });
 
   </script>
   <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
@@ -149,7 +21,7 @@
             <li><a href="./home">Home</a></li>
             <li><a href="./advisor">Advisor</a></li>
             <li><a href="./lecturer.html">Lecturer</a></li>
-            <li class="active"><a href="./TC.html">Teaching Committee</a></li>
+            <li class="active"><a href="./school">School</a></li>
             <li><a href="./DHY.html">Dept Head of Year</a></li>
             <li><a href="./help.html">Help</a></li>
 
@@ -162,27 +34,37 @@
     </div>
   </head>
   <body>
+  <div class="container">
+  <div class="row">
+  <ol class="breadcrumb">
+    <li><a href='./school'> #{School}</a>
+    <li class = "active"><a href='./this'> #{Degree}<a>
+  </ol>
   <form role="form" id="courselist" action="./school">
     <div class="container" id="main" >
       <div class="row">
         <button type="button" class="btn btn-default" id="addGroup">Add Group</button>
         <div class="form-group">
           <div class="input-group">
-            <label for="CourseListNameLabel">CourseList Name</label>
-            <input type="text" class="form-control" id="CourseListName" required placeholder="Assign Course List Name">
-            Level:
-            <select class="selectpicker">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>M</option>
-            </select>
-            Filter by level:
-             <select class="selectpicker">
-              <option>true</option>
-              <option>false</option>
-            </select>
+            <div class="col-md-4">
+              <label for="CourseListNameLabel">CourseList Name</label>
+              <input type="text" class="form-control" id="CourseListName" required placeholder="Assign Course List Name">
+            </div>
+            <div class="col-md-7">
+              Level:
+              <select class="selectpicker">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>M</option>
+              </select>
+              Filter by level:
+               <select class="selectpicker">
+                <option>true</option>
+                <option>false</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
