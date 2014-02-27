@@ -48,8 +48,8 @@ require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
           }, "sTitle": "Remove", "sWidth": 25
         },
         {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 10 },
-        {"mData": "Name", "sTitle": "Course Name", "sWidth": 10 },
-        {"mData": "Credit", "sTitle": "Credits", "sWidth": 10},
+        {"mData": "Name", "sTitle": "Course Name", "sWidth": 30 },
+        {"mData": "Credit", "sTitle": "Credits", "sWidth": 20},
         ]
     } );
     $('#courses'+group).dataTable( {

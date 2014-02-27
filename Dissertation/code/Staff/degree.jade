@@ -7,16 +7,6 @@ html
   link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
   link(rel='stylesheet', type='text/css', href='/css/bootstrap-theme.css')
   link(href='/css/starterTemp.css', rel='stylesheet')
-  script(type='text/javascript', src='http://w2ui.com/src/w2ui-fields-1.0.min.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/lib/codemirror.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/javascript.js')
-  script(src='http://w2ui.com/web/pages/code-mirror.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/htmlmixed.js')
-  link(rel='stylesheet', href='http://w2ui.com/web/js/CodeMirror/lib/codemirror.css')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/css.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/xml.js')
-  script(src='../js/degree.js')
-  link(rel='stylesheet', type='text/css', href='http://w2ui.com/src/w2ui-fields-1.0.min.css')
   head
     .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
       .container
@@ -50,82 +40,42 @@ html
             a(href='./school') #{School}
           li
             a(href='./this') #{Degree}
-    .container
+    .container#years
       .row
         h3 Degree Years
-      .row
-       .panel.panel-primary
-          .panel-heading First Year Course List
-          .panel-body 
-            .w2ui-label  List&colon; 
-            .w2ui-field
-              input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='')
-              .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
-              span.legend
-              div(style='height: 30px;')
-      .row
-        .panel.panel-primary
-          .panel-heading Second Year Course List
-          .panel-body 
-            .w2ui-label  List&colon; 
-            .w2ui-field.col-md-3
-              input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='')
-              .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
-              span.legend
-              div(style='height: 30px;')
-              #accordion.panel-group
-            #accordion.panel-group.col-md-9
-              .panel.panel-default
-                .panel-heading
-                  h4.panel-title
-                    a(data-toggle='collapse', data-parent='#accordion', href='#collapseOne')
-                      | Collapsible Group Item &num;1
-                #collapseOne.panel-collapse.collapse.in
-                  .panel-body
-                    | Anim pariatur cliche reprehenderit&comma; enim eiusmod high life accusamus terry richardson ad squid&period; 3 wolf moon officia aute&comma; non cupidatat skateboard dolor brunch&period; Food truck quinoa nesciunt laborum eiusmod&period; Brunch 3 wolf moon tempor&comma; sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et&period; Nihil anim keffiyeh helvetica&comma; craft beer labore wes anderson cred nesciunt sapiente ea proident&period; Ad vegan excepteur butcher vice lomo&period; Leggings occaecat craft beer farm-to-table&comma; raw denim aesthetic synth nesciunt you probably haven&apos;t heard of them accusamus labore sustainable VHS&period;
-              .panel.panel-default
-                .panel-heading
-                  h4.panel-title
-                    a(data-toggle='collapse', data-parent='#accordion', href='#collapseTwo')
-                      | Collapsible Group Item &num;2
-                #collapseTwo.panel-collapse.collapse
-                  .panel-body
-                    | Anim pariatur cliche reprehenderit&comma; enim eiusmod high life accusamus terry richardson ad squid&period; 3 wolf moon officia aute&comma; non cupidatat skateboard dolor brunch&period; Food truck quinoa nesciunt laborum eiusmod&period; Brunch 3 wolf moon tempor&comma; sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et&period; Nihil anim keffiyeh helvetica&comma; craft beer labore wes anderson cred nesciunt sapiente ea proident&period; Ad vegan excepteur butcher vice lomo&period; Leggings occaecat craft beer farm-to-table&comma; raw denim aesthetic synth nesciunt you probably haven&apos;t heard of them accusamus labore sustainable VHS&period;
-              .panel.panel-default
-                .panel-heading
-                  h4.panel-title
-                    a(data-toggle='collapse', data-parent='#accordion', href='#collapseThree')
-                      | Collapsible Group Item &num;3
-                #collapseThree.panel-collapse.collapse
-                  .panel-body
-                    | Anim pariatur cliche reprehenderit&comma; enim eiusmod high life accusamus terry richardson ad squid&period; 3 wolf moon officia aute&comma; non cupidatat skateboard dolor brunch&period; Food truck quinoa nesciunt laborum eiusmod&period; Brunch 3 wolf moon tempor&comma; sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et&period; Nihil anim keffiyeh helvetica&comma; craft beer labore wes anderson cred nesciunt sapiente ea proident&period; Ad vegan excepteur butcher vice lomo&period; Leggings occaecat craft beer farm-to-table&comma; raw denim aesthetic synth nesciunt you probably haven&apos;t heard of them accusamus labore sustainable VHS&period;
-      .row
-        .panel.panel-primary
-          .panel-heading Third Year Course List
-          .panel-body 
-            .w2ui-label  List&colon; 
-            .w2ui-field
-              input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='')
-              .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
-              span.legend
-              div(style='height: 30px;')
-      .row
-        .panel.panel-primary
-          .panel-heading Fourth Year Course List
-          .panel-body 
-            .w2ui-label  List&colon; 
-            .w2ui-field
-            input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='')
-            .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
-            span.legend
-            div(style='height: 30px;')
-  script
+    #{CreateYears()}
+  
+  
+
+    
+script(type='text/javascript', src='http://w2ui.com/src/w2ui-fields-1.0.min.js')
+script
+  require.config({
+    baseUrl: "../js"
+  });
+
+  require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
     var listObj = "#{AllCourseLists}";
     listObj = JSON.parse(listObj.replace(/&quot;/ig,'"'));
-    var listProp = []
-    console.log(listObj[0].CourseListId);
-    for(var i = 0;i<listObj.length;i++){
-      listProp.push(listObj[i].CourseListId)
+    var listProp = [];
+    var list = ["First", "Second", "Third", "Forth", "Masters"];
+
+    if(listObj.length>0){
+      for(var i = 0;i<listObj.length;i++){
+        listProp.push(listObj[i].CourseListId)
+      }
     }
+
     $('input[type=list]').w2field('list', { items: listProp });
+
     
+  });
+
+script(src='http://w2ui.com/web/js/CodeMirror/lib/codemirror.js')
+script(src='http://w2ui.com/web/js/CodeMirror/mode/javascript.js')
+script(src='http://w2ui.com/web/pages/code-mirror.js')
+script(src='http://w2ui.com/web/js/CodeMirror/mode/htmlmixed.js')
+link(rel='stylesheet', href='http://w2ui.com/web/js/CodeMirror/lib/codemirror.css')
+script(src='http://w2ui.com/web/js/CodeMirror/mode/css.js')
+script(src='http://w2ui.com/web/js/CodeMirror/mode/xml.js')
+link(rel='stylesheet', type='text/css', href='http://w2ui.com/src/w2ui-fields-1.0.min.css')
