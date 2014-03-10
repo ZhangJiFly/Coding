@@ -25,18 +25,10 @@ var createYears = function(){
 
 query.updateStart(pass);
 
-io.sockets.on('connection', function (socket) {
-  socket.on('coursesPlease', function (data) {
-    console.log(socket);
-    query.getSchoolCourses(data, function(courses){
-      socket.emit('courses', courses);
-    }); 
-  });
+io.sockets.on('connection', function (socket) { 
   socket.on('courseList', function (data) {
-    query.updateCourseList(data);
-    query.updateGroup(data);
+    
   });
 });
-
 
 server.listen(8080);

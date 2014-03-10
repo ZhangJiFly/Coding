@@ -7,14 +7,111 @@ html
   link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
   link(rel='stylesheet', type='text/css', href='/css/bootstrap-theme.css')
   link(href='/css/starterTemp.css', rel='stylesheet')
-  script(src='http://w2ui.com/web/js/CodeMirror/lib/codemirror.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/javascript.js')
-  script(src='http://w2ui.com/web/pages/code-mirror.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/htmlmixed.js')
-  link(rel='stylesheet', href='http://w2ui.com/web/js/CodeMirror/lib/codemirror.css')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/css.js')
-  script(src='http://w2ui.com/web/js/CodeMirror/mode/xml.js')
-  link(rel='stylesheet', type='text/css', href='http://w2ui.com/src/w2ui-fields-1.0.min.css')
+
+  script(src='../js/libs/CodeMirror/lib/codemirror.js')
+  script(src='../js/libs/CodeMirror/mode/javascript.js')
+  script(src='../js/libs/CodeMirror/code-mirror.js')
+  script(src='../js/libs/CodeMirror/mode/htmlmixed.js')
+  link(rel='stylesheet', href='../css/codemirror.css')
+
+  script(src='../js/libs/CodeMirror/mode/css.js')
+  script(src='../js/libs/CodeMirror/mode/xml.js')
+  link(rel='stylesheet', type='text/css', href='../css/w2ui-fields.min.css')
+
+  script(type='text/javascript', src='../js/libs/w2ui/w2ui-fields.js')
+  script
+    require.config({
+      baseUrl: "../js"
+    });
+
+    require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+      var getSubmitValues = function(){
+          var degree = "#{degreeDetails}"
+          degree = JSON.parse(degree.replace(/&quot;/ig,'"'))[0];
+
+          var details = {
+            "degree": degree.Name,
+            "school": degree.School,
+          }
+          var courseLists = []
+          var years = degree.Years
+          for (var i = 0; i<years; i++){
+            var val = $('#CCL' + i)[0].value
+            courseLists.push(val);
+           }
+          details.courseLists = courseLists;
+          console.log(courseLists);
+          return details;
+      }
+      $('#saving').submit(function () {
+        var names = getSubmitValues();
+        console.log(names)
+        $.ajax({
+            url: "/AssignCourseListNames",
+            async: false,
+            type: "POST",
+            data: names,
+            contentType: "application/x-www-form-urlencoded",
+            dataType: "json",
+        });
+        return false;
+      });
+      var objectList = "#{AllCourseListNames}";
+      var objects = "#{AllCourseListInfo}";
+      objectList = JSON.parse(objectList.replace(/&quot;/ig,'"'));
+      objects = JSON.parse(objects.replace(/&quot;/ig,'"'));;
+      var listNames = [];
+      var usedNames = [];
+      if(objectList.length>0){
+        for(var i = 0;i<objectList.length;i++){
+          listNames.push(objectList[i].CourseListId)
+        }
+      }
+      $('input[type=list]').w2field('list', { items: listNames }); 
+      $('.w2field').focus(function(){
+        $(this).data("oldVal",this.value);
+      }).change(function(){
+        var CLname = this.value;
+        if(usedNames.indexOf($(this).data("oldVal")) != -1){
+          usedNames.splice(usedNames.indexOf($(this).data("oldVal")),1);       
+        }
+
+        if (usedNames.indexOf(CLname) == -1){
+          $('input[type=list]').w2field('list', { items: listNames }); 
+          var year = $(this).attr('year')
+          var div = $('#' + year);
+          div.empty();
+          var i = 0;
+          $.each(objects[CLname], function(key, value){
+            i++
+            CLnameNWS = CLname.replace(/ /g,'');
+            var string = "<div class='panel panel-default'><div class='panel-heading'><h4 class='panel-title'></h4><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + CLnameNWS + key + "'>Group " + i + "</a></div><div id='collapse" + CLnameNWS + key + "' class='panel-collapse collapse'><div class='panel-body'><table id='table" + key + CLnameNWS + "' cellpadding='10' cellspacing='10' border='1' class='display'></table></div></div></div>"
+            div.append(string);
+            $('#table' + key + CLnameNWS).dataTable({
+              "aaData": value,
+              "aoColumns": [
+            {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 60 },
+            {"mData": "Name", "sTitle": "Course Name", "sWidth": 100 },
+            {"mData": "Credit", "sTitle": "Credits", "sWidth": 60 },
+            {"mData": "Level", "sTitle": "Level", "sWidth": 0 },
+            ],
+              "bPaginate": false,
+              "bLengthChange": false,
+              "bInfo": false,
+              "bFilter": false,
+              });
+          });
+        usedNames.push(CLname);
+        } 
+        else{
+          var div = $('#' + year);
+          $(this).val('');
+          div.empty();
+
+        }
+       
+      });
+    });
   head
     - var degree = degreeDetails
     - degree = JSON.parse(degree.replace(/&quot;/ig,'"'))[0];
@@ -55,57 +152,28 @@ html
           li
             a(href='./this') #{Degree}
     .container#years
-      .row
-        h3 Degree Years
-  - for (var i = 0; i < years; i++)
-      .container  
+      form#saving(role='form', action='./school')
         .row
-          .panel.panel-primary
-            .panel-heading 
-              = list[i] + " Year Course List"
-            .panel-body 
-              .w2ui-label  List&colon; 
-              .w2ui-field.col-md-3
-                input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='', year=i)
-                .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
-                span.legend
-                div(style='height: 30px;')
-              #accordion.panel-group.col-md-9
-                div(id = i)
+          .col-md-2
+            h3 Degree Years
+          .col-md-1
+            button#submit.btn.btn-default(type='text') Save
+    - for (var i = 0; i < years; i++)
+        .container  
+          .row
+            .panel.panel-primary
+              .panel-heading 
+                = list[i] + " Year Course List"
+              .panel-body 
+                .w2ui-label  List&colon; 
+                .w2ui-field.col-md-3
+                  input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='', year=i, id="CCL" + i,)
+                  .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
+                  span.legend
+                  div(style='height: 30px;')
+                #accordion.panel-group.col-md-9
+                  div(id = i)
                   
     
-script(type='text/javascript', src='http://w2ui.com/src/w2ui-fields-1.0.min.js')
-script
-  require.config({
-    baseUrl: "../js"
-  });
 
-  require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
 
-    var objectList = "#{AllCourseListNames}";
-    var objects = "#{AllCourseListInfo}";
-    objectList = JSON.parse(objectList.replace(/&quot;/ig,'"'));
-    var objects = JSON.parse(objects.replace(/&quot;/ig,'"'));;
-    listNames = [];
-
-    if(objectList.length>0){
-      for(var i = 0;i<objectList.length;i++){
-        listNames.push(objectList[i].CourseListId)
-      }
-    }
-    $('input[type=list]').w2field('list', { items: listNames });
-    var selections = $('.w2field').change(function(){
-      var CLname = this.value;
-      var year = $(this).attr('year')
-      var div = $('#' + year);
-      div.empty();
-      var i = 0;
-      $.each(objects[CLname], function(key, value){
-        i++
-        CLnameNWS = CLname.replace(/ /g,'');
-        var string = "<div class='panel panel-default'><div class='panel-heading'><h4 class='panel-title'></h4><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + CLnameNWS + key + "'>Group " + i + "</a></div><div id='collapse" + CLnameNWS + key + "' class='panel-collapse collapse'><div class='panel-body'>Homo</div></div></div>"
-        div.append(string);
-      });
-      
-    });
-  });

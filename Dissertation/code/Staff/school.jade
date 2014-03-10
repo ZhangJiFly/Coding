@@ -3,7 +3,6 @@ html
   head
     script(type='text/javascript', src='../js/libs/requirejs/require.js')
     script(type='text/javascript', src='../requireconfig.js')
-    script(type='text/javascript', src='../js/libs/media/js/jquery.dataTables.js')
          
     script
       require.config({
@@ -15,8 +14,6 @@ html
         var courseLists= "#{CL}";
         degrees = JSON.parse(degrees.replace(/&quot;/ig,'"'));
         courseLists = JSON.parse(courseLists.replace(/&quot;/ig,'"'));
-        console.log(degrees);
-        console.log(courseLists);
         $('#degrees').dataTable({
         "aaData": degrees,
         "aoColumns": [
@@ -44,6 +41,7 @@ html
     link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
     link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
     link(href='../css/starterTemp.css', rel='stylesheet')
+    - var school = School
     .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
       .container
         .row
@@ -71,28 +69,28 @@ html
       .row
         ol.breadcrumb
           li.active
-            a(href="#">school) #{School}
+            a(href="#">school) 
+              = school
 
 
   body
     .container
       .row
-        .col-md-4
-          
+        .col-md-6
           .panel.panel-primary
-            .panel-heading School of Engineering Degrees
+            .panel-heading
+              = school + " Degrees"
             .panel-body 
               table#degrees.display(cellpadding='10', cellspacing='10', border='1')
-        .col-md-4
-          
+        .col-md-6
           .panel.panel-primary
-            .panel-heading School of Engineering Course Lists
+            .panel-heading 
+              = school + " Course Lists"
             .panel-body 
-              .container
+              table#courseLists.display(cellpadding='10', cellspacing='10', border='1')
+              .container.col-md-6
                 .row
-                  table#courseLists.display(cellpadding='10', cellspacing='10', border='1')
-                .row
-                  form(action='./CCL.html')
+                  form(action='./CCL')
                       button#CCL.btn.btn-default(type='submit') Create New Course List
 
 

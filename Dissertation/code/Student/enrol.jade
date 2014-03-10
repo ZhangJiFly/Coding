@@ -1,0 +1,121 @@
+!!! 5
+html
+  head
+    script(type='text/javascript', src='../js/libs/requirejs/require.js')
+    script(type='text/javascript', src='../requireconfig.js')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    script(src='../js/libs/jquery/jquery.js')
+    script(src='../js/libs/bootstrap/js/bootstrap.js')
+    link(href='../css/starterTemp.css', rel='stylesheet')
+    script
+      require.config({
+      baseUrl: "../js"
+      });
+
+      require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+        var courseListData = "#{CourseListData}"
+        var coursesTaken = "#{courses}"
+        courseListData = JSON.parse(courseListData.replace(/&quot;/ig,'"'));
+        $.each(courseListData, function(itemKey, item){
+          $.each(item, function(groupKey, group){
+            CLnameNWS = itemKey.replace(/ /g,'');
+            $('#table' + CLnameNWS + groupKey).dataTable({
+              "aaData": group,
+              "aoColumns": [
+                {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 60 },
+                {"mData": "Name", "sTitle": "Course Name", "sWidth": 100 },
+                {"mData": "Credit", "sTitle": "Credits", "sWidth": 60 },
+                {"mData": "Level", "sTitle": "Level", "sWidth": 0 },
+                {"mData": function (data, type, val) {
+                  return "<button type='button' class='btn btn-default enrol'>Enrol</button>"
+                }, "sTitle": "Enrol", "sWidth": 25},
+              ],
+              "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+                if (coursesTaken.indexOf(aData.CourseId) != -1){
+                  $(nRow).addClass("enroled");
+                }
+                
+              },
+              "bPaginate": false,
+              "bLengthChange": false,
+              "bInfo": false,
+              "bFilter": false,
+            });
+          });
+        });
+        $(".enrol").click(function(){
+          console.log(this);
+          console.log($(this));
+          var course = $(this)[0].parentElement.parentElement.children[0].innerText;
+          $.ajax({
+            url: "/AssignCourseListNames",
+            async: true,
+            type: "POST",
+            data: courseId,
+            contentType: "text/html",
+            dataType: "text",
+            accepts: "text"
+          });
+        })
+      });
+    .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a(href='./home.html') Home
+            li
+              a(href='./details.html') Details
+            li
+              a(href='./register.html') Register
+            li.active
+              a(href='./enrol') Enrol
+            li
+              a(href='./courses') Courses
+            li
+              a(href='./FAQ.html') FAQ
+            li
+              a(href='./help.html') Help
+          ul.nav.navbar-nav.pull-right
+            li
+              a(href='/logout') Logout
+
+  - var degree = Degree
+  - var list = ["First", "Second", "Third", "Fourth", "Masters"];
+  - CourseListData = JSON.parse(CourseListData);
+  - var i = 0
+  - var string = "<div class='panel panel-default'><div class='panel-heading'><h4 class='panel-title'></h4><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + item + i + "'>Group " + i + "</a></div><div id='collapse" + item + i + "' class='panel-collapse collapse'><div class='panel-body'><table id='table" + i + item + "' cellpadding='10' cellspacing='10' border='1' class='display'></table></div></div></div>"
+            
+  body
+    .container
+      h4 
+        = "Enrolling by Requirements for " + degree
+      .row
+        .col-md-4
+          - each item, itemKeyS in CourseListData
+            - var itemKey = itemKeyS.replace(/ /g,'');
+            .container  
+              .row
+                .panel.panel-primary
+                  .panel-heading 
+                    h10.panel-title
+                      a(data-toggle='collapse', data-parent='#accordion', href='#collapse' + itemKey) 
+                        = list[i] + " Year Courses"
+                  .panel-collapse.collapse.in(id = "collapse" + itemKey)
+                    .panel-body
+                      #accordion.panel-group.col-md-12
+                        - each group, groupKey in item
+                          .panel.panel-default
+                            .panel-heading
+                              h10.panel-title
+                                a(data-toggle='collapse', data-parent='#accordion', href='#collapse' + itemKey + groupKey, style=) 
+                                  = "Group " + (parseInt(groupKey) + 1)
+                            .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
+                              .panel-body
+                              table(id = "table" + itemKey + groupKey, class ="display" ,cellpadding='10', cellspacing='10', border='1')
+            - i++ 
+

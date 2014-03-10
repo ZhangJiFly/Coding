@@ -5,13 +5,26 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
-table { border-collapse: collapse; border: 1px solid #000;}
+
+.container{
+	padding: 2px 14px;
+}
+
+.panel-title{
+	a:link {color:#FF0000;}
+}
+
+table { border-collapse: collapse; border: 1px solid #000; width: 100%;}
 caption { font-size: larger; margin: 1em auto; }
 th, td { padding: 2px; }
 th, thead { background: #3881C0; color: #fff; border: 1px solid #000; }
-tr:nth-child(even) { background: #ccc; }
 tr:hover { background: #aaa; }
 td { border-right: 1px solid #777; }
+
+.enrolled{
+	background:#dfffd8;
+}
+
 
 .dataTables tbody {
     padding: 30px;
