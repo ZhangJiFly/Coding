@@ -4,9 +4,9 @@ html
   link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
   link(rel='stylesheet', type='text/css', href='/css/bootstrap-theme.css')
   link(href='/css/starterTemp.css', rel='stylesheet')
-  script(type='text/js')
+  script
     require.config({
-      baseUrl: "../js"
+      baseUrl: "../js",
     });
 
     require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
@@ -14,6 +14,7 @@ html
       var coursesTotal;
       var courses = []; 
       var choices = [];
+      var coursesTables = [];
       coursesTotal = "#{data}";
       coursesTotal = JSON.parse(coursesTotal.replace(/&quot;/ig,'"'))
       console.log(coursesTotal)
@@ -22,8 +23,8 @@ html
         groupCounter++;
         courses.push(coursesTotal);
         choices.push([]);
-        $('#main').append("<div class='row' group='"+ group + "'><div class='panel panel-primary'><div class='panel-heading'>Group: " + (group + 1) + "</div><div class='panel-body'><div class='col-md-6'><div class='form-group'>Minimum Credits: <input type='number' name='Credits' min='0' max='0' required id='credits" + group+ "''></div><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='choices" + group + "' group='"+ group + "'></table></div><div class='col-md-6'><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' group='"+ group + "' id='courses" + group + "'></table></div></div></div>");
-        $('#choices'+group).dataTable( {
+        $('#main').append("<div class='row' group='"+ group + "'><div class='panel panel-primary'><div class='panel-heading'>Group: " + (group + 1) + "</div><div class='panel-body'><div class='col-md-6'><div class='form-group'><div class='input-group'>Minimum Credits: <input type='number' name='Credits' min='0' max='0' required id='min" + group+ "''>  Maximum: <input type='number' name='Credits' min='0' max='0' required id='max" + group+ "''></div></div><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='choices" + group + "' group='"+ group + "'></table></div><div class='col-md-6'><table class='tableTest' cellpadding='0' cellspacing='0' border='0' class='display dataTable' group='"+ group + "' id='courses" + group + "'></table></div></div></div>");
+        $('#choices'+group).dataTable({
           "bFilter": false,
           "bInfo": false,
           "bPaginate": false,
@@ -45,8 +46,9 @@ html
                 var row = table.dataTable().fnGetData(aPos[0]);
                 var credits = row.Credit;
                 $('#courses' + group).dataTable().fnAddData([row]);
-                var max = $('#credits' + group)[0]['attributes']['max'].value
-                $('#credits' + group)[0]['attributes']['max'].value = parseInt(max) - parseInt(credits); 
+                var max = $('#min' + group)[0]['attributes']['max'].value
+                $('#min' + group)[0]['attributes']['max'].value = parseInt(max) - parseInt(credits);
+                $('#max' + group)[0]['attributes']['max'].value = parseInt(max) - parseInt(credits); 
                 console.log(choices[group][aPos[0]]);
                 choices[group].splice(aPos[0],1);
                 table.dataTable().fnDeleteRow(aPos[0]);
@@ -57,47 +59,73 @@ html
             {"mData": "Name", "sTitle": "Course Name", "sWidth": 30 },
             {"mData": "Credit", "sTitle": "Credits", "sWidth": 20},
             ]
-        } );
-        $('#courses'+group).dataTable( {
-          "aaData": courses[group],
-          "bInfo": false,
-          "bPaginate": false,
-          "bScrollCollapse": true,
-          "sScrollY": "300px",
-          "bAutoWidth": false,
-          "aoColumns": [
-            {
-              "mData": function (data, type, val) {
-                return "<button type='button' group=" + group + " class='btn btn-default' id='select'>Select</button>"
-              },
-              "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
-                var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
-                var button = $(btn);
-                var table = $('#courses' + group);
-                button.click(function(){
-                  var aPos = table.dataTable().fnGetPosition(Td);
-                  var row = table.dataTable().fnGetData(aPos[0]);
-                  choices[group].push(row);
-                  $('#choices' + group).dataTable().fnAddData([row]);
-                  var tr = table[0]['tBodies'][0]['childNodes'][aPos[0]];
-                  table.dataTable().fnDeleteRow(aPos[0]);
-                  var credits = row.Credit;
-                  var max = $('#credits' + group)[0]['attributes']['max'].value
-                  $('#credits' + group)[0]['attributes']['max'].value = parseInt(max) + parseInt(credits); 
-                });
-              },
-              "sTitle": "Select", "sWidth":50 },
-            {"mData":"CourseId", "sTitle": "Course ID", "sWidth":40 },
-            {"mData": "Name", "sTitle": "Course Name", "sWidth":40 },
-            {"mData": "Credit", "sTitle": "Credits", "sWidth":20 },
-            {"mData": "Level", "sTitle": "Level", "sWidth":20 },  
-          ]
-        } );
-      }
+          });
+          var dataTable = $('#courses'+group).dataTable( {
+            "aaData": courses[group],
+            "bInfo": false,
+            "bPaginate": false,
+            "bScrollCollapse": true,
+            "sScrollY": "300px",
+            "bAutoWidth": false,
+            "aoColumns": [
+              {
+                "mData": function (data, type, val) {
+                  return "<button type='button' group=" + group + " class='btn btn-default' id='select'>Select</button>"
+                },
+                "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
+                  var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
+                  var button = $(btn);
+                  var table = $('#courses' + group);
+                  button.click(function(){
+                    var aPos = table.dataTable().fnGetPosition(Td);
+                    var row = table.dataTable().fnGetData(aPos[0]);
+                    choices[group].push(row);
+                    $('#choices' + group).dataTable().fnAddData([row]);
+                    var tr = table[0]['tBodies'][0]['childNodes'][aPos[0]];
+                    table.dataTable().fnDeleteRow(aPos[0]);
+                    var credits = row.Credit;
+                    var max = $('#min' + group)[0]['attributes']['max'].value
+                    $('#min' + group)[0]['attributes']['max'].value = parseInt(max) + parseInt(credits);
+                    $('#max' + group)[0]['attributes']['max'].value = parseInt(max) + parseInt(credits); 
+                    $('#max' + group)[0]['attributes']['min'].value =  $('#min' + group)[0].value
+                  });
+                },
+                "sTitle": "Select", "sWidth":50 },
+              {"mData":"CourseId", "sTitle": "Course ID", "sWidth":40 },
+              {"mData": "Name", "sTitle": "Course Name", "sWidth":40 },
+              {"mData": "Credit", "sTitle": "Credits", "sWidth":20 },
+              {"mData": "Level", "sTitle": "Level", "sWidth":20 },  
+          ],
+        });
+        $('min' + group).blur(function(){
+          $('#max' + group)[0]['attributes']['min'].value =  this[0].value
+          console.log($('#max' + group)[0]['attributes']['min'].value);
+        });
+        coursesTables.push(dataTable);
+      };  
+
 
       createGroup();
       $('#addGroup').click(function(){
         createGroup();
+      });
+
+      $("#levelFilter").change(function(){
+        console.log(coursesTables);
+        var level = $(this)[0].value;
+        if (level != "None"){
+          $.each(coursesTables, function(key, value){
+            console.log($(this));
+
+            value.fnFilter(level, 4);
+          });
+        } else {
+          $.each(coursesTables, function(key, value){
+            console.log($(this));
+
+            value.fnFilter("", 4);
+          });
+        }
       });
       
       var getSubmitValues = function(){
@@ -110,9 +138,11 @@ html
         var data = [];
         for (var i = 0; i<groupCounter; i++){
           var group = {};
-          var credits = $('#credits' + i)[0].valueAsNumber;
+          var min = $('#min' + i)[0].valueAsNumber;
+          var max = $('#max' + i)[0].valueAsNumber;
 
-          group.credits = credits;
+          group.min = min;
+          group.max = max;
           group.courses = choices[i];
           details.groups.push(group);
          }
@@ -174,21 +204,18 @@ html
               button#addGroup.btn.btn-default(type='button') Add Group
               .form-group
                 .input-group
-                  .col-md-4
+                  .col-md-7
                     label(for='CourseListNameLabel') CourseList Name
                     input#CourseListName.form-control(type='text', required='required', placeholder='Assign Course List Name')
-                  .col-md-7
-                    | Level:
-                    select.selectpicker
+                  .col-md-5
+                    | Level: 
+                    select.selectpicker#levelFilter
+                      option None
                       option 1
                       option 2
                       option 3
                       option 4
                       option M
-                    | Filter by level:
-                    select.selectpicker
-                      option true
-                      option false
           .container
             button#submit.btn.btn-default(type='text') Submit
 

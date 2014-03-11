@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Course` (
   `Credit` VARCHAR(45) NULL,
   `School` VARCHAR(45) NOT NULL,
   `Level` ENUM('1','2','3','4','M') NULL,
+  `Semester` ENUM('1','2') NULL,
   PRIMARY KEY (`CourseId`),
   INDEX `fk_Course_School1_idx` (`School` ASC),
   CONSTRAINT `fk_Course_School1`
@@ -203,8 +204,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Groups` (
   `GroupId` INT NOT NULL,
-  `Credits` VARCHAR(45) NULL,
+  `Minimum` INT NULL,
   `CourseListId` VARCHAR(45) NOT NULL,
+  `Maximum` INT NULL,
   PRIMARY KEY (`GroupId`, `CourseListId`),
   INDEX `fk_Group_CourseList1_idx` (`CourseListId` ASC),
   CONSTRAINT `fk_Group_CourseList1`
@@ -219,11 +221,11 @@ ENGINE = InnoDB;
 -- Table `mydb`.`DegreeHasCourseList`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`DegreeHasCourseList` (
-  `CourseListId` VARCHAR(45) NOT NULL,
+  `CourseListId` VARCHAR(45) NULL,
   `Degree` VARCHAR(45) NOT NULL,
   `School` VARCHAR(45) NOT NULL,
-  `Year` INT NULL,
-  PRIMARY KEY (`CourseListId`, `Degree`, `School`),
+  `Year` INT NOT NULL,
+  PRIMARY KEY (`Degree`, `School`, `Year`),
   INDEX `fk_DegreeHasCourseList_CourseList1_idx` (`CourseListId` ASC),
   INDEX `fk_DegreeHasCourseList_Degree1_idx` (`Degree` ASC, `School` ASC),
   CONSTRAINT `fk_DegreeHasCourseList_CourseList1`

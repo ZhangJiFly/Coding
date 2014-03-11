@@ -16,6 +16,12 @@ html
       require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
         var courseListData = "#{CourseListData}"
         var coursesTaken = "#{courses}"
+        coursesTaken = JSON.parse(coursesTaken.replace(/&quot;/ig,'"'));
+        var courseIdsTaken = []
+        $.each(coursesTaken.list, function(key, val){
+          courseIdsTaken.push(val.CourseId);
+        });
+       
         courseListData = JSON.parse(courseListData.replace(/&quot;/ig,'"'));
         $.each(courseListData, function(itemKey, item){
           $.each(item, function(groupKey, group){
@@ -27,12 +33,13 @@ html
                 {"mData": "Name", "sTitle": "Course Name", "sWidth": 100 },
                 {"mData": "Credit", "sTitle": "Credits", "sWidth": 60 },
                 {"mData": "Level", "sTitle": "Level", "sWidth": 0 },
+                {"mData": "Semester", "sTitle": "Semester", "sWidth": 0 },
                 {"mData": function (data, type, val) {
                   return "<button type='button' class='btn btn-default enrol'>Enrol</button>"
                 }, "sTitle": "Enrol", "sWidth": 25},
               ],
               "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-                if (coursesTaken.indexOf(aData.CourseId) != -1){
+                if (courseIdsTaken.indexOf(aData.CourseId) != -1){
                   $(nRow).addClass("enroled");
                 }
                 
@@ -47,15 +54,23 @@ html
         $(".enrol").click(function(){
           console.log(this);
           console.log($(this));
-          var course = $(this)[0].parentElement.parentElement.children[0].innerText;
+          var row = $(this)[0].parentElement.parentElement;
+          var CourseId = row.children[0].innerText;
+          console.log(CourseId);
           $.ajax({
-            url: "/AssignCourseListNames",
+            url: "/enrolInCourse",
             async: true,
             type: "POST",
-            data: courseId,
-            contentType: "text/html",
-            dataType: "text",
-            accepts: "text"
+            data: {courseId: CourseId},
+            contentType: "application/x-www-form-urlencoded",
+            dataType: "json",
+            accepts: "text",
+            statusCode: {
+              200: function() {
+                courseIdsTaken.push(CourseId);
+                $(row).addClass("enroled");
+              }
+            }
           });
         })
       });
