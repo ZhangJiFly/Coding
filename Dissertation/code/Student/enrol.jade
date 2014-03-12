@@ -15,16 +15,21 @@ html
 
       require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
         var courseListData = "#{CourseListData}"
+        courseListData = JSON.parse(courseListData.replace(/&quot;/ig,'"'));
         var coursesTaken = "#{courses}"
         coursesTaken = JSON.parse(coursesTaken.replace(/&quot;/ig,'"'));
-        var courseIdsTaken = []
+        var courseIdsTaken = [];
+        var groupCreditsTaken = {};
         $.each(coursesTaken.list, function(key, val){
           courseIdsTaken.push(val.CourseId);
         });
        
-        courseListData = JSON.parse(courseListData.replace(/&quot;/ig,'"'));
+
         $.each(courseListData, function(itemKey, item){
+          groupCreditsTaken[itemKey] = []
+          console.log(groupCreditsTaken);
           $.each(item, function(groupKey, group){
+            groupCreditsTaken[itemKey].push(0);
             CLnameNWS = itemKey.replace(/ /g,'');
             $('#table' + CLnameNWS + groupKey).dataTable({
               "aaData": group,
@@ -35,11 +40,13 @@ html
                 {"mData": "Level", "sTitle": "Level", "sWidth": 0 },
                 {"mData": "Semester", "sTitle": "Semester", "sWidth": 0 },
                 {"mData": function (data, type, val) {
-                  return "<button type='button' class='btn btn-default enrol'>Enrol</button>"
+                  return "<button type='button' level = '" + itemKey + "' group = '" + groupKey + "' class='btn btn-default enrol'>Enrol</button>"
                 }, "sTitle": "Enrol", "sWidth": 25},
               ],
               "fnCreatedRow": function( nRow, aData, iDataIndex ) {
                 if (courseIdsTaken.indexOf(aData.CourseId) != -1){
+
+                  groupCreditsTaken[itemKey][groupKey] = groupCreditsTaken[itemKey][groupKey] + parseInt(aData.Credit);
                   $(nRow).addClass("enroled");
                 }
                 
@@ -52,12 +59,14 @@ html
           });
         });
         $(".enrol").click(function(){
-          console.log(this);
-          console.log($(this));
           var row = $(this)[0].parentElement.parentElement;
+          var credits = row.children[2].innerText;
           var CourseId = row.children[0].innerText;
-          console.log(CourseId);
-          $.ajax({
+          console.log($(this));
+          var group = $(this)[0].attributes[2].value;
+          var level = $(this)[0].attributes[1].value;
+          if (!groupCreditsTaken[level][group] + credits > courseListData[level][group] && courseIdsTaken.indexOf(CourseId)==-1){
+            $.ajax({
             url: "/enrolInCourse",
             async: true,
             type: "POST",
@@ -72,6 +81,11 @@ html
               }
             }
           });
+          }
+          else {
+            console.log("dog");
+          }
+          
         })
       });
     .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
@@ -122,12 +136,12 @@ html
                         = list[i] + " Year Courses"
                   .panel-collapse.collapse.in(id = "collapse" + itemKey)
                     .panel-body
-                      #accordion.panel-group.col-md-12
+                      .panel-group.col-md-12
                         - each group, groupKey in item
                           .panel.panel-default
                             .panel-heading
                               h10.panel-title
-                                a(data-toggle='collapse', data-parent='#accordion', href='#collapse' + itemKey + groupKey, style=) 
+                                a(data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey) 
                                   = "Group " + (parseInt(groupKey) + 1)
                             .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
                               .panel-body

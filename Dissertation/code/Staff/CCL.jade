@@ -11,20 +11,57 @@ html
 
     require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
       var groupCounter = 0;
-      var coursesTotal;
-      var courses = []; 
       var choices = [];
       var coursesTables = [];
-      coursesTotal = "#{data}";
+      var choicesTables = [];
+      var coursesTotal = "#{data}";
       coursesTotal = JSON.parse(coursesTotal.replace(/&quot;/ig,'"'))
-      console.log(coursesTotal)
+      var courses = coursesTotal; 
+
+
+      var addCourseToGroup = function(Td, group){
+        var row;
+        var aPos;
+        $.each(coursesTables, function(key, table){
+          aPos = table.fnGetPosition(Td);
+          row = table.fnGetData(aPos[0]);
+          table.fnDeleteRow(aPos[0]);
+        });
+        var credits = row.Credit;
+        courses.splice(aPos[0],1);
+        var max = parseInt($('#min' + group)[0]['attributes']['max'].value) + parseInt(credits);
+        $('#min' + group)[0]['attributes']['max'].value = max;
+        $('#max' + group)[0]['attributes']['max'].value = max; 
+        $('#max' + group)[0]['attributes']['min'].value =  $('#min' + group)[0].value
+
+        choices[group].push(row);
+        choicesTables[group].fnAddData([row]);
+      }
+
+      var removeCourseFromGroup = function(Td, group, table){
+        var table = choicesTables[group];
+        var aPos = table.fnGetPosition(Td);
+        var row = table.fnGetData(aPos[0]);
+        var credits = row.Credit;
+        choices[group].splice(aPos[0],1);
+        courses.push(row);
+        table.fnDeleteRow(aPos[0]);
+        $.each(coursesTables, function(key, coursesTable){
+          console.log(row);
+          coursesTable.fnAddData([row]);
+          var max = parseInt($('#min' + group)[0]['attributes']['max'].value) - parseInt(credits);
+          $('#min' + group)[0]['attributes']['max'].value = max;
+          $('#max' + group)[0]['attributes']['max'].value = max;
+ 
+        });
+      }
+
       var createGroup = function(){
         var group = groupCounter
         groupCounter++;
-        courses.push(coursesTotal);
         choices.push([]);
-        $('#main').append("<div class='row' group='"+ group + "'><div class='panel panel-primary'><div class='panel-heading'>Group: " + (group + 1) + "</div><div class='panel-body'><div class='col-md-6'><div class='form-group'><div class='input-group'>Minimum Credits: <input type='number' name='Credits' min='0' max='0' required id='min" + group+ "''>  Maximum: <input type='number' name='Credits' min='0' max='0' required id='max" + group+ "''></div></div><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='choices" + group + "' group='"+ group + "'></table></div><div class='col-md-6'><table class='tableTest' cellpadding='0' cellspacing='0' border='0' class='display dataTable' group='"+ group + "' id='courses" + group + "'></table></div></div></div>");
-        $('#choices'+group).dataTable({
+        $('#main').append("<div class='row' group='"+ group + "'><div class='panel panel-primary'><div class='panel-heading'>Group: " + (group + 1) + "</div><div class='panel-body'><div class='col-md-6'><div class='form-group'><div class='input-group'>Minimum Credits: <input type='number' name='min' min='0' max='0' required id='min" + group+ "''>   Maximum: <input type='number' name='max' min='0' max='0' required id='max" + group+ "''></div></div><table cellpadding='0' cellspacing='0' border='0' class='display dataTable' id='choices" + group + "' group='"+ group + "'></table></div><div class='col-md-6'><table class='tableTest' cellpadding='0' cellspacing='0' border='0' class='display dataTable' group='"+ group + "' id='courses" + group + "'></table></div></div></div>");
+        var choicesDataTable = $('#choices'+group).dataTable({
           "bFilter": false,
           "bInfo": false,
           "bPaginate": false,
@@ -40,28 +77,20 @@ html
             "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
               var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
               var button = $(btn);
-              var table = $('#choices' + group);
+              
               button.click(function(){
-                var aPos = table.dataTable().fnGetPosition(Td);
-                var row = table.dataTable().fnGetData(aPos[0]);
-                var credits = row.Credit;
-                $('#courses' + group).dataTable().fnAddData([row]);
-                var max = $('#min' + group)[0]['attributes']['max'].value
-                $('#min' + group)[0]['attributes']['max'].value = parseInt(max) - parseInt(credits);
-                $('#max' + group)[0]['attributes']['max'].value = parseInt(max) - parseInt(credits); 
-                console.log(choices[group][aPos[0]]);
-                choices[group].splice(aPos[0],1);
-                table.dataTable().fnDeleteRow(aPos[0]);
+                removeCourseFromGroup(Td, group);
               });
               }, "sTitle": "Remove", "sWidth": 25
             },
             {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 30 },
+            {"mData":"Semester", "sTitle": "Semester", "sWidth": 30 },
             {"mData": "Name", "sTitle": "Course Name", "sWidth": 30 },
             {"mData": "Credit", "sTitle": "Credits", "sWidth": 20},
             ]
           });
-          var dataTable = $('#courses'+group).dataTable( {
-            "aaData": courses[group],
+          var coursesDataTable = $('#courses'+group).dataTable( {
+            "aaData": courses,
             "bInfo": false,
             "bPaginate": false,
             "bScrollCollapse": true,
@@ -77,31 +106,23 @@ html
                   var button = $(btn);
                   var table = $('#courses' + group);
                   button.click(function(){
-                    var aPos = table.dataTable().fnGetPosition(Td);
-                    var row = table.dataTable().fnGetData(aPos[0]);
-                    choices[group].push(row);
-                    $('#choices' + group).dataTable().fnAddData([row]);
-                    var tr = table[0]['tBodies'][0]['childNodes'][aPos[0]];
-                    table.dataTable().fnDeleteRow(aPos[0]);
-                    var credits = row.Credit;
-                    var max = $('#min' + group)[0]['attributes']['max'].value
-                    $('#min' + group)[0]['attributes']['max'].value = parseInt(max) + parseInt(credits);
-                    $('#max' + group)[0]['attributes']['max'].value = parseInt(max) + parseInt(credits); 
-                    $('#max' + group)[0]['attributes']['min'].value =  $('#min' + group)[0].value
+                    addCourseToGroup(Td, group);
                   });
                 },
                 "sTitle": "Select", "sWidth":50 },
               {"mData":"CourseId", "sTitle": "Course ID", "sWidth":40 },
               {"mData": "Name", "sTitle": "Course Name", "sWidth":40 },
+              {"mData":"Semester", "sTitle": "Semester", "sWidth": 30 },
               {"mData": "Credit", "sTitle": "Credits", "sWidth":20 },
               {"mData": "Level", "sTitle": "Level", "sWidth":20 },  
           ],
         });
-        $('min' + group).blur(function(){
-          $('#max' + group)[0]['attributes']['min'].value =  this[0].value
-          console.log($('#max' + group)[0]['attributes']['min'].value);
+        $('#min' + group).blur(function(){
+
+          $('#max' + group)[0]['attributes']['min'].value =  $(this)[0].value
         });
-        coursesTables.push(dataTable);
+        coursesTables.push(coursesDataTable);
+        choicesTables.push(choicesDataTable)
       };  
 
 
@@ -132,19 +153,19 @@ html
         var details = {
           "groups": [],
           "listName": $('#CourseListName')[0].value,
-          "school": "Engineering",
-          "level":3,
         }
         var data = [];
         for (var i = 0; i<groupCounter; i++){
-          var group = {};
-          var min = $('#min' + i)[0].valueAsNumber;
-          var max = $('#max' + i)[0].valueAsNumber;
+          if (choices[i] != []){
+            var group = {};
+            var min = $('#min' + i)[0].valueAsNumber;
+            var max = $('#max' + i)[0].valueAsNumber;
 
-          group.min = min;
-          group.max = max;
-          group.courses = choices[i];
-          details.groups.push(group);
+            group.min = min;
+            group.max = max;
+            group.courses = choices[i];
+            details.groups.push(group);
+          }
          }
         return details;
       }
