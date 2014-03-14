@@ -4,7 +4,7 @@ html
     script(type='text/javascript', src='../js/libs/requirejs/require.js')
     script(type='text/javascript', src='../requireconfig.js')
     link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
-    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    //link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
     script(src='../js/libs/jquery/jquery.js')
     script(src='../js/libs/bootstrap/js/bootstrap.js')
     link(href='../css/starterTemp.css', rel='stylesheet')
@@ -17,37 +17,63 @@ html
         var courseListData = "#{CourseListData}"
         courseListData = JSON.parse(courseListData.replace(/&quot;/ig,'"'));
         var coursesTaken = "#{courses}"
+        var 
         coursesTaken = JSON.parse(coursesTaken.replace(/&quot;/ig,'"'));
         var courseIdsTaken = [];
         var groupCreditsTaken = {};
+        groupsComplete = {}
+        console.log(courseListData);
         $.each(coursesTaken.list, function(key, val){
           courseIdsTaken.push(val.CourseId);
         });
-       
+        var makeModal = function(course){
+          var string = "<div class='modal fade' id='modal"+course.CourseId +"' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>";
+          string = string + "Course Details</h4></div><div class='modal-body'>";
 
+          $.each(course, function(key, value){
+            if(typeof(value)=="string"){
+              value.replace(";","\n")
+            }
+            if(key!="Grade" && key!="Status"){
+              var section = "<div id='"+key+"'><h4>"+key+": \n</h4>"+value;
+              string = string + section;
+            }
+            
+          })
+          string = string + "</div><div class='modal-footer'><button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button><button type='button' class='btn btn-primary'>Save changes</button></div></div></div></div>";
+          return string;
+        }
         $.each(courseListData, function(itemKey, item){
           groupCreditsTaken[itemKey] = []
-          console.log(groupCreditsTaken);
           $.each(item, function(groupKey, group){
             groupCreditsTaken[itemKey].push(0);
             CLnameNWS = itemKey.replace(/ /g,'');
             $('#table' + CLnameNWS + groupKey).dataTable({
-              "aaData": group,
+              "aaData": group.courses,
               "aoColumns": [
-                {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 60 },
+                { "mData": function(data, type, val){
+                  var courseId = data.CourseId
+                    var anchor = "<a href='#modal" + courseId + "'role='button' class='btn' data-target='#modal"+courseId+"' data-toggle='modal'>"+courseId+"</a>"
+                    var btn = "<button class='btn btn-primary btn' data-toggle='modal' data-target='#modal"+courseId+"'>" + courseId + "</button>"
+                    return anchor;
+
+                  }, "sTitle":"CourseId" },
                 {"mData": "Name", "sTitle": "Course Name", "sWidth": 100 },
                 {"mData": "Credit", "sTitle": "Credits", "sWidth": 60 },
                 {"mData": "Level", "sTitle": "Level", "sWidth": 0 },
                 {"mData": "Semester", "sTitle": "Semester", "sWidth": 0 },
                 {"mData": function (data, type, val) {
-                  return "<button type='button' level = '" + itemKey + "' group = '" + groupKey + "' class='btn btn-default enrol'>Enrol</button>"
+                  return "<button type='button' level = '" + itemKey + "' group = '" + groupKey + "' class='btn btn-primary enrol'>Enrol</button>"
                 }, "sTitle": "Enrol", "sWidth": 25},
               ],
               "fnCreatedRow": function( nRow, aData, iDataIndex ) {
                 if (courseIdsTaken.indexOf(aData.CourseId) != -1){
-
                   groupCreditsTaken[itemKey][groupKey] = groupCreditsTaken[itemKey][groupKey] + parseInt(aData.Credit);
+                  if (groupCreditsTaken[itemKey][groupKey] >= courseListData[itemKey][groupKey]["min"]){
+                    $('#panel' + itemKey + groupKey).addClass("panel-success");
+                  }
                   $(nRow).addClass("enroled");
+                  $("#modals").append(makeModal(aData));
                 }
                 
               },
@@ -60,30 +86,49 @@ html
         });
         $(".enrol").click(function(){
           var row = $(this)[0].parentElement.parentElement;
-          var credits = row.children[2].innerText;
+          var credits = parseInt(row.children[2].innerText);
           var CourseId = row.children[0].innerText;
-          console.log($(this));
+          var courseName = row.children[1].innerText;
           var group = $(this)[0].attributes[2].value;
           var level = $(this)[0].attributes[1].value;
-          if (!groupCreditsTaken[level][group] + credits > courseListData[level][group] && courseIdsTaken.indexOf(CourseId)==-1){
-            $.ajax({
-            url: "/enrolInCourse",
-            async: true,
-            type: "POST",
-            data: {courseId: CourseId},
-            contentType: "application/x-www-form-urlencoded",
-            dataType: "json",
-            accepts: "text",
-            statusCode: {
-              200: function() {
-                courseIdsTaken.push(CourseId);
-                $(row).addClass("enroled");
-              }
-            }
-          });
+          console.log(groupCreditsTaken[level][group]);
+          console.log(courseListData[level][group]);
+          console.log(credits);
+          if(courseIdsTaken.indexOf(CourseId)!=-1){
+            $("#alert").empty();
+            $("#alert").append("<div class='alert alert-dismissable alert-info'>You are already enrolled in course: " + courseName + "</div>")
           }
+          else if (groupCreditsTaken[level][group] + credits <= courseListData[level][group]["max"]){
+              $.ajax({
+                url: "/enrolInCourse",
+                async: true,
+                type: "POST",
+                data: {courseId: CourseId},
+                contentType: "application/x-www-form-urlencoded",
+                dataType: "json",
+                accepts: "text",
+                statusCode: {
+                  200: function() {
+                    if (groupCreditsTaken[level][group] + credits >= courseListData[level][group]["min"]){
+                      var yearPanel = $('#panel' + level);
+                      $('#panel' + level + group).addClass("panel-success");
+                      yearPanel.data("groupsFinished",parseInt(yearPanel.data("groupsFinished")) + 1);
+                      if(yearPanel.data("groupsFinished")>=yearPanel.data("groupsTotal")){
+                        yearPanel.addClass(panel-success);
+                      }
+                    }
+                    courseIdsTaken.push(CourseId);
+                    $(row).addClass("enroled");
+                    $("#alert").empty();
+                    groupCreditsTaken[level][group] = groupCreditsTaken[level][group] + parseInt(credits)
+                    $("#alert").append("<div class='alert alert-dismissable alert-success'>You successfully enrolled in course: " + courseName + "</div>")
+                  }
+
+              }});
+            }
           else {
-            console.log("dog");
+            $("#alert").empty();
+            $("#alert").append("<div class='alert alert-dismissable alert-warning'>Enrolling in course " + courseName + " puts you over the credit limit for this group.</div>")
           }
           
         })
@@ -98,7 +143,7 @@ html
             li
               a(href='./home.html') Home
             li
-              a(href='./details.html') Details
+              a(href='./details') Details
             li
               a(href='./register.html') Register
             li.active
@@ -117,34 +162,49 @@ html
   - var list = ["First", "Second", "Third", "Fourth", "Masters"];
   - CourseListData = JSON.parse(CourseListData);
   - var i = 0
-  - var string = "<div class='panel panel-default'><div class='panel-heading'><h4 class='panel-title'></h4><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + item + i + "'>Group " + i + "</a></div><div id='collapse" + item + i + "' class='panel-collapse collapse'><div class='panel-body'><table id='table" + i + item + "' cellpadding='10' cellspacing='10' border='1' class='display'></table></div></div></div>"
-            
+  - var string = "<div class='panel panel-default'><div class='panel-heading'><h4 class='panel-title'></h4><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + item + i + "'>Group " + i + "</a></div><div id='collapse" + item + i + "' class='panel-collapse collapse'><div class='panel-body'><table id='table" + i + item + "' cellpadding='10' cellspacing='10' border='1' class='display'></table></div></div></div>"          
   body
+    #modals
     .container
       h4 
         = "Enrolling by Requirements for " + degree
       .row
+        #alert
         .col-md-4
           - each item, itemKeyS in CourseListData
             - var itemKey = itemKeyS.replace(/ /g,'');
             .container  
               .row
-                .panel.panel-primary
+                .panel.panel-primary(id='panel' + itemKey, data-groupsTotal = groupKey)
                   .panel-heading 
                     h10.panel-title
                       a(data-toggle='collapse', data-parent='#accordion', href='#collapse' + itemKey) 
                         = list[i] + " Year Courses"
-                  .panel-collapse.collapse.in(id = "collapse" + itemKey)
-                    .panel-body
-                      .panel-group.col-md-12
-                        - each group, groupKey in item
-                          .panel.panel-default
-                            .panel-heading
-                              h10.panel-title
-                                a(data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey) 
-                                  = "Group " + (parseInt(groupKey) + 1)
-                            .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
-                              .panel-body
-                              table(id = "table" + itemKey + groupKey, class ="display" ,cellpadding='10', cellspacing='10', border='1')
+                  - if (i+1 == Year)
+                    .panel-collapse.collapse.in(id = "collapse" + itemKey)
+                      .panel-body
+                          .panel-group.col-md-12
+                            - each group, groupKey in item
+                              .panel.panel-default(id='panel' + itemKey + groupKey)
+                                .panel-heading
+                                  h10.panel-title
+                                    a(data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey) 
+                                      = "Group " + (parseInt(groupKey) + 1)
+                                .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
+                                  .panel-body
+                                  table(id = "table" + itemKey + groupKey, class ="display" ,cellpadding='10', cellspacing='10', border='1')
+                  - else
+                    .panel-collapse.collapse(id = "collapse" + itemKey)
+                      .panel-body
+                        .panel-group.col-md-12
+                          - each group, groupKey in item
+                            .panel.panel-default(id='panel' + itemKey + groupKey)
+                              .panel-heading
+                                h10.panel-title
+                                  a(data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey) 
+                                    = "Group " + (parseInt(groupKey) + 1)
+                              .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
+                                .panel-body
+                                table(id = "table" + itemKey + groupKey, class ="display" ,cellpadding='10', cellspacing='10', border='1')
             - i++ 
 

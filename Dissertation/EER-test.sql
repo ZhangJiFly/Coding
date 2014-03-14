@@ -149,11 +149,14 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`Course` (
   `CourseId` VARCHAR(15) NOT NULL,
   `Name` VARCHAR(45) NULL,
-  `Aim` VARCHAR(300) NULL,
+  `Description` VARCHAR(500) NULL,
   `Credit` VARCHAR(45) NULL,
   `School` VARCHAR(45) NOT NULL,
-  `Level` ENUM('1','2','3','4','M') NULL,
-  `Semester` ENUM('1','2') NULL,
+  `Level` ENUM('1','2','3','4','5') NULL,
+  `Semester` ENUM('1','2','1 & 2','Summer') NULL,
+  `Assessment` VARCHAR(500) NULL,
+  `MainAssessment` VARCHAR(45) NULL,
+  `EntryRequirements` VARCHAR(200) NULL,
   PRIMARY KEY (`CourseId`),
   INDEX `fk_Course_School1_idx` (`School` ASC),
   CONSTRAINT `fk_Course_School1`
@@ -194,7 +197,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`StudentHasCourse` (
 CREATE TABLE IF NOT EXISTS `mydb`.`CourseList` (
   `CourseListId` VARCHAR(45) NOT NULL,
   `School` VARCHAR(45) NOT NULL,
-  `Level` INT NULL,
   PRIMARY KEY (`CourseListId`))
 ENGINE = InnoDB;
 

@@ -72,7 +72,7 @@ html
           "aoColumns": [
             {
             "mData": function (data, type, val) {
-              return "<button type='button' group=" + group + " class='btn btn-default' id='remove'>Remove</button>"
+              return "<button type='button' group=" + group + " class='btn btn-primary' id='remove'>Remove</button>"
             },
             "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
               var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
@@ -99,7 +99,7 @@ html
             "aoColumns": [
               {
                 "mData": function (data, type, val) {
-                  return "<button type='button' group=" + group + " class='btn btn-default' id='select'>Select</button>"
+                  return "<button type='button' group=" + group + " class='btn btn-primary' id='select'>Select</button>"
                 },
                 "fnCreatedCell": function(Td, sData, oData, iRow, iCol){
                   var btn = $(Td)['context']['firstChild']; //Terrible coding.. cannot get anything else to work so this will be OK for demonstration purposes.
@@ -138,13 +138,13 @@ html
           $.each(coursesTables, function(key, value){
             console.log($(this));
 
-            value.fnFilter(level, 4);
+            value.fnFilter(level, 5);
           });
         } else {
           $.each(coursesTables, function(key, value){
             console.log($(this));
 
-            value.fnFilter("", 4);
+            value.fnFilter("", 5);
           });
         }
       });
@@ -222,7 +222,7 @@ html
         form#courselist(role='form', action='./school')
           #main.container
             .row
-              button#addGroup.btn.btn-default(type='button') Add Group
+              button#addGroup.btn.btn-primary(type='button') Add Group
               .form-group
                 .input-group
                   .col-md-7
@@ -238,6 +238,6 @@ html
                       option 4
                       option M
           .container
-            button#submit.btn.btn-default(type='text') Submit
+            button#submit.btn.btn-primary(type='text') Submit
 
   
