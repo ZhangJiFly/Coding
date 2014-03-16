@@ -44,8 +44,10 @@ html
           return string;
         }
         $.each(courseListData, function(itemKey, item){
-          groupCreditsTaken[itemKey] = []
+          groupCreditsTaken[itemKey] = [];
+          groupsComplete[itemKey] = {};
           $.each(item, function(groupKey, group){
+            groupsComplete[itemKey][groupKey] = {status:false};
             groupCreditsTaken[itemKey].push(0);
             CLnameNWS = itemKey.replace(/ /g,'');
             $('#table' + CLnameNWS + groupKey).dataTable({
@@ -71,8 +73,9 @@ html
                   groupCreditsTaken[itemKey][groupKey] = groupCreditsTaken[itemKey][groupKey] + parseInt(aData.Credit);
                   if (groupCreditsTaken[itemKey][groupKey] >= courseListData[itemKey][groupKey]["min"]){
                     $('#panel' + itemKey + groupKey).addClass("panel-success");
+                    groupsComplete[itemKey][groupKey].status = true;
                   }
-                  $(nRow).addClass("enroled");
+                  $(nRow).addClass("enrolled");
                   $("#modals").append(makeModal(aData));
                 }
                 
@@ -82,8 +85,23 @@ html
               "bInfo": false,
               "bFilter": false,
             });
-          });
+            $('#panelTitle' + itemKey + groupKey).append(groupCreditsTaken[itemKey][groupKey] + " credits");
+          }); 
         });
+        $.each(groupsComplete, function(itemKey, item){
+          var flag = true;
+          $.each(item, function(group, complete){
+            if(!complete.status){
+              flag = false;
+              return;
+            }
+          });
+          if (flag){
+            $('#panel' + itemKey).addClass("panel-success");
+          }
+        });
+
+        
         $(".enrol").click(function(){
           var row = $(this)[0].parentElement.parentElement;
           var credits = parseInt(row.children[2].innerText);
@@ -112,15 +130,25 @@ html
                     if (groupCreditsTaken[level][group] + credits >= courseListData[level][group]["min"]){
                       var yearPanel = $('#panel' + level);
                       $('#panel' + level + group).addClass("panel-success");
-                      yearPanel.data("groupsFinished",parseInt(yearPanel.data("groupsFinished")) + 1);
-                      if(yearPanel.data("groupsFinished")>=yearPanel.data("groupsTotal")){
-                        yearPanel.addClass(panel-success);
-                      }
+                     groupsComplete[level][group].status = true;
                     }
+                    
                     courseIdsTaken.push(CourseId);
-                    $(row).addClass("enroled");
+                    
+                    var flag = true;
+                    $.each(groupsComplete[level], function(groupId, complete){
+                      if(!complete.status){
+                        flag = false;
+                        return;
+                      }
+                    })
+                    if (flag){
+                      $('#panel' + level).addClass("panel-success");
+                    }
+                    $(row).addClass("enrolled");
                     $("#alert").empty();
                     groupCreditsTaken[level][group] = groupCreditsTaken[level][group] + parseInt(credits)
+                    $('#panelTitle' + level + group).html($('#panelTitle' + level + group).data("string") + groupCreditsTaken[level][group] + " credits");
                     $("#alert").append("<div class='alert alert-dismissable alert-success'>You successfully enrolled in course: " + courseName + "</div>")
                   }
 
@@ -188,8 +216,8 @@ html
                               .panel.panel-default(id='panel' + itemKey + groupKey)
                                 .panel-heading
                                   h10.panel-title
-                                    a(data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey) 
-                                      = "Group " + (parseInt(groupKey) + 1)
+                                    a(id='panelTitle' + itemKey + groupKey, data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey, data-string="Required credits: " + group.min+ ", Maximum credits: " + group.max + " | Currently taking: ")
+                                      = "Required credits: " + group.min+ ", Maximum credits: " + group.max + " | Currently taking: " 
                                 .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
                                   .panel-body
                                   table(id = "table" + itemKey + groupKey, class ="display" ,cellpadding='10', cellspacing='10', border='1')
@@ -201,8 +229,8 @@ html
                             .panel.panel-default(id='panel' + itemKey + groupKey)
                               .panel-heading
                                 h10.panel-title
-                                  a(data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey) 
-                                    = "Group " + (parseInt(groupKey) + 1)
+                                  a(id='panelTitle' + itemKey + groupKey, data-toggle='collapse', data-parent='#accordion2', href='#collapse' + itemKey + groupKey, data-string="Required credits: " + group.min+ ", Maximum credits: " + group.max + " | Currently taking: ") 
+                                    = "Required credits: " + group.min+ ", Maximum credits: " + group.max + " | Currently taking: " 
                               .panel-collapse.collapse(id = "collapse" + itemKey + groupKey)
                                 .panel-body
                                 table(id = "table" + itemKey + groupKey, class ="display" ,cellpadding='10', cellspacing='10', border='1')

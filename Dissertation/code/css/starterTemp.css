@@ -22,7 +22,7 @@ th, td { padding: 2px; }
 th, thead { background: #3881C0; color: #fff; border: 1px solid #000; }
 
 
-.enroled{background:#99cf01;}
+.enrolled{background:#dff0d8; color:#000;}
 
 
 .dataTables tbody {

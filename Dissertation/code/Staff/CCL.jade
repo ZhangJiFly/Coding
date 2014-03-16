@@ -16,6 +16,8 @@ html
       var choicesTables = [];
       var coursesTotal = "#{data}";
       coursesTotal = JSON.parse(coursesTotal.replace(/&quot;/ig,'"'))
+      var courseLists = "#{courseLists}";
+      courseLists = JSON.parse(courseLists.replace(/&quot;/ig,'"'))
       var courses = coursesTotal; 
 
 
@@ -154,6 +156,9 @@ html
           "groups": [],
           "listName": $('#CourseListName')[0].value,
         }
+        if(courseLists.indexOf(details.listName)!=-1){
+          return false;
+        }
         var data = [];
         for (var i = 0; i<groupCounter; i++){
           if (choices[i] != []){
@@ -171,6 +176,11 @@ html
       }
       $('#courselist').submit(function () {
         var data = getSubmitValues();
+        if(!data){
+          $("#alert").empty();
+          $("#alert").append("<div class='alert alert-dismissable alert-info'>Course List Name " + $('#CourseListName')[0].value + "is already in use</div>");
+          return false;
+        }
         $.ajax({
             url: "/CreateCourseList",
             async: false,
