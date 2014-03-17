@@ -4,7 +4,7 @@ html
     script(type='text/javascript', src='../js/libs/requirejs/require.js')
     script(type='text/javascript', src='../requireconfig.js')
     link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
-    //link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
     script(src='../js/libs/jquery/jquery.js')
     script(src='../js/libs/bootstrap/js/bootstrap.js')
     link(href='../css/starterTemp.css', rel='stylesheet')
@@ -14,35 +14,69 @@ html
       });
 
       require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
-        var courseListData = "#{CourseListData}"
+        var courseListData = "#{CourseListData}";
         courseListData = JSON.parse(courseListData.replace(/&quot;/ig,'"'));
-        var coursesTaken = "#{courses}"
-        var 
+        var coursesTaken = "#{courses}";
         coursesTaken = JSON.parse(coursesTaken.replace(/&quot;/ig,'"'));
+        var allCourses = "#{AllCourses}";
+        allCourses = JSON.parse(allCourses.replace(/&quot;/ig,'"'));
         var courseIdsTaken = [];
         var groupCreditsTaken = {};
         groupsComplete = {}
-        console.log(courseListData);
-        $.each(coursesTaken.list, function(key, val){
-          courseIdsTaken.push(val.CourseId);
+
+        $('#searchSwitch').click(function(){
+          $('#requirements').hide();
+          $('#search').show();
+          $('#requirementsType').show();
+          $('#searchType').hide();
+        });
+        $('#requirementSwitch').click(function(){
+          $('#search').hide();
+          $('#requirements').show();
+          $('#searchType').show();
+          $('#requirementsType').hide();
+        });
+
+        $('#collegePicker').change(function(){
+          
+          $('#schoolPicker').html();
         });
         var makeModal = function(course){
           var string = "<div class='modal fade' id='modal"+course.CourseId +"' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>";
           string = string + "Course Details</h4></div><div class='modal-body'>";
 
           $.each(course, function(key, value){
-            if(typeof(value)=="string"){
-              value.replace(";","\n")
-            }
             if(key!="Grade" && key!="Status"){
               var section = "<div id='"+key+"'><h4>"+key+": \n</h4>"+value;
               string = string + section;
             }
             
           })
-          string = string + "</div><div class='modal-footer'><button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button><button type='button' class='btn btn-primary'>Save changes</button></div></div></div></div>";
+          string = string + "</div><div class='modal-footer'><button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button></div></div></div></div>";
           return string;
         }
+
+        $('#tableSearch').dataTable({
+          "aaData": allCourses,
+          "aoColumns": [
+          { "mData": function(data, type, val){
+            var courseId = data.CourseId
+              var anchor = "<a href='#modal" + courseId + "'role='button' class='btn' data-target='#modal"+courseId+"' data-toggle='modal'>"+courseId+"</a>"
+              return anchor;
+
+            }, "sTitle":"CourseId" },
+            {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 30 },
+            {"mData":"Semester", "sTitle": "Semester", "sWidth": 30 },
+            {"mData": "Name", "sTitle": "Course Name", "sWidth": 30 },
+            {"mData": "Credit", "sTitle": "Credits", "sWidth": 20},
+          ],
+          "fnCreatedRow": function( nRow, aData, iDataIndex ) { 
+            $("#modals").append(makeModal(aData));
+          },
+        });
+        $.each(coursesTaken.list, function(key, val){
+          courseIdsTaken.push(val.CourseId);
+        });
         $.each(courseListData, function(itemKey, item){
           groupCreditsTaken[itemKey] = [];
           groupsComplete[itemKey] = {};
@@ -189,6 +223,8 @@ html
   - var degree = Degree
   - var list = ["First", "Second", "Third", "Fourth", "Masters"];
   - CourseListData = JSON.parse(CourseListData);
+  - allSchools = JSON.parse(AllSchools);
+  - allColleges = JSON.parse(AllColleges);
   - var i = 0
   - var string = "<div class='panel panel-default'><div class='panel-heading'><h4 class='panel-title'></h4><a data-toggle='collapse' data-parent='#accordion' href='#collapse" + item + i + "'>Group " + i + "</a></div><div id='collapse" + item + i + "' class='panel-collapse collapse'><div class='panel-body'><table id='table" + i + item + "' cellpadding='10' cellspacing='10' border='1' class='display'></table></div></div></div>"          
   body
@@ -196,7 +232,32 @@ html
     .container
       h4 
         = "Enrolling by Requirements for " + degree
-      .row
+      #searchType
+        |Switch to enrolling by 
+        a(id="searchSwitch")
+          |search.
+      #requirementsType(style="display: none;")
+        |Switch to enrolling by 
+        a(id="requirementSwitch")
+          |requirements.
+      .row#search(style="display: none;")
+        | Filter by College: 
+        select.selectpicker#collegePicker
+          option None
+          - each college in allColleges
+            option 
+             = college.Name
+        |   Filter by School: 
+        select.selectpicker#schoolPicker
+          option Must select College first
+           
+        .panel.panel-primary
+          .panel-heading 
+            h10.panel-title All Courses
+          .panel-body
+            table(id = "tableSearch", class ="display" ,cellpadding='10', cellspacing='10', border='1')
+
+      .row#requirements
         #alert
         .col-md-4
           - each item, itemKeyS in CourseListData

@@ -1,8 +1,14 @@
 !!! 5
 html
   head
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
+    link(href='../css/starterTemp.css', rel='stylesheet')
     script(type='text/javascript', src='../js/libs/requirejs/require.js')
     script(type='text/javascript', src='../requireconfig.js')
+    script(src='../js/libs/jquery/jquery.js')
+    script(src='../js/libs/bootstrap/js/bootstrap.js')
+    
          
     script
       require.config({
@@ -12,35 +18,74 @@ html
       require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
         var degrees= "#{Degrees}";
         var courseLists= "#{CL}";
+        var allCourses = "#{AllCourses}"
         degrees = JSON.parse(degrees.replace(/&quot;/ig,'"'));
         courseLists = JSON.parse(courseLists.replace(/&quot;/ig,'"'));
-        $('#degrees').dataTable({
-        "aaData": degrees,
-        "aoColumns": [
-        { "mData": function(data, type, val){
-            var string = "<a href='./degree?degree="+data.Name+"'>" + data.Name + "</a>";
-            return string;
-        }, "sTitle":"Degree" },
-        ],
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bInfo": false,
-        "bFilter": false,
+        allCourses = JSON.parse(allCourses.replace(/&quot;/ig,'"'));
+
+        var makeModal = function(course){
+          var string = "<div class='modal fade' id='modal"+course.CourseId +"' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>";
+          string = string + "Course Details</h4></div><div class='modal-body'>";
+
+          $.each(course, function(key, value){
+            if(key!="Grade" && key!="Status"){
+              var section = "<div id='"+key+"'><h4>"+key+": \n</h4>"+value;
+              string = string + section;
+            }
+            
+          })
+          string = string + "</div><div class='modal-footer'><button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button></div></div></div></div>";
+          return string;
+        }
+
+        $('#newCourseForm').submit(function(){
+          console.log($(this));
+          return false;
+        })
+
+        $('#allCourses').dataTable({
+          "aaData": allCourses,
+          "aoColumns": [
+          { "mData": function(data, type, val){
+            var courseId = data.CourseId
+              var anchor = "<a href='#modal" + courseId + "'role='button' class='btn' data-target='#modal"+courseId+"' data-toggle='modal'>"+courseId+"</a>"
+              return anchor;
+
+            }, "sTitle":"CourseId" },
+            {"mData":"CourseId", "sTitle": "Course ID"},
+            {"mData":"Semester", "sTitle": "Semester"},
+            {"mData": "Name", "sTitle": "Course Name"},
+            {"mData": "Credit", "sTitle": "Credits"},
+          ],
+          "fnCreatedRow": function( nRow, aData, iDataIndex ) { 
+            $("#modals").append(makeModal(aData));
+          },
         });
+        $('#degrees').dataTable({
+          "aaData": degrees,
+          "aoColumns": [
+          { "mData": function(data, type, val){
+              var string = "<a href='./degree?degree="+data.Name+"'>" + data.Name + "</a>";
+              return string;
+          }, "sTitle":"Degree" },
+          ],
+          "bPaginate": false,
+          "bLengthChange": false,
+          "bInfo": false,
+          "bFilter": false,
+        });
+
         $('#courseLists').dataTable({
-        "aaData": courseLists,
-        "aoColumns": [
-        { "mData": "CourseListId", "sTitle":"CourseList" },
-        ],
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bInfo": false,
-        "bFilter": false,
+          "aaData": courseLists,
+          "aoColumns": [
+          { "mData": "CourseListId", "sTitle":"CourseList" },
+          ],
+          "bPaginate": false,
+          "bLengthChange": false,
+          "bInfo": false,
+          "bFilter": false,
         });
       });
-    link(rel='stylesheet', type='text/css', href='../css/bootstrap.css')
-    link(rel='stylesheet', type='text/css', href='../css/bootstrap-theme.css')
-    link(href='../css/starterTemp.css', rel='stylesheet')
     - var school = School
     .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
       .container
@@ -74,14 +119,55 @@ html
 
 
   body
+    #modals
+      .newCourseModal
+        #newCourseModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+          .modal-dialog
+            form#newCourseForm
+              .modal-content
+                .modal-header
+                  button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                  h4#myModalLabel.modal-title
+                    |Course Details
+                .modal-body
+                  .form-group
+                    label(for='newCourseCourseId') CourseId: 
+                    input#newCourseCourseId(type='text', required='required', style="width:100%;")
+                  .form-group
+                    label(for='newCourseCourseId') Course Name: 
+                    input#newCoursecourseName(type='text', required='required', style="width:100%;")
+                  .form-group
+                    label(for='newCourseDescription') Course Description:
+                    input#newCourseDescription(type='text', style="width:100%; height:100px;")
+                  .form-group
+                    label(for='newCourseCredits') Course Credits:  
+                    input#newCourseCredit(type='number', min='0', required='required', style="width:100%;")
+                  .form-group
+                    label(for='newCourseCourseLevel') Course Level:  
+                    input#newCourseLevel(type='number', min='0', required='required', style="width:100%;")
+                  .form-group
+                    label(for='newCourseSemester') Course Semester:  
+                    input#newCourseSemester(type='text', style="width:100%;")
+                  .form-group
+                    label(for='newCourseAssessment') Course Assessment: 
+                    input#newCourseAssessment(type='text' style="width:100%; height:100px;")
+                  .form-group
+                    label(for='newCourseMainAssessment') Course Main Assessement: 
+                    input#newCourseMainAssessment(type='text', style="width:100%;")
+                .modal-footer
+                  button.btn.btn-default(type='button', data-dismiss='modal') Close
+                  input.btn.btn-primary#addCourseButton(type='submit') Add Course
+
     .container
       .row
         .col-md-6
           .panel.panel-primary
             .panel-heading
-              = school + " Degrees"
+              = school + " Programs"
             .panel-body 
               table#degrees.display(cellpadding='10', cellspacing='10', border='1')
+              button#CCL.btn.btn-primary(type='submit')
+                span.glyphicon.glyphicon-plus  Create New Program
         .col-md-6
           .panel.panel-primary
             .panel-heading 
@@ -91,9 +177,17 @@ html
               .container.col-md-6
                 .row
                   form(action='./CCL')
-                      button#CCL.btn.btn-default(type='submit') Create New Course List
+                      button#CCL.btn.btn-primary(type='submit')
+                        span.glyphicon.glyphicon-plus  Create New Course List
 
-
+      .row
+        .panel.panel-primary
+            .panel-heading 
+              = "All School Courses   "
+            .panel-body
+              button.btn.btn-primary#addCourseButton(data-toggle="modal" data-target="#newCourseModal")
+                span.glyphicon.glyphicon-plus  Add New Course
+              table#allCourses.display(cellpadding='10', cellspacing='10', border='1')
 
 
 
