@@ -148,15 +148,15 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Course` (
   `CourseId` VARCHAR(15) NOT NULL,
-  `Name` VARCHAR(45) NULL,
-  `Description` VARCHAR(500) NULL,
-  `Credit` VARCHAR(45) NULL,
+  `Name` VARCHAR(100) NULL,
+  `Description` VARCHAR(1000) NULL,
+  `Credit` VARCHAR(10) NULL,
   `School` VARCHAR(45) NOT NULL,
   `Level` ENUM('1','2','3','4','5') NULL,
   `Semester` ENUM('1','2','1 & 2','Summer') NULL,
-  `Assessment` VARCHAR(500) NULL,
+  `Assessment` VARCHAR(1000) NULL,
   `MainAssessment` VARCHAR(45) NULL,
-  `EntryRequirements` VARCHAR(200) NULL,
+  `EntryRequirements` VARCHAR(800) NULL,
   PRIMARY KEY (`CourseId`),
   INDEX `fk_Course_School1_idx` (`School` ASC),
   CONSTRAINT `fk_Course_School1`

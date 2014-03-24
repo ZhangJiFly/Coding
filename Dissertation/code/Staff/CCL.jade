@@ -4,6 +4,9 @@ html
   link(rel='stylesheet', type='text/css', href='/css/bootstrap.css')
   link(rel='stylesheet', type='text/css', href='/css/bootstrap-theme.css')
   link(href='/css/starterTemp.css', rel='stylesheet')
+  script(src='../js/libs/jquery/jquery.js')
+  script(src='../js/libs/bootstrap/js/bootstrap.js')
+
   script
     require.config({
       baseUrl: "../js",
@@ -20,6 +23,35 @@ html
       courseLists = JSON.parse(courseLists.replace(/&quot;/ig,'"'))
       var courses = coursesTotal; 
 
+      setLevelFilter = function(){
+        var level = $("#levelFilter")[0].value;
+        if (level != "None"){
+          $.each(coursesTables, function(key, value){
+            value.fnFilter(level, 5);
+          });
+        } else {
+          $.each(coursesTables, function(key, value){
+            value.fnFilter("", 5);
+          });
+        }
+      }
+
+      setLevelFilter();
+
+      var makeModal = function(course){
+          var string = "<div class='modal fade' id='modal"+course.CourseId +"' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>";
+          string = string + "Course Details</h4></div><div class='modal-body'>";
+
+          $.each(course, function(key, value){
+            if(key!="Grade" && key!="Status"){
+              var section = "<div id='"+key+"'><h4>"+key+": \n</h4>"+value;
+              string = string + section;
+            }
+            
+          })
+          string = string + "</div><div class='modal-footer'><button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button></div></div></div></div>";
+          return string;
+        }
 
       var addCourseToGroup = function(Td, group){
         var row;
@@ -49,13 +81,17 @@ html
         courses.push(row);
         table.fnDeleteRow(aPos[0]);
         $.each(coursesTables, function(key, coursesTable){
-          console.log(row);
           coursesTable.fnAddData([row]);
           var max = parseInt($('#min' + group)[0]['attributes']['max'].value) - parseInt(credits);
           $('#min' + group)[0]['attributes']['max'].value = max;
           $('#max' + group)[0]['attributes']['max'].value = max;
- 
         });
+      }
+
+      for (var i = 0;i<coursesTotal.length;i++){
+
+        var course = coursesTotal[i];
+        $("#modals").append(makeModal(course));
       }
 
       var createGroup = function(){
@@ -85,7 +121,12 @@ html
               });
               }, "sTitle": "Remove", "sWidth": 25
             },
-            {"mData":"CourseId", "sTitle": "Course ID", "sWidth": 30 },
+            { "mData": function(data, type, val){
+            var courseId = data.CourseId
+              var anchor = "<a href='#modal" + courseId + "'role='button' class='btn' data-target='#modal"+courseId+"' data-toggle='modal'>"+courseId+"</a>"
+              return anchor;
+
+            }, "sTitle":"CourseId" },
             {"mData":"Semester", "sTitle": "Semester", "sWidth": 30 },
             {"mData": "Name", "sTitle": "Course Name", "sWidth": 30 },
             {"mData": "Credit", "sTitle": "Credits", "sWidth": 20},
@@ -107,7 +148,12 @@ html
                   });
                 },
                 "sTitle": "Select", "sWidth":50 },
-              {"mData":"CourseId", "sTitle": "Course ID", "sWidth":40 },
+              { "mData": function(data, type, val){
+                var courseId = data.CourseId
+                var anchor = "<a href='#modal" + courseId + "'role='button' class='btn' data-target='#modal"+courseId+"' data-toggle='modal'>"+courseId+"</a>"
+                return anchor;
+
+              }, "sTitle":"CourseId" },
               {"mData": "Name", "sTitle": "Course Name", "sWidth":40 },
               {"mData":"Semester", "sTitle": "Semester", "sWidth": 30 },
               {"mData": "Credit", "sTitle": "Credits", "sWidth":20 },
@@ -120,8 +166,8 @@ html
         });
         coursesTables.push(coursesDataTable);
         choicesTables.push(choicesDataTable)
+        setLevelFilter();
       };  
-
 
       createGroup();
       $('#addGroup').click(function(){
@@ -129,21 +175,7 @@ html
       });
 
       $("#levelFilter").change(function(){
-        console.log(coursesTables);
-        var level = $(this)[0].value;
-        if (level != "None"){
-          $.each(coursesTables, function(key, value){
-            console.log($(this));
-
-            value.fnFilter(level, 5);
-          });
-        } else {
-          $.each(coursesTables, function(key, value){
-            console.log($(this));
-
-            value.fnFilter("", 5);
-          });
-        }
+        setLevelFilter();
       });
       
       var getSubmitValues = function(){
@@ -216,6 +248,7 @@ html
         //
           /.nav-collapse 
   body
+    #modals
     .container
       .row
         ol.breadcrumb
@@ -241,7 +274,7 @@ html
                       option 2
                       option 3
                       option 4
-                      option M
+                      option 5
           .container
             button#submit.btn.btn-primary(type='text') Submit
 

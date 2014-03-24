@@ -20,32 +20,39 @@ html
 
   script(type='text/javascript', src='../js/libs/w2ui/w2ui-fields.js')
   script
+
     require.config({
       baseUrl: "../js"
     });
 
     require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+      var degreeCourseListNames = "#{degreeCourseLists}"
+      if(degreeCourseListNames!=""){
+        degreeCourseListNames = JSON.parse(degreeCourseListNames.replace(/&quot;/ig,'"'));
+      }
+
       var getSubmitValues = function(){
           var degree = "#{degreeDetails}"
           degree = JSON.parse(degree.replace(/&quot;/ig,'"'))[0];
+          var years = degree.Years
 
           var details = {
             "degree": degree.Name,
             "school": degree.School,
           }
+
           var courseLists = []
-          var years = degree.Years
+          
           for (var i = 0; i<years; i++){
             var val = $('#CCL' + i)[0].value
-            courseLists.push(val);
-           }
+            var year = i+1;
+            courseLists.push({name:val, year:year});
+          }
           details.courseLists = courseLists;
-          console.log(courseLists);
           return details;
       }
       $('#saving').submit(function () {
         var names = getSubmitValues();
-        console.log(names)
         $.ajax({
             url: "/AssignCourseListNames",
             async: false,
@@ -54,32 +61,39 @@ html
             contentType: "application/x-www-form-urlencoded",
             dataType: "json",
         });
-        return false;
+        return true;
       });
-      var objectList = "#{AllCourseListNames}";
+
+
+      //Create 
+      var courseListNames = "#{AllCourseListNames}";
+      courseListNames = JSON.parse(courseListNames.replace(/&quot;/ig,'"'));
+
       var objects = "#{AllCourseListInfo}";
-      objectList = JSON.parse(objectList.replace(/&quot;/ig,'"'));
       objects = JSON.parse(objects.replace(/&quot;/ig,'"'));;
+
       var listNames = [];
       var usedNames = [];
-      if(objectList.length>0){
-        for(var i = 0;i<objectList.length;i++){
-          listNames.push(objectList[i].CourseListId)
-        }
+      //extract just names from object returned by SQL request;
+      for(var i = 0;i<courseListNames.length;i++){
+        listNames.push(courseListNames[i].CourseListId)
       }
-      $('input[type=list]').w2field('list', { items: listNames }); 
-      $('.w2field').focus(function(){
-        $(this).data("oldVal",this.value);
-      }).change(function(){
-        var CLname = this.value;
-        if(usedNames.indexOf($(this).data("oldVal")) != -1){
-          usedNames.splice(usedNames.indexOf($(this).data("oldVal")),1);       
+
+      listNames.push("None");
+
+
+      var createCourseListPanels = function(field){
+        var CLname = field.val(); 
+
+        if(usedNames.indexOf(field.data("oldVal")) != -1){ //doesnt really work that well, is meant to stop duplicate entry of the same courseList. 
+          usedNames.splice(usedNames.indexOf(field.data("oldVal")),1);       
         }
 
-        if (usedNames.indexOf(CLname) == -1){
-          $('input[type=list]').w2field('list', { items: listNames }); 
-          var year = $(this).attr('year')
-          var div = $('#' + year);
+        var year = field.attr('year');
+        var div = $('#' + year); // find the html element to edit
+
+
+        if (usedNames.indexOf(CLname) == -1 && (CLname != "None")){
           div.empty();
           var i = 0;
           $.each(objects[CLname], function(key, value){
@@ -104,13 +118,29 @@ html
         usedNames.push(CLname);
         } 
         else{
-          var div = $('#' + year);
-          $(this).val('');
+          field.val('None');
           div.empty();
 
         }
        
-      });
+      }
+      $('input[type=list]').w2field('list', { items: listNames }); 
+      $('.w2field').focus(function(){
+        $(this).data("oldVal",this.value);
+      }).change(function(){
+        createCourseListPanels($(this));
+      }); 
+
+      for (var i = 0; i<$(".w2field").length; i++){
+        var field = $($('.w2field')[i]);
+        field.val("None");
+        field.change();  
+      }
+      for (var i = 0; i<degreeCourseListNames.length; i++){
+        var field = $($('.w2field')[degreeCourseListNames[i].Level-1]);
+        field.val(degreeCourseListNames[i].CourseListId);
+        field.change(); 
+      }
     });
   head
     - var degree = degreeDetails
@@ -167,7 +197,7 @@ html
               .panel-body 
                 .w2ui-label  List&colon; 
                 .w2ui-field.col-md-3
-                  input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='', year=i, id="CCL" + i,)
+                  input.w2field(type='list', style='width: 200px; box-sizing: border-box; padding-right: 14px;', placeholder='Course List', year=i, id="CCL" + i,)
                   .w2ui-field-helper(style='color: rgb(0, 0, 0); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: -16px;')
                   span.legend
                   div(style='height: 30px;')

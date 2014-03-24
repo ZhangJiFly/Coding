@@ -12,10 +12,11 @@ html
          
     script
       require.config({
-      baseUrl: "../js"
+        baseUrl: "../js"
       });
 
       require(['jquery', 'socket.io', 'datatables'], function($, io, dataTable){
+
         var degrees= "#{Degrees}";
         var courseLists= "#{CL}";
         var allCourses = "#{AllCourses}"
@@ -39,11 +40,10 @@ html
         }
 
         $('#newCourseForm').submit(function(){
-          console.log($(this));
           return false;
         })
 
-        $('#allCourses').dataTable({
+        var courseTable = $('#allCourses').dataTable({
           "aaData": allCourses,
           "aoColumns": [
           { "mData": function(data, type, val){
@@ -56,6 +56,7 @@ html
             {"mData":"Semester", "sTitle": "Semester"},
             {"mData": "Name", "sTitle": "Course Name"},
             {"mData": "Credit", "sTitle": "Credits"},
+            {"mData": "Level", "sTitle": "Level"},
           ],
           "fnCreatedRow": function( nRow, aData, iDataIndex ) { 
             $("#modals").append(makeModal(aData));
@@ -85,6 +86,15 @@ html
           "bInfo": false,
           "bFilter": false,
         });
+        setLevelFilter = function(){
+          var level = $("#levelFilter")[0].value;
+          if (level != "None"){
+            courseTable.fnFilter(level, 5);
+          } else {
+            courseTable.fnFilter("", 5);
+          }
+        }
+        $("#levelFilter").change(setLevelFilter);
       });
     - var school = School
     .navbar.navbar-inverse.navbar-fixed-top(role='navigation')
@@ -120,6 +130,35 @@ html
 
   body
     #modals
+      .newProgramModal
+          #newProgramModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+            .modal-dialog
+              form#newProgramForm
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+                    h4#myModalLabel.modal-title
+                      |New Program
+                  .modal-body
+                    .form-group
+                      label(for='newProgramName') Program Name: 
+                      input#newProgramName(type='text', required='required', style="width:200;")
+                    .form-group
+                      label(for='newProgramYears') Program Year Length: 
+                      input#newProgramYears(type='number', required='required')
+                    .form-group
+                      label(for='newProgramType') Program Type: 
+                      select.selectpicker#newProgramType
+                        option None
+                        option BSci
+                        option BA
+                        option MSci
+                        option MA
+                        option PhD
+                        option ..etc
+                  .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    input.btn.btn-primary#addCourseButton(type='submit') Add Program
       .newCourseModal
         #newCourseModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
           .modal-dialog
@@ -166,8 +205,8 @@ html
               = school + " Programs"
             .panel-body 
               table#degrees.display(cellpadding='10', cellspacing='10', border='1')
-              button#CCL.btn.btn-primary(type='submit')
-                span.glyphicon.glyphicon-plus  Create New Program
+              button#addDegree.btn.btn-primary(data-toggle="modal" data-target="#newProgramModal")
+                span.glyphicon.glyphicon-plus  Create Program
         .col-md-6
           .panel.panel-primary
             .panel-heading 
@@ -178,15 +217,24 @@ html
                 .row
                   form(action='./CCL')
                       button#CCL.btn.btn-primary(type='submit')
-                        span.glyphicon.glyphicon-plus  Create New Course List
+                        span.glyphicon.glyphicon-plus  Create Course List
 
       .row
         .panel.panel-primary
             .panel-heading 
               = "All School Courses   "
             .panel-body
-              button.btn.btn-primary#addCourseButton(data-toggle="modal" data-target="#newCourseModal")
-                span.glyphicon.glyphicon-plus  Add New Course
+              .col-md-5
+                | Level: 
+                select.selectpicker#levelFilter
+                  option None
+                  option 1
+                  option 2
+                  option 3
+                  option 4
+                  option 5
+                button.btn.btn-primary#addCourseButton(data-toggle="modal" data-target="#newCourseModal")
+                  span.glyphicon.glyphicon-plus  Create Course
               table#allCourses.display(cellpadding='10', cellspacing='10', border='1')
 
 

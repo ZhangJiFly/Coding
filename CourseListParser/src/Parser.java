@@ -18,8 +18,9 @@ public class Parser {
 
 	public	static void main(String[] args) throws IOException{
 		Map<String, CourseInfo> map = new HashMap<String, CourseInfo>();
-
-		FileInputStream fin = new FileInputStream("/Users/Crippled.Josh/Coding/Dissertation/Resources/SchoolofComputingScienceCourses.txt");
+		String file = "/Users/Crippled.Josh/Coding/Dissertation/Resources/" + args[0];
+		String code = args[1];
+		FileInputStream fin = new FileInputStream(file);
 		BufferedInputStream bis = new BufferedInputStream(fin);
 		BufferedReader br = new BufferedReader(new InputStreamReader(bis));
 
@@ -45,8 +46,8 @@ public class Parser {
 				
 				String element = stDataLine.nextToken();
 				//System.out.println(element);
-				if(element.contains("COMPSCI")){
-					int index = element.indexOf("COMPSCI");
+				if(element.contains(code)){
+					int index = element.indexOf(code);
 					courseInfo.setName(element.substring(0,index));
 					courseInfo.setCourseCode(element.substring(index));
 				}
@@ -82,16 +83,18 @@ public class Parser {
 				if(element.contains("Requirements of Entry")){
 					element = stDataLine.nextToken();
 					StringBuilder sb = new StringBuilder();
-					while(!element.contains("Excluded Courses")){
-
+					System.out.println(courseInfo);
+					while(!element.contains("Assessment") && !element.contains("Main Assessment In:")){
+						System.out.println(element.contains("Assessment"));
 						sb.append(element);
 						element = stDataLine.nextToken();
+						
 						//courseInfo.setLevel(Integer.parseInt(element.substring(13, 14)));
 					}
 					courseInfo.setEntryR(sb.toString());
 
 				}
-				if(element.contains("Assessment")){
+				if(element.contains("Assessment") && !element.contains("Main Assessment In:")){
 					element = stDataLine.nextToken();
 					StringBuilder sb = new StringBuilder();
 					while(!element.contains("Main Assessment In:")){
@@ -111,7 +114,7 @@ public class Parser {
 			
 		}
 		br.close();
-		FileOut fout = new FileOut("CourseInfoText.csv");
+		FileOut fout = new FileOut("/Users/Crippled.Josh/Coding/Dissertation/Resources/CourseInfoTextCompsci.csv");
 		System.out.println(map.size());
 		map.remove(null);
 		fout.println("Level~Semester~Credit~CourseId~Name~Description~EntryRequirements~Assessment~MainAssessment");
