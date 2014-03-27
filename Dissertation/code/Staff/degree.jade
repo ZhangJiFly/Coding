@@ -73,7 +73,7 @@ html
       objects = JSON.parse(objects.replace(/&quot;/ig,'"'));;
 
       var listNames = [];
-      var usedNames = [];
+      
       //extract just names from object returned by SQL request;
       for(var i = 0;i<courseListNames.length;i++){
         listNames.push(courseListNames[i].CourseListId)
@@ -84,13 +84,19 @@ html
 
       var createCourseListPanels = function(field){
         var CLname = field.val(); 
-
-        if(usedNames.indexOf(field.data("oldVal")) != -1){ //doesnt really work that well, is meant to stop duplicate entry of the same courseList. 
-          usedNames.splice(usedNames.indexOf(field.data("oldVal")),1);       
-        }
-
+        var usedNames = [];
         var year = field.attr('year');
         var div = $('#' + year); // find the html element to edit
+
+        $.each($('.w2field'), function(key, value){
+          var jQVal = $(value)
+          if(jQVal.val() != "None" && jQVal.attr('year') != year){
+            usedNames.push($(value).val())
+          }
+        });
+
+        
+        
 
 
         if (usedNames.indexOf(CLname) == -1 && (CLname != "None")){
@@ -115,7 +121,6 @@ html
               "bFilter": false,
               });
           });
-        usedNames.push(CLname);
         } 
         else{
           field.val('None');
