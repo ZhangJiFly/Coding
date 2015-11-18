@@ -1,0 +1,15 @@
+<template name="home">
+  <div class="ui grid">
+    <div id="home-image">
+      {{#if currentUser}}{{else}}<button class="ui blue inverted button" id="logginBtn"><a href="{{pathFor 'signIn'}}">Sign In</a></button>{{/if}}
+    </div>
+    <div class="home-seg">
+      <div class="ui text container">
+        <!-- <h3 class="ui header" id="home-info"></h3> -->
+      </div>
+    </div>
+    <div class="odd home-seg"></div>
+    <div class="home-seg"></div>
+  </div>
+
+</template>

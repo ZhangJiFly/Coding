@@ -1,0 +1,9 @@
+<template name="postThumb">
+  <div class="post-thumb">
+    <div class="category">{{category}}</div>
+    <a href="{{pathFor 'postPage'}}"><img class="front-image" src="{{frontImage}}"></a>
+    <h3>{{title}}</h3>
+    <div class="meta">By <a href="{{pathFor 'authorPosts'}}">{{author}}</a> • On <a href="{{pathFor 'postPage'}}">{{dateAndTime}}</a> • In {{category}}</div>
+    <div class="summary>">{{summary}}</div>
+  </div>
+</template>

@@ -1,0 +1,27 @@
+<template name="ingredientList">
+  <div class="ui main text container">
+    <div class="ui stackable five column grid">
+        {{#each ingredients}}
+          {{> ingredientListItem}}
+        {{/each}}
+    </div>
+  </div>
+</template>
+
+
+<template name="ingredientListItem">
+  <div class="column">
+    <div class="ui raised segment">
+      <div class="middle aligned content">
+        <div class="header">
+          {{name}}
+        </div>
+        <div class="extra">
+          <div class="ui middle floated button">
+            Edit
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

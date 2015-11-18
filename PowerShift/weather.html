@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+
+
+  <script>
+  //  require(['underscore', 'socket.io', 'jquery'], function(_,io,$){
+  //    require(['bootstrap'], function (bb){
+
+  //    });
+  //    var socket = io.connect('http://localhost');
+  //    socket.on('news', function (data) {
+  //      console.log(data);
+  //      socket.emit('my other event', { my: 'data' });
+  //    });
+  //  });
+    
+  </script>
+
+</html>
+  
+  <head>
+    <script src="/js/libs/requirejs/require.js"></script>
+    <script src="requireconfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.css">
+    <link href="/css/starterTemp.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="container" >
+      <div class="col-md-4">
+        <h1>Student Login</h1>
+        <form method="post" action="/loginStudent">
+          <p><label>Username:</label>
+            <input type="text" name="username">
+          </p>
+          <p><label>Password:</label>
+            <input type="password" name="password">
+          </p>
+          <p><input type="submit" value="Login"></p>
+        </form>
+      </div>
+      <div class="col-md-4">
+        <h1>Staff Login</h1>
+        <form method="post" action="/loginStaff">
+          <p><label>Username:</label>
+            <input type="text" name="username">
+          </p>
+          <p><label>Password:</label>
+            <input type="password" name="password">
+          </p>
+          <p><input type="submit" value="Login"></p>
+        </form>
+      </div>
+    </div><!-- /.container -->
+  </body>
+
+
+  </script>

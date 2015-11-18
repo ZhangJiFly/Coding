@@ -1,0 +1,27 @@
+<template name="postItem">
+    <div class=" panel panel-primary">
+      <div class="panel-heading post-heading">
+        <a href="#" class="upvote btn btn-success {{upvotedClass}}">
+          <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+        </a>
+        <h5>{{title}}</h5>
+      </div>
+      <div class="panel-body">
+
+        <div class="desc-body"><img class="article-picture"><p>{{desc}}</p></div>
+      </div>
+      <div class="panel-footer post-footing">
+        <p>
+          {{pluralize votes "Vote"}},
+          submitted by {{author}},
+          <a href="{{pathFor 'postPage'}}">{{pluralize commentsCount "comment"}}</a>
+          {{#if ownPost}}<a href="{{pathFor 'postEdit'}}">Edit</a>{{/if}}
+          {{#if activeRouteClass 'home' 'newPosts' 'bestPosts'}}
+          <a href="{{pathFor 'postPage'}}" class="full btn btn-default pull-right">Full Story</a>
+          {{/if}}
+          
+        </p>
+
+      </div>
+  </div>
+</template>

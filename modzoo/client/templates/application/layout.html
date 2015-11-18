@@ -1,0 +1,20 @@
+<template name="layout">
+  <div class="container main-container">
+    {{> header}}
+    {{> errors}}
+    <div id="main">
+    	<div class="container">
+			<div class="row">
+				<div class="col-sm-8 page-content">
+	  				{{> yield}}
+	  			</div>
+				<div class="col-sm-4">
+	  				{{> sidemenu}}
+	  			</div>
+	  		</div>
+      	</div>
+    </div>
+    
+  </div>
+  {{> siteFooter}}
+</template>

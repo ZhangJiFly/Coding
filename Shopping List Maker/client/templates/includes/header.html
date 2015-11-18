@@ -1,0 +1,13 @@
+<template name="header">
+  <div class="ui fixed inverted yellow main menu">
+    <div class="ui container">
+      <div class="{{isActiveRoute regex='home'}} header item"><a href="{{pathFor 'home'}}">Home</a></div>
+        <a class="{{isActiveRoute regex='shoppingList'}} item" href="{{pathFor 'shoppingList'}}">Create List</a>
+        <a class="{{isActiveRoute regex='recipeList'}} item" href="{{pathFor 'recipeList'}}">Recipes</a>
+        <a class="{{isActiveRoute regex='ingredientList'}} item" href="{{pathFor 'ingredientList'}}">Ingredients</a>
+        <div class="right menu">
+          {{> atNavButton}}
+        </div>
+    </div>
+  </div>
+</template>

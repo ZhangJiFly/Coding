@@ -1,0 +1,53 @@
+.sidemenu h3{
+  color: #333;
+  font-size: 16px;
+  font-weight: 900;
+  font-family: 'Source Sans Pro', sans-serif;
+  text-decoration: bold;
+  line-height: 1.1;
+}
+
+a.manufacture{
+  margin: 0 5px 10px 0;
+  padding: 0 5px;
+  background: #F67000;
+  color: white;
+  display:inline-block;
+  font-size: 14px;
+  font-family: inherit;
+  word-spacing: normal;
+}
+
+.manufacture:hover{
+  color:white;
+  background: black;
+  text-decoration: none;
+}
+
+.sidemenu{
+  display: inline-block;
+}
+
+.header-logo-div{
+  background: white;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.header-logo{
+  margin-right: auto;
+  margin-left: auto;
+  vertical-align: middle;
+  display: block;
+}
+
+.navbar{
+  border:none;
+  border-radius: 0;
+}
+
+.navbar-collapse{
+  display: block;
+  padding-left:0;
+}

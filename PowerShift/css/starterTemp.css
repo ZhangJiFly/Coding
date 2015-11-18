@@ -1,0 +1,30 @@
+body {
+  padding-top: 80px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.container{
+	padding: 2px 14px;
+}
+
+.panel-title{
+	a:link {color:#FF0000;}
+}
+
+td {border: 1px solid black;}
+
+table { border-collapse: collapse; border: 1px solid #000; width: 100%;}
+caption { font-size: larger; margin: 1em auto; }
+th, td { padding: 2px; }
+th, thead { background: #3881C0; color: #fff; border: 1px solid #000; }
+
+
+.enrolled{background:#dff0d8; color:#000;}
+
+
+.dataTables{
+    padding: 30px;
+}

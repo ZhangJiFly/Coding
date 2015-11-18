@@ -1,0 +1,16 @@
+<template name="layout">
+  {{#if currentUser}}
+    {{> header}}
+  {{/if}}
+  <div class="ui grid">
+    <div class="row">
+      <div class="column">
+        <div class="ui bottom attached segment pushable">
+          {{#if currentUser}}<div id="sidebar">{{> sideMenu}}</div>{{/if}}
+          <div id="maincontent">{{> yield}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> footer}}
+</template>

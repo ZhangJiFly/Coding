@@ -1,0 +1,8 @@
+<template name="topFive">
+	<h3>Recent Posts</h3>
+	<ul class="top-five pull-left">
+		{{#each topFive}}
+			<li><a href="{{pathFor 'postPage'}}">{{title}}</a></li>
+		{{/each}}
+	</ul>
+</template>

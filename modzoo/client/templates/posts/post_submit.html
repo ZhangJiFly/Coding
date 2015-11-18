@@ -1,0 +1,23 @@
+<template name="postSubmit">
+  <form class="main form page">
+    <div class="form-group {{errorClass 'title'}}">
+      <label class="control-label" for="title">Title</label>
+      <div class="controls">
+          <input name="title" id="title" type="text" value="" placeholder="Your Title" class="form-control"/>
+          <span class="help-block">{{errorMessage 'title'}}</span>
+      </div>
+    </div>
+    <div class="form-group {{errorClass 'desc'}}">
+      <label class="control-label" for="desc">Description</label>
+      <div class="controls">
+          <textarea name="desc" id="desc" type="text" value="" placeholder="Describe your mission" class="form-control" rows="3"></textarea>
+          <span class="help-block">{{errorMessage 'desc'}}</span>
+      </div>
+    </div>
+    <h3>Images</h3>
+    <div class = "image-uploader">
+      {{> upload_bootstrap contentType='images'}}
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary"/>
+   </form>
+</template>

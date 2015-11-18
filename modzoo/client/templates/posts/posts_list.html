@@ -1,0 +1,25 @@
+<template name="postsList">
+	<div class="post-list">
+		{{#ifEsInputIsEmpty index="posts" id="search" }}
+		{{else}}
+			<div class="please-search">
+				<h3>Searching for {{searchVal}}.</h3>
+			</div>
+			<hr>
+		{{/ifEsInputIsEmpty}}
+
+		{{#ifEsIsSearching index="posts" id="search" logic="OR" }}
+			<div class="spinner-wrapper">
+				{{> spinner}}
+			</div>
+		{{else}}
+			{{#esEach index="posts" id="search"}}
+				{{> postThumb}}
+			{{/esEach}}
+			{{> esLoadMoreButton index="posts" id="search" class="load-more btn-default btn-link"}}
+			{{#ifEsHasNoResults index="posts" id="search" logic="OR" }}
+				<div class="no-results">No results found.</div>
+			{{/ifEsHasNoResults}}
+		{{/ifEsIsSearching}}
+	</div>
+</template>

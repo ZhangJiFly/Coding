@@ -1,0 +1,153 @@
+.main-container{
+  margin-top: 30px;
+  background: white;
+  height:auto;
+  padding: 0 0 20px 0;
+  min-height: 85%;
+}
+
+#search-button{
+  position: relative;
+  right:30px;
+  top:-2px;
+}
+
+.footer-body{
+  background: #1d2124;
+  width: 110%;
+  height:100px;
+}
+
+.footer-bottom{
+  padding-top: 15px;
+  background: #333;
+  color:#8d8e92;
+  width: 105%;
+}
+
+.footer-bottom a{
+  color: #b6b7b9;
+}
+
+.footer-bottom ul{
+  list-style-type: none;
+}
+
+.footer-bottom ul li {
+  display: inline;
+  margin-right: 3px;
+}
+
+.spinner-wrapper{
+  position: relative;
+  top:70px;
+}
+
+input[type="text"]{
+  padding-left: 5px;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/resources/stripe.png') repeat;
+  padding-bottom: 20px;
+}
+
+.bl-background #stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/resources/stripe.png') repeat;
+}
+
+.page-content{
+  padding: 0px 20px 20px 20px;
+}
+
+#main {
+  position: relative;
+}
+.page {
+  position: relative;
+  top: 0px;
+  width: 100%;
+}
+
+.post-heading{
+  height:55px;
+}
+
+.post-footing{
+  height:55px;
+}
+
+textarea{
+  resize: vertical;
+}
+
+
+  /* line 32, ../sass/style.scss */
+  .navbar .navbar-inner {
+    border-radius: 0px 0px 3px 3px; }
+
+#spinner {
+  height: 300px; }
+
+.dropdown-menu span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  line-height: 20px;
+  color: #bbb;
+  white-space: nowrap; }
+
+
+.jumbotron{
+  text-align: center;
+}
+.jumbotron h2{
+  font-size: 60px;
+  font-weight: 100;
+}
+
+@-webkit-keyframes fadeOut {
+  0% {opacity: 0;}
+  10% {opacity: 1;}
+  90% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+@keyframes fadeOut {
+  0% {opacity: 0;}
+  10% {opacity: 1;}
+  90% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+.errors{
+  position: fixed;
+  z-index: 10000;
+  padding: 10px;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  pointer-events: none;
+}
+.alert {
+          animation: fadeOut 2700ms ease-in 0s 1 forwards;
+  -webkit-animation: fadeOut 2700ms ease-in 0s 1 forwards;
+     -moz-animation: fadeOut 2700ms ease-in 0s 1 forwards;
+  width: 250px;
+  float: right;
+  clear: both;
+  margin-bottom: 5px;
+  pointer-events: auto;
+}

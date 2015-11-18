@@ -187,6 +187,7 @@ public class AuctionServer extends UnicastRemoteObject implements AuctionServerI
 		String host = "localhost";
 		int port = 1099;
 		LocateRegistry.createRegistry(port);
+
 		if (args.length > 0) {
 			host = args[0];
 			if (args.length == 2)
